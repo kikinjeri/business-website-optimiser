@@ -88,11 +88,9 @@ html
   <p><strong>Contact:</strong> (000) 000‑0000 · email@example.com</p>
   <p><strong>Accessibility:</strong> Accessibility details go here.</p>
 </section>
-
 🎯 Vision
 OBO exists to make local businesses visible, trustworthy, and accessible — without complexity.
 It’s built with care, editorial intention, and a deep respect for structure.
 
 📜 License
 MIT License.
-
