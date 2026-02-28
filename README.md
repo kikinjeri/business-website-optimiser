@@ -81,13 +81,14 @@ txt
 🧪 Example Output (Semantic Business Section)
 html
 <section aria-labelledby="business-name">
-  <h1 id="business-name">Greenline Physiotherapy</h1>
-  <p>Evidence-based physiotherapy in downtown Ottawa.</p>
-  <p><strong>Location:</strong> 245 Bank Street, Ottawa</p>
-  <p><strong>Hours:</strong> Mon–Fri · 8:00–18:00</p>
-  <p><strong>Contact:</strong> (613) 555-0192 · info@greenlinephysio.ca</p>
-  <p><strong>Accessibility:</strong> Step-free entrance, elevator, screen-reader friendly page.</p>
+  <h1 id="business-name">Business Name</h1>
+  <p>Short description of what the business does and who it serves.</p>
+  <p><strong>Location:</strong> Address, City</p>
+  <p><strong>Hours:</strong> Days · Opening–Closing</p>
+  <p><strong>Contact:</strong> (000) 000‑0000 · email@example.com</p>
+  <p><strong>Accessibility:</strong> Accessibility details go here.</p>
 </section>
+
 🎯 Vision
 OBO exists to make local businesses visible, trustworthy, and accessible — without complexity.
 It’s built with care, editorial intention, and a deep respect for structure.
