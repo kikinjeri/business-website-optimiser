@@ -12,6 +12,53 @@ $ grep -R "No restaurant id provided" -n .
 find app -maxdepth 2 -iname "generate*"
 
 
+    <section className="accessibility-section">
+        <h2>Reach more customers with accessibility.</h2>
+
+        <p>
+          Accessible, structured pages send stronger quality signals to searh
+          engines, so more people can find, understand you, and contact you.
+          That translates to more clicks, more calls, and more customers.
+        </p>
+
+        <p>
+          With Business Website Optimiser, you can turn accessibility into
+          real‑world traffic and growth for your business.
+        </p>
+      </section>
+
+      <section className="feature-rows">
+        <h2 className="section-title">
+          Turn accessibility into real‑world traffic
+        </h2>
+
+        <div className="row">
+          <article className="row-card">
+            <h3>Reach more customers</h3>
+            <p>
+              Accessible pages work for people using screen readers, assistive
+              tech, and older devices.
+            </p>
+          </article>
+
+          <article className="row-card">
+            <h3>Improve local visibility</h3>
+            <p>
+              Semantic structure helps search engines trust and rank your
+              business.
+            </p>
+          </article>
+
+          <article className="row-card">
+            <h3>Share your information anywhere</h3>
+            <p>
+              Your card travels with your brand and always links back to your
+              website.
+            </p>
+          </article>
+        </div>
+      </section>
+
 
 Embed codes: 
 

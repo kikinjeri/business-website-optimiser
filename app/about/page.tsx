@@ -28,14 +28,6 @@ export default function AboutPage() {
         </p>
       </header>
 
-      {/* TRUST BADGES */}
-      <section className="about-badges">
-        <div className="badge">⚡ Fast‑Loading Pages</div>
-        <div className="badge">🔍 Google‑Friendly Structure</div>
-        <div className="badge">♿ Accessibility‑Optimised</div>
-        <div className="badge">📱 Mobile‑First Design</div>
-      </section>
-
       {/* CONTENT */}
       <section className="about-content">
         <h2>Increase Website Traffic</h2>

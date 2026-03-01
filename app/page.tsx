@@ -24,7 +24,10 @@ export default function HomePage() {
           <h1 className="app-hero-title">
             Increase your business website traffic.
             <span className="accent"> Reach More People.</span>
+           
           </h1>
+          <h2> Accessibility translates into real‑world traffic and growth for your
+            business. </h2>
 
           <p className="app-hero-subtitle">
             Business Website Optimiser transforms your business details into
@@ -72,54 +75,8 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="feature-rows">
-        <h2 className="section-title">
-          Turn accessibility into real‑world traffic
-        </h2>
-
-        <div className="row">
-          <article className="row-card">
-            <h3>Reach more customers</h3>
-            <p>
-              Accessible pages work for people using screen readers, assistive
-              tech, and older devices.
-            </p>
-          </article>
-
-          <article className="row-card">
-            <h3>Improve local visibility</h3>
-            <p>
-              Semantic structure helps search engines trust and rank your
-              business.
-            </p>
-          </article>
-
-          <article className="row-card">
-            <h3>Share your information anywhere</h3>
-            <p>
-              Your card travels with your brand and always links back to your
-              website.
-            </p>
-          </article>
-        </div>
-      </section>
-
       <section className="accessibility-section">
-        <h2>Reach more customers with accessibility.</h2>
-
-        <p>
-          When your business information is accessible, more people can find
-          you, understand you, and contact you. Business Website Optimiser uses
-          semantic HTML, correct landmarks, and assistive‑tech‑friendly patterns
-          so your details work for everyone—including customers using screen
-          readers.
-        </p>
-
-        <p>
-          Accessible, structured pages send stronger quality signals to search
-          engines and reduce friction for real people. That combination leads to
-          more clicks, more calls, and more customers.
-        </p>
+        <h2></h2>
       </section>
 
       <footer className="footer">
