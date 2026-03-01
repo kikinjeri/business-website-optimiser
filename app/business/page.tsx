@@ -1,59 +1,55 @@
-import { supabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
+import { supabaseServer } from "@/lib/supabase/server";
 
-export default async function BusinessIndexPage() {
+export default async function BusinessPage() {
   const supabase = await supabaseServer();
 
-  const { data: businesses, error } = await supabase
-    .from("businesses")
-    .select("*")
-    .order("name");
+    const { data: businesses, error } = await supabase
+      .from("businesses")
+      .select("id, name, category, address, phone, website_url, slug")
+      .order("name");
+
+  if (error) {
+    console.error(error);
+    return <p>Error loading businesses.</p>;
+  }
 
   return (
-    <div className="container">
-      {/* NAVBAR */}
-      <nav className="navbar">
-        <div className="nav-left">
-          <Link href="/">OBO</Link>
-        </div>
+    <main className="business-list">
+      <h1 className="page-title">Business</h1>
 
-        <div className="nav-right">
-          <Link href="/">Home</Link>
-          <Link href="/about">About</Link>
-          <Link href="/businesses">Business</Link>
-        </div>
-      </nav>
+      {businesses?.map((biz) => (
+        <article key={biz.id} className={`business-row accent-${biz.category}`}>
+          <div className="business-row__identity">
+            <h2 className="business-row__name">{biz.name}</h2>
+            <p className="business-row__category">{biz.category}</p>
+          </div>
 
-      {/* BUSINESS LIST */}
-      <section>
-        <h1 className="hero-title">Business</h1>
+          <div className="business-row__details">
+            <span className="detail-item">{biz.address}</span>
+            <span className="detail-item">{biz.telephone}</span>
+            {biz.website && (
+              <a
+                href={biz.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="detail-link"
+              >
+                {biz.website.replace("https://", "").replace("http://", "")}
+              </a>
+            )}
+          </div>
 
-        {error && <p>Error loading businesses.</p>}
-        {businesses?.length === 0 && <p>No businesses found.</p>}
-
-        <div className="business-list">
-          {businesses?.map((b) => (
-            <div key={b.id} className="business-row">
-              <div>
-                <div className="business-name">{b.name}</div>
-                <div className="business-category">{b.category}</div>
-                <div className="business-category">{b.status}</div>
-              </div>
-
-              <div>
-                <Link href={`/business/${b.slug}`}>View Profile</Link>
-                <span style={{ margin: "0 0.5rem" }}></span>
-                <Link href={`/business/${b.slug}/card`}>View Card</Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="footer">
-        © {new Date().getFullYear()} Online Business Optimiser.
-      </footer>
-    </div>
+          <div className="business-row__actions">
+            <Link href={`/business/${biz.slug}`} className="action-link">
+              View Profile
+            </Link>
+            <Link href={`/card/${biz.slug}`} className="action-link subtle">
+              View Card
+            </Link>
+          </div>
+        </article>
+      ))}
+    </main>
   );
 }

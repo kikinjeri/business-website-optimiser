@@ -15,11 +15,8 @@ export default function HomePage() {
           </Link>
 
           <div className="nav-links">
-            <Link href="/businesses">Businesses</Link>
+            <Link href="/business">Business</Link>
             <Link href="/about">About</Link>
-            <Link href="/business" className="nav-cta">
-              Create Page
-            </Link>
           </div>
         </div>
       </nav>
