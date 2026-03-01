@@ -1,55 +1,77 @@
-import Link from "next/link";
+// app/business/page.tsx
+
 import { supabaseServer } from "@/lib/supabase/server";
+import { formatTelephone } from "@/lib/formatters";
 
 export default async function BusinessPage() {
   const supabase = await supabaseServer();
 
-    const { data: businesses, error } = await supabase
-      .from("businesses")
-      .select("id, name, category, address, phone, website_url, slug")
-      .order("name");
+  const { data: businesses, error } = await supabase
+    .from("businesses")
+    .select("id, name, phone, email, website_url")
+    .order("name");
 
   if (error) {
-    console.error(error);
     return <p>Error loading businesses.</p>;
   }
 
+  // Remove Ottawa's Handyman
+  const filtered = businesses.filter(
+    (b) => b.name.toLowerCase() !== "ottawa's handyman",
+  );
+
   return (
-    <main className="business-list">
-      <h1 className="page-title">Business</h1>
+    <main className="business-page">
+      {/* GLOBAL HEADER */}
+      <header className="global-header">
+        <a href="/" className="header-logo">
+          OBO
+        </a>
 
-      {businesses?.map((biz) => (
-        <article key={biz.id} className={`business-row accent-${biz.category}`}>
-          <div className="business-row__identity">
-            <h2 className="business-row__name">{biz.name}</h2>
-            <p className="business-row__category">{biz.category}</p>
-          </div>
+        <nav className="header-nav">
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+        </nav>
+      </header>
 
-          <div className="business-row__details">
-            <span className="detail-item">{biz.address}</span>
-            <span className="detail-item">{biz.telephone}</span>
-            {biz.website && (
+      <h1 className="business-title">Local Businesses</h1>
+
+      <section className="business-list">
+        {filtered.map((business) => (
+          <div key={business.id} className="business-line">
+            <span className="line-name">{business.name}</span>
+
+            {business.phone && (
+              <a href={`tel:${business.phone}`} className="line-phone">
+                {formatTelephone(business.phone)}
+              </a>
+            )}
+
+            {business.email && (
+              <a href={`mailto:${business.email}`} className="line-email">
+                {business.email}
+              </a>
+            )}
+
+            {business.website_url && (
               <a
-                href={biz.website}
+                href={business.website_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="detail-link"
+                className="line-website"
               >
-                {biz.website.replace("https://", "").replace("http://", "")}
+                {business.website_url
+                  .replace("https://", "")
+                  .replace("http://", "")}
               </a>
             )}
           </div>
+        ))}
+      </section>
 
-          <div className="business-row__actions">
-            <Link href={`/business/${biz.slug}`} className="action-link">
-              View Profile
-            </Link>
-            <Link href={`/card/${biz.slug}`} className="action-link subtle">
-              View Card
-            </Link>
-          </div>
-        </article>
-      ))}
+      <footer className="footer">
+        © {new Date().getFullYear()} OBO — Online Business Optimiser
+      </footer>
     </main>
   );
 }

@@ -1,6 +1,6 @@
-/* ===========================
-   GLOBAL APP SHELL
-=========================== */
+/* ==========================================================
+   ROOT VARIABLES — DARK PREMIUM SHELL
+========================================================== */
 
 :root {
   --bg: #0d0f12;
@@ -9,7 +9,7 @@
   --text: #f5f7fa;
   --text-soft: #c7cbd1;
 
-  /* BLUE ACCENT — replaces all green */
+  /* BLUE ACCENT — global brand accent */
   --accent: #4f8cff;
   --accent-soft: #3a6cd6;
 
@@ -25,9 +25,11 @@ body {
   margin: 0;
 }
 
-/* ===========================
-   NAVBAR
-=========================== */
+
+
+/* ==========================================================
+   NAVBAR — GLOBAL TOP NAV
+========================================================== */
 
 .navbar {
   background: var(--bg-soft);
@@ -72,9 +74,11 @@ body {
   font-weight: 600;
 }
 
-/* ===========================
-   APP HERO
-=========================== */
+
+
+/* ==========================================================
+   HOMEPAGE HERO
+========================================================== */
 
 .app-hero {
   padding: 4rem 2rem 3rem;
@@ -132,9 +136,11 @@ body {
   background: #2a2d33;
 }
 
-/* ===========================
-   APP PREVIEW GRID
-=========================== */
+
+
+/* ==========================================================
+   HOMEPAGE PREVIEW GRID
+========================================================== */
 
 .app-preview-grid {
   margin-top: 3rem;
@@ -157,8 +163,7 @@ body {
 }
 
 .preview-card h3 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
   font-size: 1.15rem;
 }
 
@@ -167,9 +172,11 @@ body {
   color: var(--text-soft);
 }
 
-/* ===========================
+
+
+/* ==========================================================
    FEATURE ROWS
-=========================== */
+========================================================== */
 
 .feature-rows {
   margin: 4rem auto;
@@ -204,8 +211,7 @@ body {
 }
 
 .row-card h3 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
 }
 
 .row-card p {
@@ -213,9 +219,11 @@ body {
   color: var(--text-soft);
 }
 
-/* ===========================
+
+
+/* ==========================================================
    ACCESSIBILITY SECTION
-=========================== */
+========================================================== */
 
 .accessibility-section {
   max-width: 900px;
@@ -233,9 +241,11 @@ body {
   line-height: 1.6;
 }
 
-/* ===========================
+
+
+/* ==========================================================
    FOOTER
-=========================== */
+========================================================== */
 
 .footer {
   text-align: center;
@@ -245,49 +255,101 @@ body {
   border-top: 1px solid #222;
   margin-top: 4rem;
 }
-.business-row {
+
+
+
+/* ==========================================================
+   BUSINESS PAGE — PREMIUM SOFT-TINT DIRECTORY
+========================================================== */
+
+/* ==========================================================
+   BUSINESS PAGE — LINED DIRECTORY (MAX DENSITY)
+========================================================== */
+
+.business-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* GLOBAL HEADER */
+.global-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.4rem 1.8rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  margin-bottom: 32px;
 }
 
-.business-row:hover {
-  background: var(--surface-hover);
-}
-
-.business-row__identity {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.business-row__name {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.business-row__category {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.business-row__actions {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.business-row__actions a {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--accent);
+.header-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
   text-decoration: none;
 }
 
-.business-row__actions a:hover {
+.header-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.header-nav a {
+  color: var(--text-soft);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.header-nav a:hover {
+  color: var(--text);
+}
+
+/* PAGE TITLE */
+.business-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+/* LIST WRAPPER */
+.business-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ONE-LINE DIRECTORY STYLE */
+.business-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid #2a2d33; /* subtle line like stationery */
+  font-size: 0.95rem;
+  align-items: center;
+}
+
+.line-name {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.line-phone,
+.line-email {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.line-phone:hover,
+.line-email:hover {
   text-decoration: underline;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  border-top: 1px solid #222;
+  margin-top: 40px;
 }
