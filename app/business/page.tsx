@@ -1,76 +1,50 @@
-// app/business/page.tsx
-
+import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
-import { formatTelephone } from "@/lib/formatters";
+import BusinessCard from "@/components/BusinessCard"; // ✅ FIXED
 
 export default async function BusinessPage() {
   const supabase = await supabaseServer();
 
   const { data: businesses, error } = await supabase
     .from("businesses")
-    .select("id, name, phone, email, website_url")
+    .select("id, name, slug, tagline_en, phone, address")
     .order("name");
 
-  if (error) {
-    return <p>Error loading businesses.</p>;
-  }
-
-  // Remove Ottawa's Handyman
-  const filtered = businesses.filter(
-    (b) => b.name.toLowerCase() !== "ottawa's handyman",
-  );
+  if (error) return <p>Error loading businesses.</p>;
 
   return (
     <main className="business-page">
-      {/* GLOBAL HEADER */}
-      <header className="global-header">
-        <a href="/" className="header-logo">
-          OBO
-        </a>
+      <nav className="navbar" role="navigation" aria-label="Main">
+        <div className="nav-inner">
+          <Link href="/" className="nav-logo">
+            Business Website Optimiser
+          </Link>
 
-        <nav className="header-nav">
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-        </nav>
-      </header>
+          <div className="nav-links">
+            <Link href="/">Home</Link>
+            <Link href="/business">Businesses</Link>
+            <Link href="/about">About</Link>
+          </div>
+        </div>
+      </nav>
 
       <h1 className="business-title">Local Businesses</h1>
 
       <section className="business-list">
-        {filtered.map((business) => (
-          <div key={business.id} className="business-line">
-            <span className="line-name">{business.name}</span>
-
-            {business.phone && (
-              <a href={`tel:${business.phone}`} className="line-phone">
-                {formatTelephone(business.phone)}
-              </a>
-            )}
-
-            {business.email && (
-              <a href={`mailto:${business.email}`} className="line-email">
-                {business.email}
-              </a>
-            )}
-
-            {business.website_url && (
-              <a
-                href={business.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="line-website"
-              >
-                {business.website_url
-                  .replace("https://", "")
-                  .replace("http://", "")}
-              </a>
-            )}
-          </div>
+        {businesses.map((b) => (
+          <BusinessCard
+            key={b.id}
+            name={b.name}
+            tagline={b.tagline_en}
+            phone={b.phone}
+            address={b.address}
+            slug={b.slug}
+          />
         ))}
       </section>
 
       <footer className="footer">
-        © {new Date().getFullYear()} OBO — Online Business Optimiser
+        © {new Date().getFullYear()} Business Website Optimiser
       </footer>
     </main>
   );

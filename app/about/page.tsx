@@ -1,67 +1,70 @@
 // app/about/page.tsx
-
 import Link from "next/link";
-import Image from "next/image";
 
 export default function AboutPage() {
   return (
     <main className="about-page">
-      {/* GLOBAL HEADER */}
-      <header className="global-header">
-        <Link href="/" className="header-logo">
-         OBO
-        </Link>
+      {/* NAVBAR — identical to homepage */}
+      <nav className="navbar" role="navigation" aria-label="Main">
+        <div className="nav-inner">
+          <Link href="/" className="nav-logo">
+            Business Website Optimiser
+          </Link>
 
-        <nav className="header-nav">
-          <Link href="/">Home</Link>
-          <Link href="/business">Businesses</Link>
-        </nav>
-      </header>
+          <div className="nav-links">
+            <Link href="/">Home</Link>
+            <Link href="/business">Businesses</Link>
+            <Link href="/about">About</Link>
+          </div>
+        </div>
+      </nav>
 
-      {/* HERO */}
+      {/* ABOUT HERO */}
       <section className="about-hero">
         <div className="about-intro">
-          <h1>Our Mission</h1>
+          <h1>Built to make local businesses visible</h1>
           <p className="about-tagline">
-            Support local businesses by creating an accessible, search‑ready platforms where they can easily be found.
+            Your business deserves to be easy to find, easy to understand, and
+            accessible to everyone.
           </p>
         </div>
       </section>
 
-      {/* CORE EXPLANATION */}
+      {/* ABOUT CONTENT */}
       <section className="about-content">
         <p>
-          OBO creates clean, semantic HTML pages for every business — the same
-          structure Google prefers when indexing local services. This gives each
-          business a fast, lightweight presence that loads instantly and works
-          everywhere.
+          Business Website Optimiser creates clean, semantic, search‑ready pages
+          and embeddable business cards from your existing details. We focus on
+          structure, clarity, and accessibility so your information works for
+          both search engines and real people.
         </p>
 
         <p>
-          Every page is built with accessibility in mind: readable typography,
-          proper headings, alt text, and keyboard‑friendly navigation. This
-          ensures that all customers — including those using assistive
-          technologies — can access your business information.
+          Every page is built with accessibility in mind: proper headings,
+          readable typography, meaningful link text, and layouts that work with
+          screen readers and keyboard navigation. When more people can use your
+          site, more people can become your customers.
         </p>
 
         <p>
-          OBO improves Google visibility by presenting business details in a
-          structured, machine‑readable format. Search engines can understand
-          your services, location, and contact information more clearly, which
-          increases impressions and ranking opportunities.
+          We also optimise how your business appears to Google. By presenting
+          your services, location, and contact details in a consistent,
+          machine‑readable format, we make it easier for search engines to
+          understand and surface your business in local results.
         </p>
 
         <p>
-          Each business page can be embedded anywhere — websites, blogs,
-          newsletters, directories, or partner pages. This makes your business
-          more discoverable and allows your information to travel beyond a
-          single platform.
+          Your business profile and card can be embedded anywhere—Google
+          Business Profile, your existing website, partner sites, newsletters,
+          or directories. Wherever they appear, they send visitors back to your
+          website, where you control the experience.
         </p>
       </section>
 
       {/* FOOTER */}
       <footer className="footer">
-        © {new Date().getFullYear()} OBO — Online Business Optimiser
+        © {new Date().getFullYear()} Business Website Optimiser — Built for
+        visibility, accessibility, and real‑world traffic.
       </footer>
     </main>
   );

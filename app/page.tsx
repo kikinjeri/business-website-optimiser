@@ -1,3 +1,4 @@
+// app/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -5,119 +6,99 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <main id="main-content">
-      {/* ===========================
-          NAVBAR
-      ============================ */}
       <nav className="navbar" role="navigation" aria-label="Main">
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            Online Business Optimiser
+            Business Website Optimiser
           </Link>
 
           <div className="nav-links">
-            <Link href="/business">Business</Link>
+            <Link href="/business">Businesses</Link>
             <Link href="/about">About</Link>
           </div>
         </div>
       </nav>
 
-      {/* ===========================
-          APP-STYLE HERO
-      ============================ */}
       <header className="app-hero" role="banner">
         <div className="app-hero-inner">
           <h1 className="app-hero-title">
-            Your business.
-            <span className="accent">Structured. Searchable. Shareable.</span>
+            Increase your business website traffic.
+            <span className="accent"> Make your information accessible to everyone.</span>
           </h1>
 
           <p className="app-hero-subtitle">
-            OBO turns your business details into a clean, accessible, app‑ready
-            profile that works across search, devices, and assistive tech.
+            Business Website Optimiser transforms your business details into fast, accessible, search‑ready pages and
+            embeddable cards that bring more customers to your website—from Google, screen readers, and every device.
           </p>
 
           <div className="app-hero-actions">
             <Link href="/business" className="cta-primary">
-              Create Your Page
+              View Local Businesses
             </Link>
-            <Link href="/business/palermos" className="cta-secondary">
-              View Example
+            <Link href="/about" className="cta-secondary">
+              Why accessibility grows traffic
             </Link>
           </div>
         </div>
 
-        {/* APP-LIKE MODULE PREVIEW */}
         <div className="app-preview-grid">
           <div className="preview-card">
-            <h3>Business Profile</h3>
-            <p>
-              Your services, hours, location, and accessibility — structured for
-              clarity.
-            </p>
+            <h3>Search‑optimised pages</h3>
+            <p>Clean, semantic HTML that helps Google understand your business instantly.</p>
           </div>
 
           <div className="preview-card">
-            <h3>Search‑Ready Layout</h3>
-            <p>
-              Semantic HTML that helps search engines understand your business.
-            </p>
+            <h3>Accessible by default</h3>
+            <p>Built for screen readers, keyboard navigation, and WCAG‑minded structure.</p>
           </div>
 
           <div className="preview-card">
-            <h3>Share Anywhere</h3>
-            <p>
-              Link it, embed it, or hand it to your developer as a foundation.
-            </p>
+            <h3>Embeddable business cards</h3>
+            <p>Share your business anywhere and send traffic directly to your website.</p>
           </div>
         </div>
       </header>
 
-      {/* ===========================
-          FEATURE ROWS (NETFLIX STYLE)
-      ============================ */}
       <section className="feature-rows">
-        <h2 className="section-title">What you can build with OBO</h2>
+        <h2 className="section-title">Turn accessibility into real‑world traffic</h2>
 
         <div className="row">
           <article className="row-card">
-            <h3>Local Service Page</h3>
-            <p>A clean, trustworthy page for any local business.</p>
+            <h3>Reach more customers</h3>
+            <p>Accessible pages work for people using screen readers, assistive tech, and older devices.</p>
           </article>
 
           <article className="row-card">
-            <h3>Business Card Embed</h3>
-            <p>Drop your business card into any website or platform.</p>
+            <h3>Improve local visibility</h3>
+            <p>Semantic structure helps search engines trust and rank your business.</p>
           </article>
 
           <article className="row-card">
-            <h3>Search‑Optimised Profile</h3>
-            <p>Structured content that improves discoverability.</p>
+            <h3>Share your information anywhere</h3>
+            <p>Your card travels with your brand and always links back to your website.</p>
           </article>
         </div>
       </section>
 
-      {/* ===========================
-          ACCESSIBILITY SECTION
-      ============================ */}
       <section className="accessibility-section">
-        <h2>Built on semantic HTML and real accessibility</h2>
+        <h2>Accessibility isn’t compliance. It’s reach.</h2>
 
         <p>
-          OBO pages use correct landmarks, headings, and ARIA where it actually
-          helps. The result is a page that works for search engines, screen
-          readers, and real people — without clutter or noise.
+          When your business information is accessible, more people can find you, understand you, and contact you.
+          Business Website Optimiser uses semantic HTML, correct landmarks, and assistive‑tech‑friendly patterns so your
+          details work for everyone—including customers using screen readers.
+        </p>
+
+        <p>
+          Accessible, structured pages send stronger quality signals to search engines and reduce friction for real
+          people. That combination leads to more clicks, more calls, and more customers.
         </p>
       </section>
 
-      {/* ===========================
-          FOOTER
-      ============================ */}
       <footer className="footer">
-        <p>
-          © 2026 Online Business Optimiser. Built with care for local service
-          businesses.
-        </p>
+        © {new Date().getFullYear()} Business Website Optimiser — Increase your business website traffic.
       </footer>
     </main>
   );
 }
+  
