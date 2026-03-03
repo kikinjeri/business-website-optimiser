@@ -155,6 +155,7 @@ export default async function BusinessPage({
             website_url={business.website_url}
             services={services.map((s) => s.name_en)}
             hours={hours}
+            service_areas={areas.map((a) => a.area_name)}
             theme={theme}
             lat={business.lat}
             lng={business.lng}
@@ -163,37 +164,6 @@ export default async function BusinessPage({
         </section>
 
         {/* Map */}
-        {business.map_url && (
-          <section
-            className="map-section"
-            aria-label="Location map"
-            style={{ marginBottom: "40px" }}
-          >
-            <h2
-              style={{
-                marginBottom: "12px",
-                fontSize: "1.4rem",
-                color: theme.primary,
-              }}
-            >
-              Location
-            </h2>
-
-            <iframe
-              src={business.map_url}
-              width="100%"
-              height="350"
-              style={{
-                border: 0,
-                borderRadius: "10px",
-                background: "#ffffff",
-              }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title={`${business.name} location on map`}
-            ></iframe>
-          </section>
-        )}
 
         {/* Neighbourhood */}
         {neighborhood && (
@@ -214,60 +184,6 @@ export default async function BusinessPage({
             <p style={{ fontSize: "1rem", color: `${theme.text}cc` }}>
               {neighborhood}
             </p>
-          </section>
-        )}
-
-        {/* Services */}
-        {services.length > 0 && (
-          <section
-            className="menu-section"
-            aria-label="Services"
-            style={{ marginBottom: "40px" }}
-          >
-            <h2
-              style={{
-                marginBottom: "12px",
-                fontSize: "1.4rem",
-                color: theme.primary,
-              }}
-            >
-              Services
-            </h2>
-
-            <ul className="menu-list" style={{ paddingLeft: "20px" }}>
-              {services.map((service) => (
-                <li
-                  key={service.id}
-                  className="menu-item"
-                  style={{ marginBottom: "14px" }}
-                >
-                  <div className="menu-item-header">
-                    <strong>{service.name_en}</strong>
-                    {service.starting_price && (
-                      <span
-                        className="price"
-                        style={{ marginLeft: "8px", color: theme.accent }}
-                      >
-                        ${service.starting_price}
-                      </span>
-                    )}
-                  </div>
-
-                  {service.description_en && (
-                    <p
-                      className="description"
-                      style={{
-                        margin: "4px 0 0",
-                        color: `${theme.text}aa`,
-                        fontSize: "0.95rem",
-                      }}
-                    >
-                      {service.description_en}
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
           </section>
         )}
 
@@ -296,6 +212,7 @@ export default async function BusinessPage({
               ))}
             </ul>
           </section>
+          
         )}
       </div>
     </main>

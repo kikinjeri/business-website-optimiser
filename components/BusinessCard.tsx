@@ -9,6 +9,7 @@ type BusinessCardProps = {
   website_url?: string | null;
   services?: string[];
   hours?: Record<string, string> | null;
+  service_areas?: string[] | null;
   theme?: {
     primary: string;
     accent: string;
@@ -21,13 +22,13 @@ type BusinessCardProps = {
 };
 
 const DAY_ORDER = [
+  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
   "saturday",
-  "sunday",
 ];
 
 const DAY_LABELS: Record<string, string> = {
@@ -45,14 +46,12 @@ function getOpenStatus(hours: Record<string, string> | null) {
   if (!hours) return null;
 
   const now = new Date();
-  const day = DAY_ORDER[now.getDay() - 1]; // JS: 0=Sun, 1=Mon
-  const todayHours = hours[day];
+  const dayKey = DAY_ORDER[now.getDay()];
+  const todayHours = hours[dayKey];
 
   if (!todayHours || todayHours.toLowerCase() === "closed") return "closed";
-
   if (todayHours.includes("24/7")) return "open";
 
-  // Format: "9:00 AM - 5:00 PM"
   const [start, end] = todayHours.split(" - ");
   if (!start || !end) return null;
 
@@ -63,6 +62,35 @@ function getOpenStatus(hours: Record<string, string> | null) {
   return "closed";
 }
 
+// Extract neighborhood from address
+function extractNeighborhood(address?: string | null): string | null {
+  if (!address) return null;
+  const parts = address.split(",");
+  if (parts.length < 2) return null;
+  return parts[1].trim();
+}
+
+// Build service area tag text
+function buildServiceAreaTag(
+  service_areas?: string[] | null,
+  neighborhood?: string | null,
+): string {
+  if (service_areas && service_areas.length > 0) {
+    const sorted = [...service_areas].sort((a, b) => a.localeCompare(b, "en"));
+
+    if (sorted.length <= 3) {
+      return `Serving ${sorted.join(", ")}`;
+    }
+
+    const firstThree = sorted.slice(0, 3).join(", ");
+    return `Serving ${firstThree} and more`;
+  }
+
+  if (neighborhood) return `Serving ${neighborhood}`;
+
+  return "Serving Ottawa";
+}
+
 export default function BusinessCard({
   name,
   tagline,
@@ -71,20 +99,23 @@ export default function BusinessCard({
   website_url,
   services = [],
   hours,
+  service_areas,
   theme,
   lat,
   lng,
   map_url,
 }: BusinessCardProps) {
-  const bg = theme?.background || "#ffffff";
-  const text = theme?.text || "#111827";
-  const primary = theme?.primary || "#111827";
-  const accent = theme?.accent || "#2563eb";
+  const bg = theme?.background || "var(--obo-light-surface)";
+  const text = theme?.text || "var(--obo-light-text)";
+  const primary = theme?.primary || "var(--obo-light-text)";
+  const accent = theme?.accent || "var(--obo-light-accent)";
 
   const hasHours = hours && Object.keys(hours).length > 0;
   const hasServices = Array.isArray(services) && services.length > 0;
 
   const openStatus = getOpenStatus(hours);
+  const neighborhood = extractNeighborhood(address);
+  const serviceAreaTag = buildServiceAreaTag(service_areas, neighborhood);
 
   const websiteDomain = website_url
     ? website_url.replace("https://", "").replace("http://", "").split("/")[0]
@@ -98,22 +129,19 @@ export default function BusinessCard({
         maxWidth: "760px",
         margin: "0 auto",
         borderRadius: "18px",
-        border: `1px solid ${primary}20`,
+        border: `1px solid rgba(0,0,0,0.06)`,
         background: bg,
         color: text,
         padding: "28px 28px 32px",
         boxShadow: "0 22px 55px rgba(0,0,0,0.16)",
       }}
     >
-      {/* Header with tint */}
+      {/* Header */}
       <header
         style={{
           marginBottom: "20px",
           paddingBottom: "16px",
-          borderBottom: `1px solid ${primary}25`,
-          background: `${primary}08`,
-          padding: "16px 20px",
-          borderRadius: "12px",
+          borderBottom: `1px solid rgba(0,0,0,0.06)`,
         }}
       >
         <h1
@@ -132,7 +160,7 @@ export default function BusinessCard({
             style={{
               margin: "6px 0 0",
               fontSize: "1rem",
-              color: `${text}aa`,
+              color: "rgba(0,0,0,0.65)",
             }}
           >
             {tagline}
@@ -154,7 +182,7 @@ export default function BusinessCard({
           {address && (
             <p style={{ margin: "0 0 10px", fontSize: "1rem" }}>
               <span style={{ fontWeight: 600 }}>📍 Address:</span>{" "}
-              <span style={{ color: `${text}cc` }}>{address}</span>
+              <span style={{ color: "rgba(0,0,0,0.7)" }}>{address}</span>
             </p>
           )}
 
@@ -230,7 +258,9 @@ export default function BusinessCard({
                     padding: "2px 8px",
                     borderRadius: "999px",
                     background:
-                      openStatus === "open" ? "#16a34a22" : "#dc262622",
+                      openStatus === "open"
+                        ? "rgba(22,163,74,0.12)"
+                        : "rgba(220,38,38,0.12)",
                     color: openStatus === "open" ? "#15803d" : "#b91c1c",
                     fontWeight: 600,
                   }}
@@ -251,18 +281,19 @@ export default function BusinessCard({
               }}
             >
               {DAY_ORDER.map((day) => {
-                const value = hours![day];
+                const key = day.toLowerCase();
+                const value = hours![key];
                 if (!value) return null;
 
                 return (
                   <div key={day} style={{ display: "contents" }}>
                     <dt style={{ fontWeight: 600 }}>
-                      {DAY_LABELS[day] || day}
+                      {DAY_LABELS[key] || day}
                     </dt>
                     <dd
                       style={{
                         margin: 0,
-                        color: `${text}bb`,
+                        color: "rgba(0,0,0,0.7)",
                       }}
                     >
                       {value}
@@ -281,7 +312,7 @@ export default function BusinessCard({
           aria-label="Key services"
           style={{
             marginTop: "26px",
-            borderTop: `1px solid ${primary}15`,
+            borderTop: "1px solid rgba(0,0,0,0.06)",
             paddingTop: "18px",
           }}
         >
@@ -303,7 +334,7 @@ export default function BusinessCard({
               gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
               gap: "6px 20px",
               fontSize: "0.95rem",
-              color: `${text}cc`,
+              color: "rgba(0,0,0,0.7)",
             }}
           >
             {services.slice(0, 8).map((service, idx) => (
@@ -326,50 +357,99 @@ export default function BusinessCard({
         </section>
       )}
 
-      {/* Footer tags */}
+      {/* Mini Map (OpenStreetMap — no API key needed) */}
+      {lat && lng && (
+        <section
+          aria-label="Mini map"
+          style={{
+            marginTop: "26px",
+            borderTop: "1px solid rgba(0,0,0,0.06)",
+            paddingTop: "18px",
+          }}
+        >
+          <h2
+            style={{
+              margin: "0 0 12px",
+              fontSize: "1.15rem",
+              color: primary,
+            }}
+          >
+            🗺️ Location
+          </h2>
+
+          <iframe
+            width="100%"
+            height="180"
+            style={{
+              border: 0,
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+            }}
+            loading="lazy"
+            src={`https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.01}%2C${lat - 0.01}%2C${lng + 0.01}%2C${lat + 0.01}&layer=mapnik&marker=${lat}%2C${lng}`}
+          ></iframe>
+
+          {map_url && (
+            <p style={{ marginTop: "10px", fontSize: "0.95rem" }}>
+              <a
+                href={map_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: accent,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                View larger map →
+              </a>
+            </p>
+          )}
+        </section>
+      )}
+
+      {/* Footer tags — business‑specific */}
       <footer
-        aria-label="Trust and accessibility"
+        aria-label="Business trust signals"
         style={{
           marginTop: "26px",
           paddingTop: "16px",
-          borderTop: `1px solid ${primary}15`,
+          borderTop: "1px solid rgba(0,0,0,0.06)",
           display: "flex",
           flexWrap: "wrap",
           gap: "8px 14px",
-          fontSize: "0.85rem",
-          color: `${text}99`,
+          fontSize: "0.95rem",
+          color: "rgba(0,0,0,0.75)",
         }}
       >
+        {/* Local business */}
         <span
           style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
             padding: "6px 10px",
             borderRadius: "999px",
-            border: `1px solid ${accent}33`,
-            color: accent,
+            background: "rgba(0,0,0,0.05)",
             fontWeight: 600,
           }}
         >
-          Accessible by design
+          📍 Local Ottawa business
         </span>
 
+        {/* Service area tag */}
         <span
           style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
             padding: "6px 10px",
             borderRadius: "999px",
-            border: `1px solid ${primary}22`,
+            background: "rgba(0,0,0,0.05)",
+            fontWeight: 600,
           }}
         >
-          Screen‑reader friendly
-        </span>
-
-        <span
-          style={{
-            padding: "6px 10px",
-            borderRadius: "999px",
-            border: `1px solid ${primary}22`,
-          }}
-        >
-          SEO‑ready business profile
+          🗺️ {serviceAreaTag}
         </span>
       </footer>
     </article>
