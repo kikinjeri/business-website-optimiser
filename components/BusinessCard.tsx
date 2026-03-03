@@ -16,8 +16,8 @@ type BusinessCardProps = {
     text: string;
     background: string;
   };
-  lat?: number | null;
-  lng?: number | null;
+  lat?: number | string | null;
+  lng?: number | string | null;
   map_url?: string | null;
 };
 
@@ -40,6 +40,30 @@ const DAY_LABELS: Record<string, string> = {
   saturday: "Saturday",
   sunday: "Sunday",
 };
+
+// ⭐ Convert Google Maps share link → embed link
+function convertToEmbedUrl(url: string): string {
+  if (!url) return "";
+
+  // Already embed
+  if (url.includes("/embed")) return url;
+
+  // /maps/place/... → /maps/embed?...
+  if (url.includes("/maps/place/")) {
+    const base = url.split("/maps/place/")[1]?.split("/")[0] ?? "";
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(
+      base,
+    )}!5e0!3m2!1sen!2sca!4v0`;
+  }
+
+  // Short links (maps.app.goo.gl)
+  if (url.includes("goo.gl")) {
+    return `https://www.google.com/maps/embed?pb=${encodeURIComponent(url)}`;
+  }
+
+  // Fallback
+  return `https://www.google.com/maps/embed?pb=${encodeURIComponent(url)}`;
+}
 
 // Determine if business is open right now
 function getOpenStatus(hours: Record<string, string> | null) {
@@ -357,8 +381,8 @@ export default function BusinessCard({
         </section>
       )}
 
-      {/* Mini Map (OpenStreetMap — no API key needed) */}
-      {lat && lng && (
+      {/* ⭐ Mini Map (Google Maps embed conversion — no API key needed) */}
+      {map_url && (
         <section
           aria-label="Mini map"
           style={{
@@ -386,29 +410,27 @@ export default function BusinessCard({
               boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
             }}
             loading="lazy"
-            src={`https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.01}%2C${lat - 0.01}%2C${lng + 0.01}%2C${lat + 0.01}&layer=mapnik&marker=${lat}%2C${lng}`}
+            src={convertToEmbedUrl(map_url)}
           ></iframe>
 
-          {map_url && (
-            <p style={{ marginTop: "10px", fontSize: "0.95rem" }}>
-              <a
-                href={map_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: accent,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-              >
-                View larger map →
-              </a>
-            </p>
-          )}
+          <p style={{ marginTop: "10px", fontSize: "0.95rem" }}>
+            <a
+              href={map_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: accent,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              View larger map →
+            </a>
+          </p>
         </section>
       )}
 
-      {/* Footer tags — business‑specific */}
+      {/* Footer tags */}
       <footer
         aria-label="Business trust signals"
         style={{
@@ -422,7 +444,6 @@ export default function BusinessCard({
           color: "rgba(0,0,0,0.75)",
         }}
       >
-        {/* Local business */}
         <span
           style={{
             display: "flex",
@@ -437,7 +458,6 @@ export default function BusinessCard({
           📍 Local Ottawa business
         </span>
 
-        {/* Service area tag */}
         <span
           style={{
             display: "flex",
