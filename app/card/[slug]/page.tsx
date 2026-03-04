@@ -1,5 +1,6 @@
-import { supabaseServer } from "@/lib/supabase/server";
+export const dynamic = "force-dynamic";
 
+import { supabaseServer } from "@/lib/supabase/server";
 import Image from "next/image";
 
 export default async function CardPage({
@@ -7,7 +8,7 @@ export default async function CardPage({
 }: {
   params: { slug: string };
 }) {
-  const supabase = createClient();
+  const supabase = await supabaseServer();
 
   const { data: business, error } = await supabase
     .from("businesses")

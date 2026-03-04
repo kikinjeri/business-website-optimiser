@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // app/business/[slug]/embed-code/page.tsx
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";

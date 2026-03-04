@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 // app/business/[slug]/page.tsx
+
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
 import BusinessCard from "@/components/BusinessCard";

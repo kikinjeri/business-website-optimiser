@@ -93,7 +93,9 @@ export default function BusinessCard(props: BusinessCardProps) {
   const hasServices = safeServices.length > 0;
   const hasHours = hours && Object.keys(hours).length > 0;
 
-  const openStatus = getOpenStatus(hours);
+  // ✅ FIXED: normalize undefined → null
+  const openStatus = getOpenStatus(hours ?? null);
+
   const serviceAreaTag = buildServiceAreaTag(service_areas);
 
   const websiteDomain = website_url
