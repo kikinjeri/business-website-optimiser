@@ -2,7 +2,7 @@ import "./globals.css";
 import "../styles/styles.css";
 
 export const metadata = {
-  title: "OBO – Business Website Optimiser",
+  title: "Business Website Optimiser",
   description: "Structured, accessible, search‑ready business pages.",
 };
 

@@ -22,40 +22,41 @@ export default function AboutPage() {
 
       <div className="page-container">
         {/* TITLE */}
-        <h1 className="page-title">About Us</h1>
+        <h1 className="page-title">About </h1>
 
         <p className="page-intro">
-          We’re a small team of web developers who care about clean, accessible
-          design and helping local businesses connect with more people. Our goal
-          is to make it easier for business owners to share accurate, up‑to‑date
-          information everywhere customers look.
+          I’m a web developer based in Ottawa who’s passionate about helping
+          local businesses show up clearly and confidently online. My focus is
+          on accessible, semantic, search‑friendly design because it removes
+          friction — for customers, for search engines, and for you.
         </p>
 
         <section className="guide-section">
-          <h2 className="section-title">What We Do</h2>
+          <h2 className="section-title">Purpose</h2>
           <p className="section-text">
-            Business Website Optimiser provides simple tools that help you keep
-            your business information consistent across the web. Your Business
-            Profile and Embed Code work together to present your services,
-            hours, and contact details in a clear, trustworthy format that’s
-            easy for customers — and search engines — to understand.
+            Business Website Optimiser is a simple system that turns your
+            business information into clean, structured, trustworthy pages. Your
+            Business Profile and Embed Code work together to present your
+            services, hours, and contact details in a format that’s easy to
+            read, easy to maintain, and easy for customers to act on.
           </p>
         </section>
 
         <section className="guide-section">
           <h2 className="section-title">Why It Matters</h2>
           <p className="section-text">
-            Clear, consistent information builds trust and improves visibility.
-            When customers can quickly understand what you offer and how to
-            reach you, they’re more likely to get in touch. When search engines
-            can read your content easily, your business becomes easier to find.
+            I build everything using semantic HTML and accessibility‑first
+            patterns. That matters because it helps search engines understand
+            your content, improves accessibility for assistive technologies, and
+            creates a consistent structure that builds trust. Clear information
+            leads to better decisions — and better results for your business.
           </p>
         </section>
 
         <section className="guide-section">
           <h2 className="section-title">Get in Touch</h2>
           <p className="section-text">
-            If you have questions, feedback, or ideas, we’d love to hear from
+            If you have questions, feedback, or ideas, I’d love to hear from
             you. You can reach out anytime through the{" "}
             <Link href="/guide" className="underline">
               Guide
