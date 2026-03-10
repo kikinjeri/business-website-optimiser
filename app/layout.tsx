@@ -5,7 +5,7 @@ import "../styles/styles.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  title: "Business Website Optimiser",
+  title: "Business Web Optimiser",
   description:
     "Accessible, SEO‑friendly business profiles and embeddable cards.",
 };

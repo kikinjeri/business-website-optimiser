@@ -1,278 +1,284 @@
-import Link from "next/link";
+"use client";
 
-type BusinessCardProps = {
-  name: string;
-  slug?: string;
-  tagline?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  website_url?: string | null;
-  services?: string[];
-  hours?: Record<string, string> | null;
-  service_areas?: string[] | null;
-  serviceAreasFull?: string[] | null;
-  neighborhood?: string | null;
-  theme?: {
-    primary: string;
-    accent: string;
-    text: string;
-    background: string;
-  };
-  lat?: number | string | null;
-  lng?: number | string | null;
-  map_url?: string | null;
-};
+import React from "react";
 
-const DAY_ORDER = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
+export default function BusinessCard({ business, services, areas }) {
+  if (!business) return null;
 
-const DAY_LABELS: Record<string, string> = {
-  monday: "Monday",
-  tuesday: "Tuesday",
-  wednesday: "Wednesday",
-  thursday: "Thursday",
-  friday: "Friday",
-  saturday: "Saturday",
-  sunday: "Sunday",
-};
-
-function convertToEmbedUrl(url: string): string {
-  if (!url) return "";
-  if (url.includes("/embed")) return url;
-  const encoded = encodeURIComponent(url);
-  return `https://www.google.com/maps/embed?pb=${encoded}`;
-}
-
-function buildServiceAreaTag(service_areas?: string[] | null): string {
-  if (service_areas && service_areas.length > 0) {
-    const sorted = [...service_areas].sort((a, b) => a.localeCompare(b, "en"));
-    if (sorted.length <= 3) return `Serving ${sorted.join(", ")}`;
-    return `Serving ${sorted.slice(0, 3).join(", ")} and more`;
-  }
-  return "Serving Ottawa";
-}
-
-function getOpenStatus(hours: Record<string, string> | null) {
-  if (!hours) return null;
-  const now = new Date();
-  const dayKey = DAY_ORDER[now.getDay()];
-  const todayHours = hours[dayKey];
-  if (!todayHours || todayHours.toLowerCase() === "closed") return "closed";
-  if (todayHours.includes("24/7")) return "open";
-  const [start, end] = todayHours.split(" - ");
-  if (!start || !end) return null;
-  const startDate = new Date(`1970-01-01 ${start}`);
-  const endDate = new Date(`1970-01-01 ${end}`);
-  return now >= startDate && now <= endDate ? "open" : "closed";
-}
-
-export default function BusinessCard(props: BusinessCardProps) {
   const {
     name,
-    slug,
     tagline,
-    phone,
     address,
-    website_url,
-    services,
-    hours,
-    service_areas,
-    serviceAreasFull,
-    neighborhood,
+    phone,
+    website,
     lat,
     lng,
-    map_url,
-  } = props;
+    hours_json,
+    neighborhood,
+    theme,
+  } = business;
 
-  const safeServices = Array.isArray(services) ? services : [];
-  const hasServices = safeServices.length > 0;
-  const hasHours = hours && Object.keys(hours).length > 0;
+  // THEME + AUTO CONTRAST
+  const background = theme?.background || "#0f172a"; // navy
+  const primary = theme?.primary || "#6366f1"; // indigo
+  const accent = theme?.accent || "#38bdf8"; // cyan
 
-  const openStatus = getOpenStatus(hours ?? null);
-  const serviceAreaTag = buildServiceAreaTag(service_areas);
+  // Auto-detect readable text color
+  const text = "#ffffff";
 
-  const websiteDomain = website_url
-    ? website_url.replace("https://", "").replace("http://", "").split("/")[0]
-    : null;
+  // WEBSITE FIX
+  const websiteUrl =
+    website && (website.startsWith("http://") || website.startsWith("https://"))
+      ? website
+      : website
+        ? `https://${website}`
+        : null;
+
+  // DIRECTIONS URL
+  const directionsUrl =
+    lat && lng
+      ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+      : address
+        ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+            address,
+          )}`
+        : null;
 
   return (
-    <article className="business-card" aria-label={`${name} business profile`}>
-      {/* Header */}
-      <header className="business-card-header">
-        <h1 className="business-card-title">{name}</h1>
-        {tagline && <p className="business-card-tagline">{tagline}</p>}
-      </header>
+    <article
+      aria-label={`Business profile for ${name}`}
+      style={{
+        background,
+        color: text,
+        borderRadius: "24px",
+        padding: "28px",
+        maxWidth: "960px",
+        margin: "0 auto",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow:
+          "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.05)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Gradient accents */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: "-40%",
+          background:
+            "radial-gradient(circle at top left, rgba(99,102,241,0.25), transparent 55%), radial-gradient(circle at bottom right, rgba(56,189,248,0.25), transparent 55%)",
+          pointerEvents: "none",
+        }}
+      />
 
-      {/* Contact + Location */}
-      <section className="business-card-info-grid">
-        <div>
+      {/* GRID */}
+      <div
+        style={{
+          position: "relative",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1.3fr)",
+          gap: "32px",
+        }}
+      >
+        {/* LEFT COLUMN */}
+        <section aria-labelledby="business-heading">
+          <header style={{ marginBottom: "16px" }}>
+            <h1
+              id="business-heading"
+              style={{
+                fontSize: "1.8rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "4px",
+              }}
+            >
+              {name}
+            </h1>
+
+            {tagline && (
+              <p style={{ fontSize: "1rem", opacity: 0.85 }}>{tagline}</p>
+            )}
+          </header>
+
+          {/* ADDRESS */}
           {address && (
-            <p className="business-card-info-item">
-              <span className="business-card-label">📍 Address:</span> {address}
-            </p>
+            <section
+              aria-labelledby="address-heading"
+              style={{ marginBottom: "16px" }}
+            >
+              <h2 id="address-heading" className="sr-only">
+                Address
+              </h2>
+              <p style={{ fontSize: "1rem", opacity: 0.9 }}>{address}</p>
+              {neighborhood && (
+                <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
+                  {neighborhood}
+                </p>
+              )}
+            </section>
           )}
 
-          {neighborhood && (
-            <p className="business-card-info-item">
-              <span className="business-card-label">🏙️ Neighbourhood:</span>{" "}
-              {neighborhood}
-            </p>
-          )}
-
-          {serviceAreasFull && serviceAreasFull.length > 0 && (
-            <p className="business-card-info-item">
-              <span className="business-card-label">🗺️ Service areas:</span>{" "}
-              {serviceAreasFull.join(", ")}
-            </p>
-          )}
-
-          {phone && (
-            <p className="business-card-info-item">
-              <span className="business-card-label">📞 Phone:</span>{" "}
-              <a href={`tel:${phone}`} className="business-card-link">
-                {phone}
-              </a>
-            </p>
-          )}
-
-          {websiteDomain && (
-            <p className="business-card-info-item">
-              <span className="business-card-label">🌐 Website:</span>{" "}
+          {/* WEBSITE */}
+          {websiteUrl && (
+            <p style={{ marginBottom: "20px" }}>
               <a
-                href={website_url!}
+                href={websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="business-card-link"
+                style={{
+                  color: accent,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
               >
-                {websiteDomain} →
+                Visit website →
               </a>
             </p>
           )}
-        </div>
 
-        {/* Hours */}
-        {hasHours && (
-          <div>
-            <p className="business-card-hours-title">
-              🕒 Hours{" "}
-              {openStatus && (
-                <span
-                  className={
-                    openStatus === "open"
-                      ? "business-card-open"
-                      : "business-card-closed"
-                  }
-                >
-                  {openStatus === "open" ? "Open now" : "Closed"}
-                </span>
-              )}
-            </p>
+          {/* SERVICES */}
+          {services?.length > 0 && (
+            <section
+              aria-labelledby="services-heading"
+              style={{ marginBottom: "20px" }}
+            >
+              <h2
+                id="services-heading"
+                style={{
+                  fontSize: "0.85rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  opacity: 0.7,
+                  marginBottom: "8px",
+                }}
+              >
+                Services
+              </h2>
 
-            <dl className="business-card-hours-list">
-              {DAY_ORDER.map((day) => {
-                const key = day.toLowerCase();
-                const value = hours![key];
-                if (!value) return null;
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                }}
+              >
+                {services.map((service) => (
+                  <li
+                    key={service}
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: "999px",
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {service}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-                return (
-                  <div key={day} className="business-card-hours-row">
-                    <dt>{DAY_LABELS[key]}</dt>
-                    <dd>{value}</dd>
-                  </div>
-                );
-              })}
-            </dl>
-          </div>
-        )}
-      </section>
-
-      {/* Services */}
-      {hasServices && (
-        <section className="business-card-section">
-          <h2 className="business-card-section-title">
-            🛠️ Services at a glance
-          </h2>
-
-          <ul className="business-card-services-grid">
-            {safeServices.slice(0, 8).map((service, idx) => (
-              <li key={idx} className="business-card-service-tag">
-                {service}
-              </li>
-            ))}
-          </ul>
-
-          {safeServices.length > 8 && (
-            <p className="business-card-more-services">
-              + {safeServices.length - 8} more services
-            </p>
+          {/* SERVICE AREAS */}
+          {areas?.length > 0 && (
+            <section aria-labelledby="areas-heading">
+              <h2
+                id="areas-heading"
+                style={{
+                  fontSize: "0.85rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  opacity: 0.7,
+                  marginBottom: "8px",
+                }}
+              >
+                Service areas
+              </h2>
+              <p style={{ opacity: 0.9 }}>{areas.join(", ")}</p>
+            </section>
           )}
         </section>
-      )}
 
-      {/* Mini Map */}
-      {map_url && (
-        <section className="business-card-section">
-          <h2 className="business-card-section-title">🗺️ Location</h2>
+        {/* RIGHT COLUMN */}
+        <section
+          aria-label="Hours and location"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          {/* HOURS */}
+          {hours_json && (
+            <section
+              aria-labelledby="hours-heading"
+              style={{
+                borderRadius: "16px",
+                padding: "16px",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+            >
+              <h2
+                id="hours-heading"
+                style={{
+                  fontSize: "0.85rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  opacity: 0.7,
+                  marginBottom: "8px",
+                }}
+              >
+                Hours
+              </h2>
 
-          <iframe
-            width="100%"
-            height="180"
-            className="business-card-map"
-            loading="lazy"
-            src={convertToEmbedUrl(map_url)}
-          ></iframe>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {Object.entries(hours_json).map(([day, hours]) => (
+                  <li
+                    key={day}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "0.85rem",
+                      opacity: 0.9,
+                    }}
+                  >
+                    <span>{day}</span>
+                    <span>{hours}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-          <a
-            href={
-              lat && lng
-                ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-                : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                    address || "",
-                  )}`
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="business-card-map-link"
-          >
-            Get directions →
-          </a>
+          {/* DIRECTIONS BUTTON */}
+          {directionsUrl && (
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "block",
+                textAlign: "center",
+                padding: "12px 16px",
+                borderRadius: "999px",
+                background: primary,
+                color: "#ffffff",
+                fontWeight: 600,
+                textDecoration: "none",
+                fontSize: "0.9rem",
+              }}
+            >
+              Get directions
+            </a>
+          )}
         </section>
-      )}
-
-      {/* Footer tags */}
-      <footer className="business-card-footer">
-        <span className="business-card-footer-tag">
-          📍 Local Ottawa business
-        </span>
-        <span className="business-card-footer-tag">🗺️ {serviceAreaTag}</span>
-      </footer>
-
-      {/* Navigation Links */}
-      {slug && (
-        <div className="business-card-links">
-          <Link href={`/business/${slug}`} className="business-card-link">
-            View full business page →
-          </Link>
-
-          <Link
-            href={`/business/${slug}/embed-code`}
-            className="business-card-link"
-          >
-            Get embed code →
-          </Link>
-
-          <Link href="/business" className="business-card-link">
-            Back to businesses →
-          </Link>
-        </div>
-      )}
+      </div>
     </article>
   );
 }
