@@ -2,39 +2,71 @@
 
 import React from "react";
 
+/* Determine if business is open today */
+function isBusinessOpen(hours_json) {
+  if (!hours_json) return null;
+
+  const orderedDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const now = new Date();
+  const jsDay = now.getDay(); // Sunday = 0
+  const todayName = orderedDays[jsDay === 0 ? 6 : jsDay - 1];
+
+  const todayHours =
+    hours_json[todayName.toLowerCase()] || hours_json[todayName] || null;
+
+  if (!todayHours) return null;
+  if (/closed/i.test(todayHours)) return false;
+
+  return true;
+}
+
 export default function BusinessCard({ business, services, areas }) {
   if (!business) return null;
 
   const {
     name,
+    tagline_en,
     tagline,
     address,
     phone,
-    website,
+    website_url,
     lat,
     lng,
     hours_json,
     neighborhood,
-    theme,
+    theme_primary,
+    theme_accent,
+    theme_text,
+    theme_background,
+    slug,
   } = business;
 
-  // THEME + AUTO CONTRAST
-  const background = theme?.background || "#0f172a"; // navy
-  const primary = theme?.primary || "#6366f1"; // indigo
-  const accent = theme?.accent || "#38bdf8"; // cyan
+  /* PREMIUM STRIPE-STYLE COLORS (override unreadable theme colors) */
+  const background = "#0f172a"; // deep navy
+  const primary = "#6366f1"; // indigo
+  const accent = "#38bdf8"; // cyan
+  const text = "#ffffff"; // always readable
 
-  // Auto-detect readable text color
-  const text = "#ffffff";
-
-  // WEBSITE FIX
+  /* WEBSITE LINK (D4) */
+  const rawWebsite = website_url;
   const websiteUrl =
-    website && (website.startsWith("http://") || website.startsWith("https://"))
-      ? website
-      : website
-        ? `https://${website}`
+    rawWebsite &&
+    (rawWebsite.startsWith("http://") || rawWebsite.startsWith("https://"))
+      ? rawWebsite
+      : rawWebsite
+        ? `https://${rawWebsite}`
         : null;
 
-  // DIRECTIONS URL
+  /* DIRECTIONS URL */
   const directionsUrl =
     lat && lng
       ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
@@ -43,6 +75,46 @@ export default function BusinessCard({ business, services, areas }) {
             address,
           )}`
         : null;
+
+  /* SORT DAYS */
+  const orderedDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  /* OPEN NOW LOGIC */
+  const isOpen = isBusinessOpen(hours_json);
+
+  /* JSON-LD STRUCTURED DATA */
+  const jsonLd =
+    slug &&
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      name,
+      url: `https://your-domain.com/business/${slug}`,
+      telephone: phone || undefined,
+      address: address
+        ? {
+            "@type": "PostalAddress",
+            streetAddress: address,
+          }
+        : undefined,
+      sameAs: websiteUrl ? [websiteUrl] : undefined,
+      openingHoursSpecification:
+        hours_json &&
+        orderedDays.map((day) => ({
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: day,
+          description:
+            hours_json[day.toLowerCase()] || hours_json[day] || "Closed",
+        })),
+    });
 
   return (
     <article
@@ -61,7 +133,15 @@ export default function BusinessCard({ business, services, areas }) {
         overflow: "hidden",
       }}
     >
-      {/* Gradient accents */}
+      {/* JSON-LD */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd }}
+        />
+      )}
+
+      {/* Gradient background accents */}
       <div
         aria-hidden="true"
         style={{
@@ -73,7 +153,7 @@ export default function BusinessCard({ business, services, areas }) {
         }}
       />
 
-      {/* GRID */}
+      {/* GRID LAYOUT */}
       <div
         style={{
           position: "relative",
@@ -84,21 +164,49 @@ export default function BusinessCard({ business, services, areas }) {
       >
         {/* LEFT COLUMN */}
         <section aria-labelledby="business-heading">
-          <header style={{ marginBottom: "16px" }}>
-            <h1
-              id="business-heading"
-              style={{
-                fontSize: "1.8rem",
-                fontWeight: 700,
-                letterSpacing: "-0.03em",
-                marginBottom: "4px",
-              }}
-            >
-              {name}
-            </h1>
+          <header
+            style={{
+              marginBottom: "16px",
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "12px",
+              alignItems: "flex-start",
+            }}
+          >
+            <div>
+              <h1
+                id="business-heading"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  marginBottom: "4px",
+                }}
+              >
+                {name}
+              </h1>
 
-            {tagline && (
-              <p style={{ fontSize: "1rem", opacity: 0.85 }}>{tagline}</p>
+              {(tagline_en || tagline) && (
+                <p style={{ fontSize: "1rem", opacity: 0.85 }}>
+                  {tagline_en || tagline}
+                </p>
+              )}
+            </div>
+
+            {/* OPEN NOW TEXT (subtle, premium, no pill) */}
+            {isOpen !== null && (
+              <p
+                aria-label={isOpen ? "Open now" : "Closed now"}
+                style={{
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  color: isOpen ? "#4ade80" : "#f87171",
+                  marginTop: "6px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {isOpen ? "Open now" : "Closed now"}
+              </p>
             )}
           </header>
 
@@ -120,9 +228,19 @@ export default function BusinessCard({ business, services, areas }) {
             </section>
           )}
 
-          {/* WEBSITE */}
+          {/* WEBSITE (D4) */}
           {websiteUrl && (
-            <p style={{ marginBottom: "20px" }}>
+            <p
+              style={{
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span aria-hidden="true" style={{ fontSize: "1rem" }}>
+                🌐
+              </span>
               <a
                 href={websiteUrl}
                 target="_blank"
@@ -132,8 +250,14 @@ export default function BusinessCard({ business, services, areas }) {
                   fontWeight: 600,
                   textDecoration: "none",
                 }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.textDecoration = "underline")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.textDecoration = "none")
+                }
               >
-                Visit website →
+                {websiteUrl}
               </a>
             </p>
           )}
@@ -238,20 +362,27 @@ export default function BusinessCard({ business, services, areas }) {
               </h2>
 
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {Object.entries(hours_json).map(([day, hours]) => (
-                  <li
-                    key={day}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "0.85rem",
-                      opacity: 0.9,
-                    }}
-                  >
-                    <span>{day}</span>
-                    <span>{hours}</span>
-                  </li>
-                ))}
+                {orderedDays.map((day) => {
+                  const hours =
+                    hours_json[day.toLowerCase()] ||
+                    hours_json[day] ||
+                    "Closed";
+
+                  return (
+                    <li
+                      key={day}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "0.85rem",
+                        opacity: 0.9,
+                      }}
+                    >
+                      <span>{day}</span>
+                      <span>{hours}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}
