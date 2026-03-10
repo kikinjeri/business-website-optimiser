@@ -1,49 +1,34 @@
 // app/about/page.tsx
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AboutPage() {
   return (
     <main className="page-shell">
-      {/* NAVBAR — consistent across app */}
-      <nav className="site-navbar" role="navigation" aria-label="Main">
-        <div className="nav-inner">
-          <Link href="/" className="nav-logo">
-            Business Website Optimiser
-          </Link>
+      <div className="page-container">
+        <div className="about-hero">
+          <Image
+            src="/images/two.jpg"
+            alt="About section image"
+            className="about-image"
+            width={180}
+            height={180}
+          />
 
-          <div className="nav-links">
-            <Link href="/">Home</Link>
-            <Link href="/guide">Guide</Link>
-            <Link href="/business">Businesses</Link>
-            <Link href="/about">About</Link>
+          <div className="about-text">
+            <p className="page-intro">
+              I’m an Ottawa based web developer passionate about helping local
+              businesses boost their online presence. My focus is on accessible,
+              semantic, search‑friendly design because it removes friction — for
+              customers, for search engines, and for you.
+            </p>
           </div>
         </div>
-      </nav>
 
-      <div className="page-container">
-        {/* TITLE */}
-        <h1 className="page-title">About </h1>
-
-        <p className="page-intro">
-          I’m a web developer based in Ottawa who’s passionate about helping
-          local businesses show up clearly and confidently online. My focus is
-          on accessible, semantic, search‑friendly design because it removes
-          friction — for customers, for search engines, and for you.
-        </p>
+        <section className="guide-section"></section>
 
         <section className="guide-section">
-          <h2 className="section-title">Purpose</h2>
-          <p className="section-text">
-            Business Website Optimiser is a simple system that turns your
-            business information into clean, structured, trustworthy pages. Your
-            Business Profile and Embed Code work together to present your
-            services, hours, and contact details in a format that’s easy to
-            read, easy to maintain, and easy for customers to act on.
-          </p>
-        </section>
-
-        <section className="guide-section">
-          <h2 className="section-title">Why It Matters</h2>
+          <h2 className="section-title"></h2>
           <p className="section-text">
             I build everything using semantic HTML and accessibility‑first
             patterns. That matters because it helps search engines understand

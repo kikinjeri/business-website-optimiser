@@ -10,21 +10,7 @@ export const metadata = {
 export default function GuidePage() {
   return (
     <main className="page-shell">
-      {/* NAVBAR — consistent across app */}
-      <nav className="site-navbar" role="navigation" aria-label="Main">
-        <div className="nav-inner">
-          <Link href="/" className="nav-logo">
-            Business Website Optimiser
-          </Link>
-
-          <div className="nav-links">
-            <Link href="/">Home</Link>
-            <Link href="/guide">Guide</Link>
-            <Link href="/business">Businesses</Link>
-            <Link href="/about">About</Link>
-          </div>
-        </div>
-      </nav>
+     
 
       <div className="page-container">
         {/* TITLE */}

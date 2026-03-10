@@ -1,67 +1,31 @@
-export const dynamic = "force-dynamic";
-
 // app/business/[slug]/page.tsx
-
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase/server";
-import BusinessCard from "@/components/BusinessCard";
+import BusinessCard from "@/components/cards/BusinessCard";
+import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
 export default async function BusinessPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { business, services, areas } = await getBusinessBySlug(params.slug);
 
-  const supabase = await supabaseServer();
-
-  // 1. Fetch business by slug
-  const { data: business, error: businessError } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .single();
-
-  if (businessError || !business) {
+  if (!business) {
     return (
-      <main style={{ padding: "40px" }}>
+      <div style={{ padding: "40px" }}>
         <h1>Business not found</h1>
-        <p>No business exists with the slug: {slug}</p>
-      </main>
+        <p>No business exists with the slug: {params.slug}</p>
+      </div>
     );
   }
 
-  // 2. Fetch services for this business
-  const { data: servicesRaw } = await supabase
-    .from("services")
-    .select("id, name_en, description_en, starting_price")
-    .eq("business_id", business.id);
-
-  // Normalize services into string[]
-  const services = Array.isArray(servicesRaw)
-    ? servicesRaw.map((s) => s.name_en)
-    : [];
-
-  // 3. Fetch service areas
-  const { data: areasRaw } = await supabase
-    .from("service_areas")
-    .select("id, area_name")
-    .eq("business_id", business.id);
-
-  const areas = areasRaw ?? [];
-
-  // 4. Hours JSON
   const hours = business.hours_json || null;
 
-  // 5. Extract neighbourhood from address
   const neighborhood = business.address
     ?.split(",")[1]
-    ?.trim()
     ?.replace("Ottawa", "")
     ?.trim();
 
-  // 6. Theme colors (fallbacks preserved)
   const theme = {
     primary: business.theme_primary || "#111827",
     accent: business.theme_accent || "#2563eb",
@@ -70,100 +34,32 @@ export default async function BusinessPage({
   };
 
   return (
-    <main className="business-page-wrapper" style={{ padding: "12px 0" }}>
-      <div
-        className="container"
-        style={{ maxWidth: "900px", margin: "0 auto" }}
-      >
-        {/* Back navigation */}
-        <nav aria-label="Back to directory" style={{ marginBottom: "16px" }}>
-          <Link
-            href="/business"
-            style={{
-              display: "inline-block",
-              color: theme.primary,
-              fontWeight: 600,
-              textDecoration: "none",
-              fontSize: "0.95rem",
-            }}
-          >
+    <div style={{ padding: "12px 0" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <nav style={{ marginBottom: "16px" }}>
+          <Link href="/business" style={{ fontWeight: 600 }}>
             ← Back to Businesses
           </Link>
         </nav>
 
-        {/* Business card */}
-        <section
-          aria-label="Business overview"
-          className="business-card-section"
-          style={{ marginBottom: "40px" }}
-        >
-          <BusinessCard
-            name={business.name}
-            tagline={business.tagline_en}
-            phone={business.phone}
-            address={business.address}
-            website_url={business.website_url}
-            services={services}
-            hours={hours}
-            service_areas={areas.map((a) => a.area_name)}
-            theme={theme}
-            lat={business.lat}
-            lng={business.lng}
-            map_url={business.map_url}
-            neighborhood={neighborhood}
-            serviceAreasFull={areas.map((a) => a.area_name)}
-          />
-        </section>
-
-        {/* Neighbourhood */}
-        {neighborhood && (
-          <section
-            className="menu-section"
-            aria-label="Neighbourhood"
-            style={{ marginBottom: "40px" }}
-          >
-            <h2
-              style={{
-                marginBottom: "8px",
-                fontSize: "1.4rem",
-                color: theme.primary,
-              }}
-            >
-              Neighbourhood
-            </h2>
-            <p style={{ fontSize: "1rem", color: `${theme.text}cc` }}>
-              {neighborhood}
-            </p>
-          </section>
-        )}
-
-        {/* Service Areas */}
-        {areas.length > 0 && (
-          <section
-            className="menu-section"
-            aria-label="Service areas"
-            style={{ marginBottom: "40px" }}
-          >
-            <h2
-              style={{
-                marginBottom: "12px",
-                fontSize: "1.4rem",
-                color: theme.primary,
-              }}
-            >
-              Service areas
-            </h2>
-
-            <ul className="area-list" style={{ paddingLeft: "20px" }}>
-              {areas.map((area) => (
-                <li key={area.id} style={{ marginBottom: "6px" }}>
-                  {area.area_name}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <BusinessCard
+          name={business.name}
+          slug={business.slug}
+          tagline={business.tagline_en}
+          phone={business.phone}
+          address={business.address}
+          website_url={business.website_url}
+          services={services}
+          hours={hours}
+          service_areas={areas}
+          theme={theme}
+          lat={business.lat}
+          lng={business.lng}
+          map_url={business.map_url}
+          neighborhood={neighborhood}
+          serviceAreasFull={areas}
+        />
       </div>
-    </main>
+    </div>
   );
 }

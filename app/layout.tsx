@@ -1,9 +1,13 @@
+// app/layout.tsx
 import "./globals.css";
 import "../styles/styles.css";
 
+import Navbar from "@/components/Navbar";
+
 export const metadata = {
   title: "Business Website Optimiser",
-  description: "Structured, accessible, search‑ready business pages.",
+  description:
+    "Accessible, SEO‑friendly business profiles and embeddable cards.",
 };
 
 export default function RootLayout({
@@ -12,8 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
+    <html lang="en" data-theme="dark">
+      <body>
+        <Navbar />
+
+        <main className="page-container">{children}</main>
+      </body>
     </html>
   );
 }

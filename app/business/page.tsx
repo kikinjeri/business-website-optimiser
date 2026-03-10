@@ -1,28 +1,30 @@
 // app/business/page.tsx
-export const dynamic = "force-dynamic";
-
+import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
 
-export default async function BusinessListPage() {
+export default async function BusinessDirectoryPage() {
   const supabase = await supabaseServer();
-
-  const { data: businesses, error } = await supabase
+  const { data } = await supabase
     .from("businesses")
-    .select("*")
+    .select("name, slug")
+    .eq("status", "published")
     .order("name");
 
-  if (error) {
-    return <div>Error loading businesses.</div>;
-  }
-
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Businesses</h1>
-      <ul>
-        {businesses?.map((b) => (
-          <li key={b.id}>{b.name}</li>
+    <div>
+      <h1 className="page-title">Business Directory</h1>
+
+      <div className="business-list">
+        {data?.map((b) => (
+          <Link
+            key={b.slug}
+            href={`/business/${b.slug}`}
+            className="business-link"
+          >
+            {b.name}
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

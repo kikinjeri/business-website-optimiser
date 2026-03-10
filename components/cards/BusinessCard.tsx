@@ -2,6 +2,7 @@ import Link from "next/link";
 
 type BusinessCardProps = {
   name: string;
+  slug?: string;
   tagline?: string | null;
   phone?: string | null;
   address?: string | null;
@@ -75,6 +76,7 @@ function getOpenStatus(hours: Record<string, string> | null) {
 export default function BusinessCard(props: BusinessCardProps) {
   const {
     name,
+    slug,
     tagline,
     phone,
     address,
@@ -93,9 +95,7 @@ export default function BusinessCard(props: BusinessCardProps) {
   const hasServices = safeServices.length > 0;
   const hasHours = hours && Object.keys(hours).length > 0;
 
-  // ✅ FIXED: normalize undefined → null
   const openStatus = getOpenStatus(hours ?? null);
-
   const serviceAreaTag = buildServiceAreaTag(service_areas);
 
   const websiteDomain = website_url
@@ -253,6 +253,26 @@ export default function BusinessCard(props: BusinessCardProps) {
         </span>
         <span className="business-card-footer-tag">🗺️ {serviceAreaTag}</span>
       </footer>
+
+      {/* Navigation Links */}
+      {slug && (
+        <div className="business-card-links">
+          <Link href={`/business/${slug}`} className="business-card-link">
+            View full business page →
+          </Link>
+
+          <Link
+            href={`/business/${slug}/embed-code`}
+            className="business-card-link"
+          >
+            Get embed code →
+          </Link>
+
+          <Link href="/business" className="business-card-link">
+            Back to businesses →
+          </Link>
+        </div>
+      )}
     </article>
   );
 }

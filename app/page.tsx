@@ -1,25 +1,8 @@
 // app/page.tsx
-"use client";
-
-import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main id="main-content">
-      <nav className="navbar" role="navigation" aria-label="Main">
-        <div className="nav-inner">
-          <Link href="/" className="nav-logo">
-            Business Website Optimiser
-          </Link>
-
-          <div className="nav-links">
-            <Link href="/guide">Guide</Link>
-            <Link href="/business">Businesses</Link>
-            <Link href="/about">About</Link>
-          </div>
-        </div>
-      </nav>
-
+    <>
       <header className="app-hero" role="banner">
         <div className="app-hero-inner">
           <h1 className="app-hero-title">
@@ -80,6 +63,6 @@ export default function HomePage() {
         © {new Date().getFullYear()} Business Website Optimiser — Increase your
         business website traffic.
       </footer>
-    </main>
+    </>
   );
 }
