@@ -48,7 +48,6 @@ export default function BusinessCard({
     lng,
     hours_json,
     neighborhood,
-    slug,
   } = business;
 
   /* COLORS */
@@ -223,7 +222,7 @@ export default function BusinessCard({
           {websiteUrl && (
             <p
               style={{
-                marginBottom: "24px",
+                marginBottom: "16px",
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
@@ -243,6 +242,32 @@ export default function BusinessCard({
                 }}
               >
                 {websiteUrl}
+              </a>
+            </p>
+          )}
+
+          {/* PHONE — NEW SECTION */}
+          {phone && (
+            <p
+              style={{
+                marginBottom: "24px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span aria-hidden="true" style={{ fontSize: "1rem" }}>
+                📞
+              </span>
+              <a
+                href={`tel:${phone}`}
+                style={{
+                  color: accent,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                {phone}
               </a>
             </p>
           )}
