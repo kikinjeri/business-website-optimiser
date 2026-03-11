@@ -16,7 +16,7 @@ export async function logEmbedView({
   embed: boolean;
 }) {
   try {
-    const supabase = createClient();
+   const supabase = await supabaseServer();
 
     await supabase.from("embed_analytics").insert({
       business_id: businessId,

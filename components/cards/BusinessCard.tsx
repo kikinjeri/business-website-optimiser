@@ -192,6 +192,33 @@ export default function BusinessCard({
             </section>
           )}
 
+          {/* PHONE — ADDED */}
+          {phone && (
+            <p
+              style={{
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "1rem",
+              }}
+            >
+              <span aria-hidden="true" style={{ fontSize: "1rem" }}>
+                📞
+              </span>
+              <a
+                href={`tel:${phone}`}
+                style={{
+                  color: accent,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                {phone}
+              </a>
+            </p>
+          )}
+
           {/* WEBSITE */}
           {websiteUrl && (
             <p
@@ -295,7 +322,7 @@ export default function BusinessCard({
             gap: "20px",
           }}
         >
-          {/* HOURS — CLEAN FORMAT */}
+          {/* HOURS */}
           {hours_json && (
             <section
               aria-labelledby="hours-heading"
