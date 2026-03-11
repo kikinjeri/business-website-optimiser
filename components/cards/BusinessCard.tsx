@@ -29,7 +29,12 @@ function isBusinessOpen(hours_json) {
   return true;
 }
 
-export default function BusinessCard({ business, services, areas }) {
+export default function BusinessCard({
+  business,
+  services,
+  areas,
+  searchParams,
+}) {
   if (!business) return null;
 
   const {
@@ -43,27 +48,22 @@ export default function BusinessCard({ business, services, areas }) {
     lng,
     hours_json,
     neighborhood,
-    theme_primary,
-    theme_accent,
-    theme_text,
-    theme_background,
     slug,
   } = business;
 
-  /* PREMIUM STRIPE-STYLE COLORS (override unreadable theme colors) */
-  const background = "#0f172a"; // deep navy
-  const primary = "#6366f1"; // indigo
-  const accent = "#38bdf8"; // cyan
-  const text = "#ffffff"; // always readable
+  /* COLORS */
+  const background = "#0f172a";
+  const primary = "#6366f1";
+  const accent = "#38bdf8";
+  const text = "#ffffff";
 
-  /* WEBSITE LINK (D4) */
-  const rawWebsite = website_url;
+  /* WEBSITE URL FIX */
   const websiteUrl =
-    rawWebsite &&
-    (rawWebsite.startsWith("http://") || rawWebsite.startsWith("https://"))
-      ? rawWebsite
-      : rawWebsite
-        ? `https://${rawWebsite}`
+    website_url &&
+    (website_url.startsWith("http://") || website_url.startsWith("https://"))
+      ? website_url
+      : website_url
+        ? `https://${website_url}`
         : null;
 
   /* DIRECTIONS URL */
@@ -76,7 +76,7 @@ export default function BusinessCard({ business, services, areas }) {
           )}`
         : null;
 
-  /* SORT DAYS */
+  /* ORDER DAYS */
   const orderedDays = [
     "Monday",
     "Tuesday",
@@ -87,34 +87,8 @@ export default function BusinessCard({ business, services, areas }) {
     "Sunday",
   ];
 
-  /* OPEN NOW LOGIC */
+  /* OPEN NOW */
   const isOpen = isBusinessOpen(hours_json);
-
-  /* JSON-LD STRUCTURED DATA */
-  const jsonLd =
-    slug &&
-    JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name,
-      url: `https://your-domain.com/business/${slug}`,
-      telephone: phone || undefined,
-      address: address
-        ? {
-            "@type": "PostalAddress",
-            streetAddress: address,
-          }
-        : undefined,
-      sameAs: websiteUrl ? [websiteUrl] : undefined,
-      openingHoursSpecification:
-        hours_json &&
-        orderedDays.map((day) => ({
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: day,
-          description:
-            hours_json[day.toLowerCase()] || hours_json[day] || "Closed",
-        })),
-    });
 
   return (
     <article
@@ -123,9 +97,8 @@ export default function BusinessCard({ business, services, areas }) {
         background,
         color: text,
         borderRadius: "24px",
-        padding: "28px",
-        maxWidth: "960px",
-        margin: "0 auto",
+        padding: "32px",
+        width: "100%",
         border: "1px solid rgba(255,255,255,0.08)",
         boxShadow:
           "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.05)",
@@ -133,15 +106,7 @@ export default function BusinessCard({ business, services, areas }) {
         overflow: "hidden",
       }}
     >
-      {/* JSON-LD */}
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLd }}
-        />
-      )}
-
-      {/* Gradient background accents */}
+      {/* Gradient background */}
       <div
         aria-hidden="true"
         style={{
@@ -153,20 +118,20 @@ export default function BusinessCard({ business, services, areas }) {
         }}
       />
 
-      {/* GRID LAYOUT */}
+      {/* GRID */}
       <div
         style={{
           position: "relative",
           display: "grid",
-          gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1.3fr)",
-          gap: "32px",
+          gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1fr)",
+          gap: "40px",
         }}
       >
         {/* LEFT COLUMN */}
         <section aria-labelledby="business-heading">
           <header
             style={{
-              marginBottom: "16px",
+              marginBottom: "20px",
               display: "flex",
               justifyContent: "space-between",
               gap: "12px",
@@ -177,28 +142,27 @@ export default function BusinessCard({ business, services, areas }) {
               <h1
                 id="business-heading"
                 style={{
-                  fontSize: "1.8rem",
+                  fontSize: "2rem",
                   fontWeight: 700,
                   letterSpacing: "-0.03em",
-                  marginBottom: "4px",
+                  marginBottom: "6px",
                 }}
               >
                 {name}
               </h1>
 
               {(tagline_en || tagline) && (
-                <p style={{ fontSize: "1rem", opacity: 0.85 }}>
+                <p style={{ fontSize: "1.05rem", opacity: 0.85 }}>
                   {tagline_en || tagline}
                 </p>
               )}
             </div>
 
-            {/* OPEN NOW TEXT (subtle, premium, no pill) */}
             {isOpen !== null && (
               <p
                 aria-label={isOpen ? "Open now" : "Closed now"}
                 style={{
-                  fontSize: "0.85rem",
+                  fontSize: "0.9rem",
                   fontWeight: 600,
                   color: isOpen ? "#4ade80" : "#f87171",
                   marginTop: "6px",
@@ -214,7 +178,7 @@ export default function BusinessCard({ business, services, areas }) {
           {address && (
             <section
               aria-labelledby="address-heading"
-              style={{ marginBottom: "16px" }}
+              style={{ marginBottom: "20px" }}
             >
               <h2 id="address-heading" className="sr-only">
                 Address
@@ -228,11 +192,11 @@ export default function BusinessCard({ business, services, areas }) {
             </section>
           )}
 
-          {/* WEBSITE (D4) */}
+          {/* WEBSITE */}
           {websiteUrl && (
             <p
               style={{
-                marginBottom: "20px",
+                marginBottom: "24px",
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
@@ -250,12 +214,6 @@ export default function BusinessCard({ business, services, areas }) {
                   fontWeight: 600,
                   textDecoration: "none",
                 }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.textDecoration = "underline")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.textDecoration = "none")
-                }
               >
                 {websiteUrl}
               </a>
@@ -266,7 +224,7 @@ export default function BusinessCard({ business, services, areas }) {
           {services?.length > 0 && (
             <section
               aria-labelledby="services-heading"
-              style={{ marginBottom: "20px" }}
+              style={{ marginBottom: "24px" }}
             >
               <h2
                 id="services-heading"
@@ -275,7 +233,7 @@ export default function BusinessCard({ business, services, areas }) {
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
                   opacity: 0.7,
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                 }}
               >
                 Services
@@ -287,18 +245,18 @@ export default function BusinessCard({ business, services, areas }) {
                   padding: 0,
                   display: "flex",
                   flexWrap: "wrap",
-                  gap: "8px",
+                  gap: "10px",
                 }}
               >
                 {services.map((service) => (
                   <li
                     key={service}
                     style={{
-                      padding: "6px 12px",
+                      padding: "6px 14px",
                       borderRadius: "999px",
                       background: "rgba(255,255,255,0.08)",
                       border: "1px solid rgba(255,255,255,0.12)",
-                      fontSize: "0.85rem",
+                      fontSize: "0.9rem",
                     }}
                   >
                     {service}
@@ -318,7 +276,7 @@ export default function BusinessCard({ business, services, areas }) {
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
                   opacity: 0.7,
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                 }}
               >
                 Service areas
@@ -334,16 +292,16 @@ export default function BusinessCard({ business, services, areas }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "20px",
           }}
         >
-          {/* HOURS */}
+          {/* HOURS — CLEAN FORMAT */}
           {hours_json && (
             <section
               aria-labelledby="hours-heading"
               style={{
                 borderRadius: "16px",
-                padding: "16px",
+                padding: "18px",
                 background: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.12)",
               }}
@@ -355,7 +313,7 @@ export default function BusinessCard({ business, services, areas }) {
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
                   opacity: 0.7,
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                 }}
               >
                 Hours
@@ -374,12 +332,16 @@ export default function BusinessCard({ business, services, areas }) {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-                        fontSize: "0.85rem",
-                        opacity: 0.9,
+                        alignItems: "center",
+                        fontSize: "1rem",
+                        padding: "6px 0",
+                        borderBottom: "1px solid rgba(255,255,255,0.06)",
                       }}
                     >
-                      <span>{day}</span>
-                      <span>{hours}</span>
+                      <span style={{ width: "70px", opacity: 0.9 }}>
+                        {day.slice(0, 3)}:
+                      </span>
+                      <span style={{ opacity: 0.9 }}>{hours}</span>
                     </li>
                   );
                 })}
@@ -396,13 +358,13 @@ export default function BusinessCard({ business, services, areas }) {
               style={{
                 display: "block",
                 textAlign: "center",
-                padding: "12px 16px",
+                padding: "14px 18px",
                 borderRadius: "999px",
                 background: primary,
                 color: "#ffffff",
                 fontWeight: 600,
                 textDecoration: "none",
-                fontSize: "0.9rem",
+                fontSize: "1rem",
               }}
             >
               Get directions
