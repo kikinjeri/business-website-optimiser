@@ -44,7 +44,7 @@ export default function Navbar() {
         {/* Desktop */}
         <div className="navbar-links">
           <Link href="/business">Directory</Link>
-          <Link href="/guide">Guide</Link>
+
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/about">About</Link>
 
