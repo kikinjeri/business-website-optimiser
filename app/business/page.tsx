@@ -1,47 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 
 type Business = {
+  id: string;
   name: string;
   slug: string;
   category?: string;
   location?: string;
 };
 
-const BUSINESSES: Business[] = [
-  {
-    name: "Electrical Standard Inc.",
-    slug: "electrical-standard",
-    category: "Electrician",
-    location: "Ottawa",
-  },
-  {
-    name: "Plumbing Express",
-    slug: "plumbing-express",
-    category: "Plumbing",
-    location: "Ottawa",
-  },
-  {
-    name: "Ottawa's Handyman",
-    slug: "ottawas-handyman",
-    category: "Handyman",
-    location: "Ottawa",
-  },
-  {
-    name: "Pest Control Ottawa Inc.",
-    slug: "pest-control-ottawa",
-    category: "Pest Control",
-    location: "Ottawa",
-  },
-  {
-    name: "Francis Home Environment",
-    slug: "francis-home",
-    category: "HVAC",
-    location: "Ottawa",
-  },
-];
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
 function normalizeName(name: string) {
   return name.trim().toUpperCase();
@@ -55,18 +29,46 @@ function getInitial(name: string) {
 
 export default function DirectoryPage() {
   const [query, setQuery] = useState("");
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("id, name, slug, category, neighborhood");
+
+      if (!error && data) {
+        const mapped = data.map((b) => ({
+          id: b.id,
+          name: b.name,
+          slug: b.slug,
+          category: b.category || "",
+          location: b.neighborhood || "Ottawa",
+        }));
+
+        setBusinesses(mapped);
+      }
+
+      setLoading(false);
+    }
+
+    load();
+  }, []);
 
   const filteredAndGrouped = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    const filtered = BUSINESSES.filter((b) => {
-      if (!q) return true;
-      const haystack =
-        `${b.name} ${b.category ?? ""} ${b.location ?? ""}`.toLowerCase();
-      return haystack.includes(q);
-    }).sort((a, b) =>
-      normalizeName(a.name).localeCompare(normalizeName(b.name)),
-    );
+    const filtered = businesses
+      .filter((b) => {
+        if (!q) return true;
+        const haystack =
+          `${b.name} ${b.category ?? ""} ${b.location ?? ""}`.toLowerCase();
+        return haystack.includes(q);
+      })
+      .sort((a, b) =>
+        normalizeName(a.name).localeCompare(normalizeName(b.name)),
+      );
 
     const groups: Record<string, Business[]> = {};
     for (const b of filtered) {
@@ -81,7 +83,7 @@ export default function DirectoryPage() {
         letter,
         businesses: groups[letter],
       }));
-  }, [query]);
+  }, [query, businesses]);
 
   return (
     <main className="directory-page">
@@ -107,94 +109,98 @@ export default function DirectoryPage() {
         />
       </section>
 
-      <section className="directory-list" aria-label="Business directory">
-        {filteredAndGrouped.length === 0 && (
-          <p className="directory-empty">
-            No businesses found. Try a different search.
-          </p>
-        )}
+      {loading && <p>Loading businesses…</p>}
 
-        {filteredAndGrouped.map(({ letter, businesses }) => (
-          <div key={letter} className="directory-section">
-            <h2 className="directory-section-letter">{letter}</h2>
+      {!loading && (
+        <section className="directory-list" aria-label="Business directory">
+          {filteredAndGrouped.length === 0 && (
+            <p className="directory-empty">
+              No businesses found. Try a different search.
+            </p>
+          )}
 
-            <ul className="directory-section-list">
-              {businesses.map((b) => (
-                <li
-                  key={b.slug}
-                  className="directory-row"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "14px 0",
-                    borderBottom: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  {/* LEFT SIDE */}
-                  <div
+          {filteredAndGrouped.map(({ letter, businesses }) => (
+            <div key={letter} className="directory-section">
+              <h2 className="directory-section-letter">{letter}</h2>
+
+              <ul className="directory-section-list">
+                {businesses.map((b) => (
+                  <li
+                    key={b.slug}
+                    className="directory-row"
                     style={{
                       display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "14px 0",
+                      borderBottom: "1px solid rgba(255,255,255,0.08)",
                     }}
                   >
-                    <h3
-                      className="directory-row-name"
+                    {/* LEFT SIDE */}
+                    <div
                       style={{
-                        margin: 0,
-                        fontSize: "1.05rem",
-                        fontWeight: 600,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
                       }}
                     >
-                      {b.name}
-                    </h3>
-
-                    {(b.category || b.location) && (
-                      <p
-                        className="directory-row-meta"
+                      <h3
+                        className="directory-row-name"
                         style={{
                           margin: 0,
-                          opacity: 0.75,
-                          fontSize: "0.9rem",
-                          display: "flex",
-                          gap: "6px",
-                          alignItems: "center",
+                          fontSize: "1.05rem",
+                          fontWeight: 600,
                         }}
                       >
-                        {b.category && <span>{b.category}</span>}
-                        {b.category && b.location && <span>•</span>}
-                        {b.location && <span>{b.location}</span>}
-                      </p>
-                    )}
-                  </div>
+                        {b.name}
+                      </h3>
 
-                  {/* RIGHT SIDE — ACTION LINKS */}
-                  <nav
-                    className="directory-row-actions"
-                    aria-label={`Actions for ${b.name}`}
-                    style={{
-                      display: "flex",
-                      gap: "16px",
-                      fontSize: "0.9rem",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <Link href={`/dashboard/analytics/${b.slug}`}>
-                      Analytics
-                    </Link>
-                    <Link href={`/business/${b.slug}/embed-code`}>
-                      Embed Code
-                    </Link>
-                    <Link href={`/card/${b.slug}?embed=1`}>Preview</Link>
-                    <Link href={`/business/${b.slug}`}>View</Link>
-                  </nav>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </section>
+                      {(b.category || b.location) && (
+                        <p
+                          className="directory-row-meta"
+                          style={{
+                            margin: 0,
+                            opacity: 0.75,
+                            fontSize: "0.9rem",
+                            display: "flex",
+                            gap: "6px",
+                            alignItems: "center",
+                          }}
+                        >
+                          {b.category && <span>{b.category}</span>}
+                          {b.category && b.location && <span>•</span>}
+                          {b.location && <span>{b.location}</span>}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* RIGHT SIDE — ACTION LINKS */}
+                    <nav
+                      className="directory-row-actions"
+                      aria-label={`Actions for ${b.name}`}
+                      style={{
+                        display: "flex",
+                        gap: "16px",
+                        fontSize: "0.9rem",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <Link href={`/dashboard/analytics/${b.slug}`}>
+                        Analytics
+                      </Link>
+                      <Link href={`/business/${b.slug}/embed-code`}>
+                        Embed Code
+                      </Link>
+                      <Link href={`/card/${b.slug}?embed=1`}>Preview</Link>
+                      <Link href={`/business/${b.slug}`}>View</Link>
+                    </nav>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      )}
     </main>
   );
 }

@@ -5,9 +5,9 @@ import Link from "next/link";
 export default async function EmbedCodePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
 
   const { business, services, areas } = await getBusinessBySlug(slug);
 
@@ -37,7 +37,6 @@ export default async function EmbedCodePage({
         </Link>
       </div>
 
-      {/* PREVIEW */}
       <h2 className="embed-title">
         Live preview
         <span className="embed-scroll-note"> — scroll down for embed code</span>
@@ -52,7 +51,6 @@ export default async function EmbedCodePage({
         />
       </div>
 
-      {/* EMBED CODE BELOW PREVIEW */}
       <h2 className="embed-title">Embed code</h2>
 
       <p className="embed-description">

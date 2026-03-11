@@ -1,38 +1,38 @@
-"use server"
+"use server";
 
-// lib/getBusinessBySlug.ts
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function getBusinessBySlug(slug: string) {
   const supabase = await supabaseServer();
 
-  // Fetch business
+  // Fetch business (no status filter)
   const { data: business, error: businessError } = await supabase
     .from("businesses")
     .select("*")
     .eq("slug", slug)
-    .eq("status", "published")
     .single();
 
   if (businessError || !business) {
     return { business: null, services: [], areas: [] };
   }
 
-  // Fetch services
+  // Fetch services (use name_en)
   const { data: servicesRaw } = await supabase
     .from("services")
     .select("name_en")
     .eq("business_id", business.id);
 
-  const services = servicesRaw?.map((s) => s.name_en) ?? [];
+  const services =
+    servicesRaw?.map((s) => s.name_en).filter(Boolean) ?? [];
 
-  // Fetch service areas
+  // Fetch service areas (use name_en)
   const { data: areasRaw } = await supabase
     .from("service_areas")
-    .select("area_name")
+    .select("name_en")
     .eq("business_id", business.id);
 
-  const areas = areasRaw?.map((a) => a.area_name) ?? [];
+  const areas =
+    areasRaw?.map((a) => a.name_en).filter(Boolean) ?? [];
 
   return {
     business,
