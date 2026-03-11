@@ -1,0 +1,490 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/components/cards/BusinessCard.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>BusinessCard
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+"use client";
+;
+/* Determine if business is open today */ function isBusinessOpen(hours_json) {
+    if (!hours_json) return null;
+    const orderedDays = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ];
+    const now = new Date();
+    const jsDay = now.getDay(); // Sunday = 0
+    const todayName = orderedDays[jsDay === 0 ? 6 : jsDay - 1];
+    const todayHours = hours_json[todayName.toLowerCase()] || hours_json[todayName] || null;
+    if (!todayHours) return null;
+    if (/closed/i.test(todayHours)) return false;
+    return true;
+}
+function BusinessCard({ business, services, areas }) {
+    if (!business) return null;
+    const { name, tagline_en, tagline, address, phone, website_url, lat, lng, hours_json, neighborhood, theme_primary, theme_accent, theme_text, theme_background, slug } = business;
+    /* PREMIUM STRIPE-STYLE COLORS (override unreadable theme colors) */ const background = "#0f172a"; // deep navy
+    const primary = "#6366f1"; // indigo
+    const accent = "#38bdf8"; // cyan
+    const text = "#ffffff"; // always readable
+    /* WEBSITE LINK (D4) */ const rawWebsite = website_url;
+    const websiteUrl = rawWebsite && (rawWebsite.startsWith("http://") || rawWebsite.startsWith("https://")) ? rawWebsite : rawWebsite ? `https://${rawWebsite}` : null;
+    /* DIRECTIONS URL */ const directionsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : address ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}` : null;
+    /* SORT DAYS */ const orderedDays = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ];
+    /* OPEN NOW LOGIC */ const isOpen = isBusinessOpen(hours_json);
+    /* JSON-LD STRUCTURED DATA */ const jsonLd = slug && JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name,
+        url: `https://your-domain.com/business/${slug}`,
+        telephone: phone || undefined,
+        address: address ? {
+            "@type": "PostalAddress",
+            streetAddress: address
+        } : undefined,
+        sameAs: websiteUrl ? [
+            websiteUrl
+        ] : undefined,
+        openingHoursSpecification: hours_json && orderedDays.map((day)=>({
+                "@type": "OpeningHoursSpecification",
+                dayOfWeek: day,
+                description: hours_json[day.toLowerCase()] || hours_json[day] || "Closed"
+            }))
+    });
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+        "aria-label": `Business profile for ${name}`,
+        style: {
+            background,
+            color: text,
+            borderRadius: "24px",
+            padding: "28px",
+            maxWidth: "960px",
+            margin: "0 auto",
+            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.05)",
+            position: "relative",
+            overflow: "hidden"
+        },
+        children: [
+            jsonLd && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("script", {
+                type: "application/ld+json",
+                dangerouslySetInnerHTML: {
+                    __html: jsonLd
+                }
+            }, void 0, false, {
+                fileName: "[project]/components/cards/BusinessCard.tsx",
+                lineNumber: 138,
+                columnNumber: 9
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                "aria-hidden": "true",
+                style: {
+                    position: "absolute",
+                    inset: "-40%",
+                    background: "radial-gradient(circle at top left, rgba(99,102,241,0.25), transparent 55%), radial-gradient(circle at bottom right, rgba(56,189,248,0.25), transparent 55%)",
+                    pointerEvents: "none"
+                }
+            }, void 0, false, {
+                fileName: "[project]/components/cards/BusinessCard.tsx",
+                lineNumber: 145,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    position: "relative",
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1.3fr)",
+                    gap: "32px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                        "aria-labelledby": "business-heading",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
+                                style: {
+                                    marginBottom: "16px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    gap: "12px",
+                                    alignItems: "flex-start"
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                                id: "business-heading",
+                                                style: {
+                                                    fontSize: "1.8rem",
+                                                    fontWeight: 700,
+                                                    letterSpacing: "-0.03em",
+                                                    marginBottom: "4px"
+                                                },
+                                                children: name
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                lineNumber: 177,
+                                                columnNumber: 15
+                                            }, this),
+                                            (tagline_en || tagline) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                style: {
+                                                    fontSize: "1rem",
+                                                    opacity: 0.85
+                                                },
+                                                children: tagline_en || tagline
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                lineNumber: 190,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 176,
+                                        columnNumber: 13
+                                    }, this),
+                                    isOpen !== null && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        "aria-label": isOpen ? "Open now" : "Closed now",
+                                        style: {
+                                            fontSize: "0.85rem",
+                                            fontWeight: 600,
+                                            color: isOpen ? "#4ade80" : "#f87171",
+                                            marginTop: "6px",
+                                            whiteSpace: "nowrap"
+                                        },
+                                        children: isOpen ? "Open now" : "Closed now"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 198,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 167,
+                                columnNumber: 11
+                            }, this),
+                            address && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                "aria-labelledby": "address-heading",
+                                style: {
+                                    marginBottom: "16px"
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        id: "address-heading",
+                                        className: "sr-only",
+                                        children: "Address"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 219,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        style: {
+                                            fontSize: "1rem",
+                                            opacity: 0.9
+                                        },
+                                        children: address
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 222,
+                                        columnNumber: 15
+                                    }, this),
+                                    neighborhood && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        style: {
+                                            fontSize: "0.9rem",
+                                            opacity: 0.7
+                                        },
+                                        children: neighborhood
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 224,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 215,
+                                columnNumber: 13
+                            }, this),
+                            websiteUrl && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                style: {
+                                    marginBottom: "20px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "6px"
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        "aria-hidden": "true",
+                                        style: {
+                                            fontSize: "1rem"
+                                        },
+                                        children: "🌐"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 241,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                        href: websiteUrl,
+                                        target: "_blank",
+                                        rel: "noopener noreferrer",
+                                        style: {
+                                            color: accent,
+                                            fontWeight: 600,
+                                            textDecoration: "none"
+                                        },
+                                        onMouseOver: (e)=>e.currentTarget.style.textDecoration = "underline",
+                                        onMouseOut: (e)=>e.currentTarget.style.textDecoration = "none",
+                                        children: websiteUrl
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 244,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 233,
+                                columnNumber: 13
+                            }, this),
+                            services?.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                "aria-labelledby": "services-heading",
+                                style: {
+                                    marginBottom: "20px"
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        id: "services-heading",
+                                        style: {
+                                            fontSize: "0.85rem",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.12em",
+                                            opacity: 0.7,
+                                            marginBottom: "8px"
+                                        },
+                                        children: "Services"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 271,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                        style: {
+                                            listStyle: "none",
+                                            padding: 0,
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: "8px"
+                                        },
+                                        children: services.map((service)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                style: {
+                                                    padding: "6px 12px",
+                                                    borderRadius: "999px",
+                                                    background: "rgba(255,255,255,0.08)",
+                                                    border: "1px solid rgba(255,255,255,0.12)",
+                                                    fontSize: "0.85rem"
+                                                },
+                                                children: service
+                                            }, service, false, {
+                                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                lineNumber: 294,
+                                                columnNumber: 19
+                                            }, this))
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 284,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 267,
+                                columnNumber: 13
+                            }, this),
+                            areas?.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                "aria-labelledby": "areas-heading",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        id: "areas-heading",
+                                        style: {
+                                            fontSize: "0.85rem",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.12em",
+                                            opacity: 0.7,
+                                            marginBottom: "8px"
+                                        },
+                                        children: "Service areas"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 314,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        style: {
+                                            opacity: 0.9
+                                        },
+                                        children: areas.join(", ")
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 326,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 313,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                        lineNumber: 166,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                        "aria-label": "Hours and location",
+                        style: {
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "16px"
+                        },
+                        children: [
+                            hours_json && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                "aria-labelledby": "hours-heading",
+                                style: {
+                                    borderRadius: "16px",
+                                    padding: "16px",
+                                    background: "rgba(255,255,255,0.06)",
+                                    border: "1px solid rgba(255,255,255,0.12)"
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        id: "hours-heading",
+                                        style: {
+                                            fontSize: "0.85rem",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.12em",
+                                            opacity: 0.7,
+                                            marginBottom: "8px"
+                                        },
+                                        children: "Hours"
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 351,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                        style: {
+                                            listStyle: "none",
+                                            padding: 0,
+                                            margin: 0
+                                        },
+                                        children: orderedDays.map((day)=>{
+                                            const hours = hours_json[day.toLowerCase()] || hours_json[day] || "Closed";
+                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                style: {
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    fontSize: "0.85rem",
+                                                    opacity: 0.9
+                                                },
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        children: day
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                        lineNumber: 381,
+                                                        columnNumber: 23
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        children: hours
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                        lineNumber: 382,
+                                                        columnNumber: 23
+                                                    }, this)
+                                                ]
+                                            }, day, true, {
+                                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                                lineNumber: 372,
+                                                columnNumber: 21
+                                            }, this);
+                                        })
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                                        lineNumber: 364,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 342,
+                                columnNumber: 13
+                            }, this),
+                            directionsUrl && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                href: directionsUrl,
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                style: {
+                                    display: "block",
+                                    textAlign: "center",
+                                    padding: "12px 16px",
+                                    borderRadius: "999px",
+                                    background: primary,
+                                    color: "#ffffff",
+                                    fontWeight: 600,
+                                    textDecoration: "none",
+                                    fontSize: "0.9rem"
+                                },
+                                children: "Get directions"
+                            }, void 0, false, {
+                                fileName: "[project]/components/cards/BusinessCard.tsx",
+                                lineNumber: 392,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/cards/BusinessCard.tsx",
+                        lineNumber: 332,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/cards/BusinessCard.tsx",
+                lineNumber: 157,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/cards/BusinessCard.tsx",
+        lineNumber: 120,
+        columnNumber: 5
+    }, this);
+}
+_c = BusinessCard;
+var _c;
+__turbopack_context__.k.register(_c, "BusinessCard");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+]);
+
+//# sourceMappingURL=components_cards_BusinessCard_tsx_67af8910._.js.map

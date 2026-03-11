@@ -44,6 +44,14 @@ export default function HomePage() {
               website with lightweight, fast‑loading cards.
             </p>
           </div>
+
+          <div className="preview-card">
+            <h3>Works everywhere you do</h3>
+            <p>
+              Embed your card on social media, Wix, Squarespace, WordPress, or
+              any site that supports links — no setup required.
+            </p>
+          </div>
         </div>
       </header>
 

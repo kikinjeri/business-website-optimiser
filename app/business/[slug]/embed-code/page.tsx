@@ -1,76 +1,111 @@
-// app/business/[slug]/embed-code/page.tsx
-
-import Link from "next/link";
+import BusinessCard from "@/components/cards/BusinessCard";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
+import CopyEmbedButton from "@/components/CopyEmbedButton";
 
 export default async function EmbedCodePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
-  const { business } = await getBusinessBySlug(slug);
+  const { business, services, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
     return (
-      <div style={{ padding: "40px" }}>
-        <h1>Business not found</h1>
-        <p>No business exists with the slug: {slug}</p>
+      <div
+        style={{
+          fontFamily: "system-ui, sans-serif",
+          padding: "20px",
+          color: "#fff",
+          background: "#0f172a",
+        }}
+      >
+        Business not found.
       </div>
     );
   }
 
-  // Use your real domain from env
-  const domain = process.env.NEXT_PUBLIC_SITE_URL || "https://YOURDOMAIN.com";
-
-  const embedUrl = `${domain}/card/${slug}?embed=1`;
-
-  const iframeCode = `<iframe
-  src="${embedUrl}"
-  style="border:0;width:100%;max-width:420px;height:600px;border-radius:12px;overflow:hidden;"
-  loading="lazy"
-></iframe>`;
+  const iframeCode = `<iframe src="${process.env.NEXT_PUBLIC_SITE_URL}/card/${slug}?embed=1" style="width:100%;border:0;" height="600"></iframe>`;
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "24px" }}>
-      <Link
-        href={`/business/${slug}`}
-        style={{ display: "inline-block", marginBottom: "16px" }}
+    <div
+      style={{
+        padding: "40px 0",
+        background: "#0f172a",
+        minHeight: "100vh",
+        color: "white",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1200px", // ⬅️ MATCHES EMBED ROUTE WIDTH
+          padding: "0 20px",
+        }}
       >
-        ← Back to business page
-      </Link>
+        <h1
+          style={{
+            fontSize: "1.8rem",
+            fontWeight: 700,
+            marginBottom: "20px",
+          }}
+        >
+          Embed this business card
+        </h1>
 
-      <h1>Embed this business card</h1>
-      <p>Copy and paste this code into your website:</p>
+        {/* COPY BUTTON + CODE BLOCK */}
+        <div
+          style={{
+            marginBottom: "32px",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "12px",
+            padding: "16px",
+          }}
+        >
+          <CopyEmbedButton code={iframeCode} />
 
-      <textarea
-        readOnly
-        value={iframeCode}
-        style={{
-          width: "100%",
-          height: "140px",
-          padding: "12px",
-          fontSize: "0.9rem",
-          fontFamily: "monospace",
-          borderRadius: "8px",
-        }}
-      />
+          <pre
+            style={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-all",
+              fontSize: "0.9rem",
+              marginTop: "12px",
+            }}
+          >
+            {iframeCode}
+          </pre>
+        </div>
 
-      <h2 style={{ marginTop: "32px" }}>Preview</h2>
+        {/* PREVIEW SECTION — NOW WIDE ENOUGH */}
+        <h2
+          style={{
+            fontSize: "1.4rem",
+            fontWeight: 600,
+            marginBottom: "16px",
+          }}
+        >
+          Preview
+        </h2>
 
-      <iframe
-        src={embedUrl}
-        style={{
-          border: 0,
-          width: "100%",
-          maxWidth: "420px",
-          height: "600px",
-          borderRadius: "12px",
-          overflow: "hidden",
-        }}
-        loading="lazy"
-      />
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1200px", // ⬅️ THIS FIXES THE HOURS SQUISHING
+            margin: "0 auto",
+          }}
+        >
+          <BusinessCard
+            business={business}
+            services={services}
+            areas={areas}
+            searchParams={{ embed: "1" }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

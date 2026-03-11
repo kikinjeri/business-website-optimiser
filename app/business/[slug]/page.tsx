@@ -1,31 +1,41 @@
-// app/business/[slug]/page.tsx
-
-import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import BusinessCard from "@/components/cards/BusinessCard";
+import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
-export default async function BusinessPage(props: {
+export default async function BusinessPage({
+  params,
+  searchParams,
+}: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<any>;
 }) {
-  // ✅ Next.js 14: params is a Promise — must await it
-  const { slug } = await props.params;
+  const { slug } = await params;
+  const sp = await searchParams;
 
-  // Fetch business data
   const { business, services, areas } = await getBusinessBySlug(slug);
 
-  // Handle missing business
   if (!business) {
     return (
-      <div style={{ padding: "40px" }}>
-        <h1>Business not found</h1>
-        <p>No business exists with the slug: {slug}</p>
+      <div
+        style={{
+          fontFamily: "system-ui, sans-serif",
+          padding: "20px",
+          color: "#fff",
+          background: "#0f172a",
+        }}
+      >
+        Business not found.
       </div>
     );
   }
 
-  // Render full business profile
   return (
     <div style={{ padding: "40px" }}>
-      <BusinessCard business={business} services={services} areas={areas} />
+      <BusinessCard
+        business={business}
+        services={services}
+        areas={areas}
+        searchParams={sp ?? {}}
+      />
     </div>
   );
 }
