@@ -1,3 +1,5 @@
+"use server";
+
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function logEmbedView({
@@ -9,21 +11,21 @@ export async function logEmbedView({
 }: {
   businessId: string;
   slug: string;
-  referrer?: string | null;
-  userAgent?: string | null;
-  embed?: boolean;
+  referrer: string | null;
+  userAgent: string | null;
+  embed: boolean;
 }) {
   try {
-    const supabase = await supabaseServer();
+    const supabase = createClient();
 
     await supabase.from("embed_analytics").insert({
       business_id: businessId,
       slug,
       referrer,
       user_agent: userAgent,
-      embed: embed ?? false,
+      embed,
     });
-  } catch (error) {
-    console.error("Embed analytics error:", error);
+  } catch (err) {
+    console.error("Embed analytics insert failed:", err);
   }
 }

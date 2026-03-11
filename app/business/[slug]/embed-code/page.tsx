@@ -42,10 +42,25 @@ export default async function EmbedCodePage({
       <div
         style={{
           width: "100%",
-          maxWidth: "1200px", // ⬅️ MATCHES EMBED ROUTE WIDTH
+          maxWidth: "1200px",
           padding: "0 20px",
+          margin: "0 auto",
         }}
       >
+        {/* Back link */}
+        <a
+          href={`/business/${slug}`}
+          style={{
+            display: "inline-block",
+            marginBottom: "20px",
+            color: "white",
+            opacity: 0.8,
+            textDecoration: "none",
+          }}
+        >
+          ← Back to business page
+        </a>
+
         <h1
           style={{
             fontSize: "1.8rem",
@@ -80,7 +95,7 @@ export default async function EmbedCodePage({
           </pre>
         </div>
 
-        {/* PREVIEW SECTION — NOW WIDE ENOUGH */}
+        {/* PREVIEW SECTION — FIXED ALIGNMENT */}
         <h2
           style={{
             fontSize: "1.4rem",
@@ -94,8 +109,10 @@ export default async function EmbedCodePage({
         <div
           style={{
             width: "100%",
-            maxWidth: "1200px", // ⬅️ THIS FIXES THE HOURS SQUISHING
+            maxWidth: "1200px",
             margin: "0 auto",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           <BusinessCard

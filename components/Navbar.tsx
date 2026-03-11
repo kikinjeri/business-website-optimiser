@@ -1,12 +1,20 @@
-// components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [theme, setTheme] = useState("dark");
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  const pathname = usePathname();
+
+  // Extract slug if URL contains /business/[slug]
+  const slugMatch = pathname.match(/\/business\/([^\/]+)/);
+  const slug = slugMatch ? slugMatch[1] : null;
+
+  // Load theme
   useEffect(() => {
     const stored = localStorage.getItem("theme");
     if (stored) {
@@ -22,17 +30,30 @@ export default function Navbar() {
     localStorage.setItem("theme", next);
   }
 
+  function toggleMenu() {
+    setMenuOpen((prev) => !prev);
+  }
+
   return (
-    <nav className="site-navbar">
-      <div className="nav-inner">
-        <Link href="/" className="nav-logo">
+    <nav className="navbar" aria-label="Main navigation">
+      <div className="navbar-inner">
+        <Link href="/" className="navbar-logo">
           Business Optimiser
         </Link>
 
-        <div className="nav-links">
+        {/* Desktop */}
+        <div className="navbar-links">
           <Link href="/business">Directory</Link>
           <Link href="/guide">Guide</Link>
+          <Link href="/dashboard">Dashboard</Link>
           <Link href="/about">About</Link>
+
+          {slug && (
+            <>
+              <Link href={`/business/${slug}/embed-code`}>Embed Code</Link>
+              <Link href={`/dashboard/analytics/${slug}`}>Analytics</Link>
+            </>
+          )}
 
           <button
             className="theme-toggle"
@@ -42,6 +63,59 @@ export default function Navbar() {
             {theme === "dark" ? "🌙" : "☀️"}
           </button>
         </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="navbar-hamburger"
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          onClick={toggleMenu}
+        >
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`navbar-mobile ${menuOpen ? "open" : ""}`}>
+        <Link href="/business" onClick={() => setMenuOpen(false)}>
+          Directory
+        </Link>
+        <Link href="/guide" onClick={() => setMenuOpen(false)}>
+          Guide
+        </Link>
+        <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
+          Dashboard
+        </Link>
+        <Link href="/about" onClick={() => setMenuOpen(false)}>
+          About
+        </Link>
+
+        {slug && (
+          <>
+            <Link
+              href={`/business/${slug}/embed-code`}
+              onClick={() => setMenuOpen(false)}
+            >
+              Embed Code
+            </Link>
+            <Link
+              href={`/dashboard/analytics/${slug}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              Analytics
+            </Link>
+          </>
+        )}
+
+        <button
+          className="theme-toggle mobile-theme-toggle"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? "🌙" : "☀️"}
+        </button>
       </div>
     </nav>
   );
