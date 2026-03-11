@@ -2,30 +2,38 @@
 
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import BusinessCard from "@/components/cards/BusinessCard";
+import Link from "next/link";
 
 export default async function BusinessPage(props: {
   params: Promise<{ slug: string }>;
 }) {
-  // ✅ Next.js 14: params is a Promise — must await it
   const { slug } = await props.params;
 
-  // Fetch business data
   const { business, services, areas } = await getBusinessBySlug(slug);
 
-  // Handle missing business
   if (!business) {
     return (
-      <div style={{ padding: "40px" }}>
+      <div className="business-page">
         <h1>Business not found</h1>
         <p>No business exists with the slug: {slug}</p>
       </div>
     );
   }
 
-  // Render full business profile
   return (
-    <div style={{ padding: "40px" }}>
-      <BusinessCard business={business} services={services} areas={areas} />
+    <div className="business-page">
+      <div className="business-page__topbar">
+        <Link
+          href={`/business/${slug}/embed-code`}
+          className="business-page__embed-btn"
+        >
+          Get embed code →
+        </Link>
+      </div>
+
+      <div className="business-page__card-wrapper">
+        <BusinessCard business={business} services={services} areas={areas} />
+      </div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export default function Navbar() {
 
         <div className="nav-links">
           <Link href="/business">Directory</Link>
-          <Link href="/guide">Guide</Link>
+          
           <Link href="/about">About</Link>
 
           <button

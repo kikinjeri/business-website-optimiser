@@ -2,28 +2,27 @@
 
 import Link from "next/link";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
+import BusinessCard from "@/components/cards/BusinessCard";
 
 export default async function EmbedCodePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
-  const { business } = await getBusinessBySlug(slug);
+  const { business, services, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
     return (
-      <div style={{ padding: "40px" }}>
+      <div className="embed-page">
         <h1>Business not found</h1>
         <p>No business exists with the slug: {slug}</p>
       </div>
     );
   }
 
-  // Use your real domain from env
   const domain = process.env.NEXT_PUBLIC_SITE_URL || "https://YOURDOMAIN.com";
-
   const embedUrl = `${domain}/card/${slug}?embed=1`;
 
   const iframeCode = `<iframe
@@ -33,44 +32,38 @@ export default async function EmbedCodePage({
 ></iframe>`;
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "24px" }}>
-      <Link
-        href={`/business/${slug}`}
-        style={{ display: "inline-block", marginBottom: "16px" }}
-      >
-        ← Back to business page
-      </Link>
+    <div className="embed-page">
+      <div className="embed-page__topbar">
+        <Link href={`/business/${slug}`} className="embed-page__back-link">
+          ← Back to business page
+        </Link>
+      </div>
 
-      <h1>Embed this business card</h1>
-      <p>Copy and paste this code into your website:</p>
+      {/* PREVIEW */}
+      <h2 className="embed-title">
+        Live preview
+        <span className="embed-scroll-note"> — scroll down for embed code</span>
+      </h2>
 
-      <textarea
-        readOnly
-        value={iframeCode}
-        style={{
-          width: "100%",
-          height: "140px",
-          padding: "12px",
-          fontSize: "0.9rem",
-          fontFamily: "monospace",
-          borderRadius: "8px",
-        }}
-      />
+      <div className="embed-preview-wrapper">
+        <BusinessCard
+          business={business}
+          services={services}
+          areas={areas}
+          searchParams={{ embed: "1" }}
+        />
+      </div>
 
-      <h2 style={{ marginTop: "32px" }}>Preview</h2>
+      {/* EMBED CODE BELOW PREVIEW */}
+      <h2 className="embed-title">Embed code</h2>
 
-      <iframe
-        src={embedUrl}
-        style={{
-          border: 0,
-          width: "100%",
-          maxWidth: "420px",
-          height: "600px",
-          borderRadius: "12px",
-          overflow: "hidden",
-        }}
-        loading="lazy"
-      />
+      <p className="embed-description">
+        Copy and paste this code into your website, Facebook page, Instagram
+        bio, or builders like Wix and Squarespace. It always stays up‑to‑date
+        automatically.
+      </p>
+
+      <textarea readOnly value={iframeCode} className="embed-textarea" />
     </div>
   );
 }
