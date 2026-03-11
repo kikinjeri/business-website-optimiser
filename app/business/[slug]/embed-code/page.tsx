@@ -71,6 +71,25 @@ export default async function EmbedCodePage({
           Embed this business card
         </h1>
 
+        {/* NEW EXPLANATORY PARAGRAPH */}
+        <p
+          style={{
+            fontSize: "1rem",
+            opacity: 0.85,
+            lineHeight: 1.6,
+            marginBottom: "24px",
+            maxWidth: "700px",
+          }}
+        >
+          You can use this embed code anywhere you share your business online —
+          on Facebook, Instagram, LinkedIn, or even website builders like Wix.
+          It shows your business card exactly as it appears here, and it always
+          stays up‑to‑date automatically. It’s completely free to use and helps
+          customers find accurate information faster. If you ever need help
+          adding it to your site or have any other web development needs, I’m
+          always happy to help.
+        </p>
+
         {/* COPY BUTTON + CODE BLOCK */}
         <div
           style={{
@@ -95,7 +114,7 @@ export default async function EmbedCodePage({
           </pre>
         </div>
 
-        {/* PREVIEW SECTION — FIXED ALIGNMENT */}
+        {/* PREVIEW SECTION */}
         <h2
           style={{
             fontSize: "1.4rem",
