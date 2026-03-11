@@ -1,3 +1,5 @@
+"use server"
+
 // lib/getBusinessBySlug.ts
 import { supabaseServer } from "@/lib/supabase/server";
 
