@@ -2,12 +2,10 @@ import BusinessCard from "@/components/cards/BusinessCard";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import Link from "next/link";
 
-export default async function EmbedCodePage({
-  params,
-}: {
-  params: { slug: string };
+export default async function EmbedCodePage(props: {
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await props.params;
 
   const { business, services, areas } = await getBusinessBySlug(slug);
 

@@ -2,12 +2,10 @@ import BusinessCard from "@/components/cards/BusinessCard";
 import Link from "next/link";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
-export default async function BusinessPage({
-  params,
-}: {
-  params: { slug: string };
+export default async function BusinessPage(props: {
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await props.params;
 
   const { business, services, areas } = await getBusinessBySlug(slug);
 
