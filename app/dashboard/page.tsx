@@ -14,7 +14,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Business Directory"
             description="Browse all businesses in a clean, SEO‑optimized directory."
-            href="/directory"
+            href="/business"
           />
 
           <DashboardCard

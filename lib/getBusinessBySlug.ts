@@ -5,7 +5,7 @@ import { supabaseServer } from "@/lib/supabase/server";
 export async function getBusinessBySlug(slug: string) {
   const supabase = await supabaseServer();
 
-  // Fetch business (no status filter)
+  // Fetch business
   const { data: business, error: businessError } = await supabase
     .from("businesses")
     .select("*")
@@ -16,23 +16,21 @@ export async function getBusinessBySlug(slug: string) {
     return { business: null, services: [], areas: [] };
   }
 
-  // Fetch services (use name_en)
+  // Fetch services (name_en)
   const { data: servicesRaw } = await supabase
     .from("services")
     .select("name_en")
     .eq("business_id", business.id);
 
-  const services =
-    servicesRaw?.map((s) => s.name_en).filter(Boolean) ?? [];
+  const services = servicesRaw?.map(s => s.name_en).filter(Boolean) ?? [];
 
-  // Fetch service areas (use name_en)
+  // Fetch service areas (name_en)
   const { data: areasRaw } = await supabase
     .from("service_areas")
     .select("name_en")
     .eq("business_id", business.id);
 
-  const areas =
-    areasRaw?.map((a) => a.name_en).filter(Boolean) ?? [];
+  const areas = areasRaw?.map(a => a.name_en).filter(Boolean) ?? [];
 
   return {
     business,
