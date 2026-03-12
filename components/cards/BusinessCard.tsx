@@ -2,7 +2,24 @@
 
 import React from "react";
 
-/* Determine if business is open today */
+/* -------------------------------
+   TIME PARSING + OPEN/CLOSED LOGIC
+---------------------------------- */
+
+function parseTime(str) {
+  const match = str.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)?/i);
+  if (!match) return null;
+
+  let hour = parseInt(match[1], 10);
+  let minute = match[2] ? parseInt(match[2], 10) : 0;
+  const ampm = match[3]?.toUpperCase();
+
+  if (ampm === "PM" && hour !== 12) hour += 12;
+  if (ampm === "AM" && hour === 12) hour = 0;
+
+  return hour * 60 + minute;
+}
+
 function isBusinessOpen(hours_json) {
   if (!hours_json) return null;
 
@@ -24,10 +41,35 @@ function isBusinessOpen(hours_json) {
     hours_json[todayName.toLowerCase()] || hours_json[todayName] || null;
 
   if (!todayHours) return null;
+
+  // Closed all day
   if (/closed/i.test(todayHours)) return false;
 
-  return true;
+  // Parse "8:00 AM – 5:00 PM"
+  const parts = todayHours.split(/–|-/);
+  if (parts.length !== 2) return null;
+
+  const [openStr, closeStr] = parts.map((s) => s.trim());
+
+  const open = parseTime(openStr);
+  const close = parseTime(closeStr);
+
+  if (!open || !close) return null;
+
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  // Overnight hours (e.g., 8pm–2am)
+  if (close < open) {
+    return nowMinutes >= open || nowMinutes <= close;
+  }
+
+  // Normal hours
+  return nowMinutes >= open && nowMinutes <= close;
 }
+
+/* -------------------------------
+   BUSINESS CARD COMPONENT
+---------------------------------- */
 
 export default function BusinessCard({
   business,
@@ -191,7 +233,7 @@ export default function BusinessCard({
             </section>
           )}
 
-          {/* PHONE — ADDED */}
+          {/* PHONE */}
           {phone && (
             <p
               style={{
@@ -242,32 +284,6 @@ export default function BusinessCard({
                 }}
               >
                 {websiteUrl}
-              </a>
-            </p>
-          )}
-
-          {/* PHONE — NEW SECTION */}
-          {phone && (
-            <p
-              style={{
-                marginBottom: "24px",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <span aria-hidden="true" style={{ fontSize: "1rem" }}>
-                📞
-              </span>
-              <a
-                href={`tel:${phone}`}
-                style={{
-                  color: accent,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-              >
-                {phone}
               </a>
             </p>
           )}
