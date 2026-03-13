@@ -16,6 +16,10 @@ export default function BusinessCard({
   services,
   areas,
   slug,
+  is_accessible,
+  supports_screen_readers,
+  supports_keyboard_navigation,
+  tags = [],
 }: {
   name: string;
   tagline: string | null;
@@ -27,6 +31,12 @@ export default function BusinessCard({
   services: { name_en: string }[];
   areas: string[];
   slug: string;
+
+  is_accessible?: boolean;
+  supports_screen_readers?: boolean;
+  supports_keyboard_navigation?: boolean;
+
+  tags?: string[];
 }) {
   const [showFullHours, setShowFullHours] = useState(false);
 
@@ -137,13 +147,22 @@ export default function BusinessCard({
 
   /* ACTION LINKS */
   const mapsUrl = address
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        address,
+      )}`
     : null;
 
   const callNow = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
 
   /* SERVICE LIMITING (max 6) */
   const limitedServices = services.slice(0, 6);
+
+  /* CLEAN DISPLAY URL (visual only) */
+  const displayUrl =
+    website
+      ?.replace("https://", "")
+      .replace("http://", "")
+      .replace("www.", "") ?? "";
 
   return (
     <>
@@ -158,10 +177,35 @@ export default function BusinessCard({
           <h1 className="business-card__title" itemProp="name">
             {name}
           </h1>
+
           {tagline && (
             <p className="business-card__tagline" itemProp="description">
               {tagline}
             </p>
+          )}
+
+          {/* TRUST BADGES */}
+          <div className="business-card__trust-badges">
+            {is_accessible && (
+              <span className="badge badge--green">Accessible</span>
+            )}
+            {supports_screen_readers && (
+              <span className="badge badge--blue">Screen‑reader friendly</span>
+            )}
+            {supports_keyboard_navigation && (
+              <span className="badge badge--purple">Keyboard friendly</span>
+            )}
+          </div>
+
+          {/* TAGS */}
+          {tags.length > 0 && (
+            <div className="business-card__tags">
+              {tags.map((tag) => (
+                <span key={tag} className="tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
           )}
         </header>
 
@@ -185,16 +229,13 @@ export default function BusinessCard({
           {website && (
             <p className="business-card__contact">
               <a
-                href={website}
+                href={website} // FULL URL — correct routing
                 target="_blank"
                 rel="noopener noreferrer"
                 className="business-card__link"
                 itemProp="url"
               >
-                {website
-                  .replace("https://", "")
-                  .replace("http://", "")
-                  .replace("www.", "")}
+                {displayUrl}
               </a>
             </p>
           )}
@@ -202,6 +243,8 @@ export default function BusinessCard({
           {todayHours && (
             <p className="business-card__status">
               <strong>Today:</strong> <time>{todayHours}</time>
+              {/* FIXED SPACING */}
+              <span style={{ marginLeft: "0.5rem" }} />
               <button
                 className="hours-toggle"
                 aria-expanded={showFullHours}
@@ -215,6 +258,7 @@ export default function BusinessCard({
 
         {renderFullHours()}
 
+        {/* SERVICES */}
         <section className="business-card__section">
           <h2>Services include:</h2>
           <ul className="business-card-services">
@@ -225,17 +269,12 @@ export default function BusinessCard({
 
           {website && (
             <p className="business-card__more-services">
-              For a full list of services, visit{" "}
-              <strong>
-                {website
-                  .replace("https://", "")
-                  .replace("http://", "")
-                  .replace("www.", "")}
-              </strong>
+              For a full list of services, visit <strong>{displayUrl}</strong>
             </p>
           )}
         </section>
 
+        {/* SERVICE AREAS */}
         {areas.length > 0 && (
           <section className="business-card__section">
             <h2>Service Areas</h2>
@@ -272,7 +311,7 @@ export default function BusinessCard({
 
           {website && (
             <a
-              href={website}
+              href={website} // FULL URL — correct routing
               target="_blank"
               rel="noopener noreferrer"
               className="business-card-btn"

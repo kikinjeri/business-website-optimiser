@@ -5,9 +5,23 @@ import { supabaseServer } from "@/lib/supabase/server";
 export async function getBusinessBySlug(slug: string) {
   const supabase = await supabaseServer();
 
+  // Explicitly select the fields you actually use
   const { data: business, error: businessError } = await supabase
     .from("businesses")
-    .select("*")
+    .select(`
+      id,
+      name,
+      slug,
+      tagline_en,
+      address,
+      phone,
+      email,
+      website_url,
+      hours_json,
+      is_accessible,
+      supports_screen_readers,
+      supports_keyboard_navigation
+    `)
     .eq("slug", slug)
     .single();
 
@@ -16,11 +30,13 @@ export async function getBusinessBySlug(slug: string) {
     return { business: null, services: [], areas: [] };
   }
 
+  // SERVICES
   const { data: services } = await supabase
     .from("business_services_view")
     .select("name_en")
     .eq("business_id", business.id);
 
+  // SERVICE AREAS
   const { data: areas } = await supabase
     .from("business_service_areas_view")
     .select("area_name")
