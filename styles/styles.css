@@ -153,9 +153,6 @@
 }
 
 /* ==========================================================
-   ABOUT PAGE
-========================================================== */
-/* ==========================================================
    ABOUT PAGE LAYOUT
 ========================================================== */
 
@@ -163,8 +160,10 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 40px 20px 60px;
+  color: var(--text);
 }
 
+/* Title */
 .about-header {
   margin-bottom: 1.5rem;
 }
@@ -172,18 +171,19 @@
 .page-title {
   font-size: var(--font-lg);
   font-weight: 700;
+  line-height: 1.2;
 }
 
 /* ==========================================================
-   HERO
+   HERO SECTION
 ========================================================== */
 
 .about-hero {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 2.5rem;
+  margin-bottom: 3.5rem;
 }
 
 .about-text {
@@ -193,9 +193,11 @@
 .page-intro {
   color: var(--text-soft);
   line-height: 1.7;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  max-width: 60ch;
 }
 
+/* Portrait */
 .about-image-wrapper {
   flex-shrink: 0;
 }
@@ -206,7 +208,7 @@
   display: block;
 }
 
-/* Stack on small screens */
+/* Mobile stacking */
 @media (max-width: 720px) {
   .about-hero {
     flex-direction: column-reverse;
@@ -215,6 +217,113 @@
 
   .about-image-wrapper {
     align-self: center;
+  }
+}
+
+/* ==========================================================
+   SECTIONS
+========================================================== */
+
+.guide-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: var(--font-md);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+/* Lists */
+.section-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.section-list li + li {
+  margin-top: 0.4rem;
+}
+
+/* Paragraphs */
+.section-text {
+  color: var(--text-soft);
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+.section-text + .section-text {
+  margin-top: 0.75rem;
+}
+
+/* ==========================================================
+   LINKS
+========================================================== */
+
+.link-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.link-underline:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.guide-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: var(--font-sm);
+}
+
+/* ==========================================================
+   BADGE ANIMATION (if used)
+========================================================== */
+
+.about-badges {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.about-badges .badge {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.about-badges .badge:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.about-badges .badge:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.about-badges .badge:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .about-badges .badge {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
