@@ -16,21 +16,21 @@ export async function getBusinessBySlug(slug: string) {
     return { business: null, services: [], areas: [] };
   }
 
-  // Fetch services (name_en)
+  // Fetch full service rows
   const { data: servicesRaw } = await supabase
     .from("services")
-    .select("name_en")
+    .select("id, business_id, category_en, name_en, description_en, tags")
     .eq("business_id", business.id);
 
-  const services = servicesRaw?.map(s => s.name_en).filter(Boolean) ?? [];
+  const services = servicesRaw ?? [];
 
-  // Fetch service areas (name_en)
+  // Fetch service areas
   const { data: areasRaw } = await supabase
     .from("service_areas")
     .select("name_en")
     .eq("business_id", business.id);
 
-  const areas = areasRaw?.map(a => a.name_en).filter(Boolean) ?? [];
+  const areas = areasRaw?.map((a) => a.name_en).filter(Boolean) ?? [];
 
   return {
     business,

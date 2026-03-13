@@ -572,15 +572,27 @@
    BUSINESS CARD — PREMIUM UPGRADE
 ========================================================== */
 
+
+
+/* ==========================================================
+   BUSINESS CARD — PREMIUM UPGRADE (FIXED + ACCESSIBLE)
+========================================================== */
+
 .business-card {
-  background: linear-gradient(to bottom right, var(--bg-card), var(--bg-soft));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-card),
+    var(--bg-soft)
+  );
   color: var(--text);
   border-radius: 18px;
   padding: 32px;
   box-shadow: var(--shadow);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  max-width: 760px;
+  max-width: 1100px; /* WIDER CARD FIX */
   margin: 0 auto;
+  position: relative;
+  overflow: hidden;
   transition: var(--transition);
 }
 
@@ -591,204 +603,247 @@
   }
 }
 
-/* Header */
+/* Gradient glow */
+.business-card-gradient {
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at top left, rgba(99, 102, 241, 0.25), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.25), transparent 55%);
+  pointer-events: none;
+}
+
+/* GRID */
+.business-card-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .business-card-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 40px;
+  }
+}
+
+/* MAIN COLUMN */
+.business-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* HEADER */
 .business-card-header {
-  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 8px;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .business-card-title {
-  margin: 0;
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px;
   color: var(--text);
 }
 
 .business-card-tagline {
-  margin: 6px 0 0;
-  font-size: 1rem;
-  color: var(--text-soft);
-}
-
-/* Info Grid */
-.business-card-info-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
-  gap: 24px;
-}
-
-.business-card-info-item {
-  margin: 0 0 10px;
-  font-size: 1rem;
-  color: var(--text);
-}
-
-.business-card-label {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.business-card-link {
-  color: var(--accent);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.business-card-link:hover {
-  color: var(--accent-hover);
-}
-
-/* Hours */
-.business-card-hours-title {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.business-card-hours-list {
-  margin: 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 12px;
-  row-gap: 4px;
-  font-size: 0.92rem;
-  color: var(--text);
-}
-
-.business-card-hours-row dt {
-  font-weight: 600;
-}
-
-.business-card-hours-row dd {
+  font-size: 1.05rem;
+  opacity: 0.9; /* HIGHER CONTRAST */
   margin: 0;
 }
 
-/* Open/Closed Badges */
-.business-card-open {
-  margin-left: 8px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: rgba(22, 163, 74, 0.15);
-  color: #16a34a;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.business-card-closed {
-  margin-left: 8px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: rgba(220, 38, 38, 0.15);
-  color: #dc2626;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-/* Sections */
-.business-card-section {
-  margin-top: 32px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  position: relative;
-}
-
-.business-card-section::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.15),
-    transparent
-  );
-}
-
-.business-card-section-title {
-  margin: 0 0 14px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-/* Services Grid */
-.business-card-services-grid {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px 16px;
-}
-
-.business-card-service-tag {
-  background: var(--bg-soft);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: var(--text);
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: var(--transition);
-}
-
-.business-card-service-tag:hover {
-  background: var(--accent);
-  color: white;
-}
-
-/* More services */
-.business-card-more-services {
-  margin-top: 10px;
+/* STATUS */
+.business-card-status {
   font-size: 0.9rem;
-  color: var(--accent);
-  font-weight: 600;
+  font-weight: 700; /* BOLDER */
+  margin-top: 6px;
+  white-space: nowrap;
 }
 
-/* Map */
-.business-card-map {
-  border: 0;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+.business-card-status--open {
+  color: #22c55e;
 }
 
-.business-card-map-link {
-  margin-top: 12px;
-  display: inline-block;
-  color: var(--accent);
-  font-weight: 600;
-  text-decoration: none;
+.business-card-status--closed {
+  color: #ef4444;
 }
 
-.business-card-map-link:hover {
-  color: var(--accent-hover);
+/* ADDRESS */
+.business-card-address p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.95; /* HIGHER CONTRAST */
+  font-weight: 500;
 }
 
-/* Footer Tags */
-.business-card-footer {
-  margin-top: 28px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 14px;
+.business-card-neighborhood {
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 
-.business-card-footer-tag {
+/* PHONE + WEBSITE */
+.business-card-phone,
+.business-card-website {
+  margin: 0 0 8px;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  font-size: 1rem;
   font-weight: 600;
+}
+
+.business-card-phone a,
+.business-card-website a {
+  color: var(--accent, #38bdf8);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* SECTION LABEL */
+.business-card-section-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+/* SERVICES */
+.business-card-services {
+  margin-bottom: 16px;
+}
+
+.business-card-services-inner {
+  margin-top: 1rem;
+}
+
+.business-card-services-title {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
   color: var(--text);
 }
+
+.business-card-services-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.business-card-service-chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  backdrop-filter: blur(4px);
+}
+
+.business-card-services-note {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* AREAS */
+.business-card-areas-text {
+  margin: 0;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+/* DIRECTIONS BUTTON */
+.business-card-directions-button {
+  display: block;
+  text-align: center;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: var(--primary, #6366f1);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+/* RIGHT COLUMN */
+.business-card-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* HOURS — FIXED + PREMIUM GLASS */
+.business-card-hours {
+  border-radius: 16px;
+  padding: 20px 22px;
+  width: 100%;
+  min-width: 260px; /* PREVENT OVERFLOW */
+  background: rgba(255, 255, 255, 0.10); /* STRONGER GLASS */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.business-card-hours-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.business-card-hours-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight: 700; /* BOLDER */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.business-card-hours-item:last-child {
+  border-bottom: none;
+}
+
+.business-card-hours-day {
+  width: 60px;
+  flex-shrink: 0; /* FIX: PREVENT LEFT OVERFLOW */
+  opacity: 0.95;
+  font-weight: 700;
+}
+
+.business-card-hours-time {
+  opacity: 0.95;
+  font-weight: 700;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .business-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .business-card-title {
+    font-size: 1.6rem;
+  }
+}
+
 
 /* ==========================================================
    EMBED PAGE
