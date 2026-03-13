@@ -1,6 +1,6 @@
 import BusinessCard from "@/components/cards/BusinessCard";
-import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import Link from "next/link";
+import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
 export default async function EmbedCodePage(props: {
   params: Promise<{ slug: string }>;
@@ -45,6 +45,7 @@ export default async function EmbedCodePage(props: {
           business={business}
           services={services}
           areas={areas}
+          hours_json={business.hours_json} // ⭐ FIXED — HOURS NOW SHOW
           searchParams={{ embed: "1" }}
         />
       </div>

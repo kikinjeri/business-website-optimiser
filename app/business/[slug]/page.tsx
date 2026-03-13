@@ -30,7 +30,12 @@ export default async function BusinessPage(props: {
       </div>
 
       <div className="business-page__card-wrapper">
-        <BusinessCard business={business} services={services} areas={areas} />
+        <BusinessCard
+          business={business}
+          services={services}
+          areas={areas}
+          hours_json={business.hours_json} // ✅ FIXED — HOURS NOW SHOW
+        />
       </div>
     </div>
   );

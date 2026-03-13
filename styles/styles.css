@@ -567,29 +567,18 @@
   padding: 2rem 0;
 }
 
-
-/* ==========================================================
-   BUSINESS CARD — PREMIUM UPGRADE
-========================================================== */
-
-
-
 /* ==========================================================
    BUSINESS CARD — PREMIUM UPGRADE (FIXED + ACCESSIBLE)
 ========================================================== */
 
 .business-card {
-  background: linear-gradient(
-    to bottom right,
-    var(--bg-card),
-    var(--bg-soft)
-  );
+  background: linear-gradient(to bottom right, var(--bg-card), var(--bg-soft));
   color: var(--text);
   border-radius: 18px;
   padding: 32px;
   box-shadow: var(--shadow);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  max-width: 1100px; /* WIDER CARD FIX */
+  max-width: 1100px; /* wider preview */
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -603,7 +592,6 @@
   }
 }
 
-/* Gradient glow */
 .business-card-gradient {
   position: absolute;
   inset: -40%;
@@ -617,7 +605,7 @@
 .business-card-grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 32px;
 }
 
@@ -656,14 +644,14 @@
 
 .business-card-tagline {
   font-size: 1.05rem;
-  opacity: 0.9; /* HIGHER CONTRAST */
+  opacity: 0.9;
   margin: 0;
 }
 
 /* STATUS */
 .business-card-status {
   font-size: 0.9rem;
-  font-weight: 700; /* BOLDER */
+  font-weight: 700;
   margin-top: 6px;
   white-space: nowrap;
 }
@@ -680,7 +668,7 @@
 .business-card-address p {
   margin: 0;
   font-size: 1rem;
-  opacity: 0.95; /* HIGHER CONTRAST */
+  opacity: 0.95;
   font-weight: 500;
 }
 
@@ -787,16 +775,23 @@
   gap: 20px;
 }
 
-/* HOURS — FIXED + PREMIUM GLASS */
+/* HOURS — FIXED + GLASS + LIGHT MODE SUPPORT */
 .business-card-hours {
   border-radius: 16px;
   padding: 20px 22px;
   width: 100%;
-  min-width: 260px; /* PREVENT OVERFLOW */
-  background: rgba(255, 255, 255, 0.10); /* STRONGER GLASS */
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  min-width: 260px; /* prevents Tue/Thu/Sat overflow */
+  background: rgba(0, 0, 0, 0.06); /* visible in light mode */
+  border: 1px solid rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(10px);
   box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  .business-card-hours {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
 }
 
 .business-card-hours-list {
@@ -812,8 +807,14 @@
   width: 100%;
   padding: 8px 0;
   font-size: 1rem;
-  font-weight: 700; /* BOLDER */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .business-card-hours-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
 }
 
 .business-card-hours-item:last-child {
@@ -822,7 +823,7 @@
 
 .business-card-hours-day {
   width: 60px;
-  flex-shrink: 0; /* FIX: PREVENT LEFT OVERFLOW */
+  flex-shrink: 0;
   opacity: 0.95;
   font-weight: 700;
 }
