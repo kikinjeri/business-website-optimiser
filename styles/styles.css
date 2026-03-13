@@ -48,6 +48,7 @@
 .section-heading {
   font-size: var(--font-lg);
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .app-preview-grid {
@@ -115,6 +116,7 @@
   max-width: 900px;
   margin: 4rem auto;
   padding: 0 2rem;
+  text-align: center;
 }
 
 .accessibility-section h2 {
