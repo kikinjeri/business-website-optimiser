@@ -307,30 +307,47 @@ export default function BusinessCard({
                 Services
               </h2>
 
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                }}
-              >
-                {services.map((service) => (
-                  <li
-                    key={service}
-                    style={{
-                      padding: "6px 14px",
-                      borderRadius: "999px",
-                      background: "rgba(255,255,255,0.08)",
-                      border: "1px solid rgba(255,255,255,0.12)",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    {service}
-                  </li>
-                ))}
-              </ul>
+              <section style={{ marginTop: "1rem" }}>
+                <strong style={{ display: "block", marginBottom: "0.5rem" }}>
+                  Services include:
+                </strong>
+
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                    margin: 0,
+                  }}
+                >
+                  {services.slice(0, 8).map((service) => (
+                    <li
+                      key={service}
+                      style={{
+                        padding: "6px 14px",
+                        borderRadius: "999px",
+                        background: "rgba(255,255,255,0.08)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {service}
+                    </li>
+                  ))}
+                </ul>
+
+                <p
+                  style={{
+                    marginTop: "0.6rem",
+                    fontSize: "0.85rem",
+                    opacity: 0.8,
+                  }}
+                >
+                  Visit website for a full list of services.
+                </p>
+              </section>
             </section>
           )}
 
