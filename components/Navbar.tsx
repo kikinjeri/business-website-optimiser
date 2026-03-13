@@ -10,11 +10,7 @@ export default function Navbar() {
 
   const pathname = usePathname();
 
-  // Extract slug if URL contains /business/[slug]
-  const slugMatch = pathname.match(/\/business\/([^\/]+)/);
-  const slug = slugMatch ? slugMatch[1] : null;
-
-  // Load theme
+  // Load theme from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("theme");
     if (stored) {
@@ -41,19 +37,11 @@ export default function Navbar() {
           Business Optimiser
         </Link>
 
-        {/* Desktop */}
+        {/* Desktop Navigation */}
         <div className="navbar-links">
           <Link href="/business">Directory</Link>
-          <Link href="/guide">Guide</Link>
-          <Link href="/dashboard">Dashboard</Link>
           <Link href="/about">About</Link>
-
-          {slug && (
-            <>
-              <Link href={`/business/${slug}/embed-code`}>Embed Code</Link>
-              <Link href={`/dashboard/analytics/${slug}`}>Analytics</Link>
-            </>
-          )}
+          <Link href="/dashboard">Dashboard</Link>
 
           <button
             className="theme-toggle"
@@ -82,32 +70,12 @@ export default function Navbar() {
         <Link href="/business" onClick={() => setMenuOpen(false)}>
           Directory
         </Link>
-        <Link href="/guide" onClick={() => setMenuOpen(false)}>
-          Guide
+        <Link href="/about" onClick={() => setMenuOpen(false)}>
+          About
         </Link>
         <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
           Dashboard
         </Link>
-        <Link href="/about" onClick={() => setMenuOpen(false)}>
-          About
-        </Link>
-
-        {slug && (
-          <>
-            <Link
-              href={`/business/${slug}/embed-code`}
-              onClick={() => setMenuOpen(false)}
-            >
-              Embed Code
-            </Link>
-            <Link
-              href={`/dashboard/analytics/${slug}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              Analytics
-            </Link>
-          </>
-        )}
 
         <button
           className="theme-toggle mobile-theme-toggle"
