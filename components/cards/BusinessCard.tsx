@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 type Hours = Record<string, string>;
 
@@ -12,21 +13,41 @@ export default function BusinessCard({
   email,
   website,
   hours,
+  services,
+  areas,
+  slug,
 }: {
   name: string;
   tagline: string | null;
-  address: string;
+  address: string | null;
   phone: string | null;
   email: string | null;
   website: string | null;
   hours: Hours | null;
+  services: { name_en: string }[];
+  areas: string[];
+  slug: string;
 }) {
-  /* ---------------------------------------------------------
-     TIME PARSER (fixed midnight bug)
-  --------------------------------------------------------- */
+  const [showFullHours, setShowFullHours] = useState(false);
+
+  /* BREADCRUMBS */
+  const breadcrumbs = (
+    <nav aria-label="Breadcrumb" className="breadcrumbs">
+      <ol>
+        <li>
+          <Link href="/">Home</Link>
+        </li>
+        <li>
+          <Link href="/business">Business Directory</Link>
+        </li>
+        <li aria-current="page">{name}</li>
+      </ol>
+    </nav>
+  );
+
+  /* TIME PARSER */
   function parseTime(str: string): number | null {
     if (!str) return null;
-
     const match = str.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)?/i);
     if (!match) return null;
 
@@ -40,9 +61,7 @@ export default function BusinessCard({
     return hour * 60 + minute;
   }
 
-  /* ---------------------------------------------------------
-     IS BUSINESS OPEN?
-  --------------------------------------------------------- */
+  /* IS BUSINESS OPEN? */
   const isOpen = useMemo(() => {
     if (!hours) return null;
 
@@ -50,33 +69,39 @@ export default function BusinessCard({
     const day = now
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
-
     const todayHours =
       hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
 
-    if (!todayHours || todayHours.trim() === "") return null;
+    if (!todayHours || todayHours.toLowerCase() === "closed") return false;
 
-    const [openStr, closeStr] = todayHours.split("-").map((s) => s.trim());
+    const [openStr, closeStr] = todayHours.split("–").map((s) => s.trim());
     const open = parseTime(openStr);
     const close = parseTime(closeStr);
 
     if (open === null || close === null) return null;
 
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-    // Handles ranges like 9AM–12AM (midnight)
-    if (close < open) {
-      return nowMinutes >= open || nowMinutes <= close;
-    }
+    if (close < open) return nowMinutes >= open || nowMinutes <= close;
 
     return nowMinutes >= open && nowMinutes <= close;
   }, [hours]);
 
-  /* ---------------------------------------------------------
-     HOURS RENDERER
-  --------------------------------------------------------- */
-  function renderHours() {
+  /* TODAY'S HOURS */
+  function getTodayHours() {
     if (!hours) return null;
+
+    const now = new Date();
+    const day = now
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+    return hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
+  }
+
+  const todayHours = getTodayHours();
+
+  /* FULL HOURS DROPDOWN */
+  function renderFullHours() {
+    if (!hours || !showFullHours) return null;
 
     const days = [
       "monday",
@@ -89,71 +114,175 @@ export default function BusinessCard({
     ];
 
     return (
-      <div className="business-card-hours">
+      <dl className="business-card-hours" aria-label="Weekly business hours">
         {days.map((day) => {
           const value =
             hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
-
-          if (!value || value.trim() === "") return null;
+          if (!value) return null;
 
           const label = day.charAt(0).toUpperCase() + day.slice(1);
 
           return (
             <div key={day} className="business-card-hours-item">
-              <span>{label}</span>
-              <span>{value}</span>
+              <dt>{label}</dt>
+              <dd>
+                <time>{value}</time>
+              </dd>
             </div>
           );
         })}
-      </div>
+      </dl>
     );
   }
 
+  /* ACTION LINKS */
+  const mapsUrl = address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+    : null;
+
+  const callNow = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
+
+  /* SERVICE LIMITING (max 6) */
+  const limitedServices = services.slice(0, 6);
+
   return (
-    <article className="business-card">
-      <header>
-        <h2 className="business-card__title">{name}</h2>
-        {tagline && <p className="business-card__tagline">{tagline}</p>}
-      </header>
+    <>
+      {breadcrumbs}
 
-      <section className="business-card__section">
-        <p className="business-card__location">
-          <strong>Location:</strong> {address}
-        </p>
+      <article
+        className="business-card"
+        itemScope
+        itemType="https://schema.org/LocalBusiness"
+      >
+        <header>
+          <h1 className="business-card__title" itemProp="name">
+            {name}
+          </h1>
+          {tagline && (
+            <p className="business-card__tagline" itemProp="description">
+              {tagline}
+            </p>
+          )}
+        </header>
 
-        {phone && (
-          <p className="business-card__contact">
-            <strong>Phone:</strong> {phone}
-          </p>
+        <section className="business-card__section">
+          <address className="business-card__location" itemProp="address">
+            <strong>Location:</strong> {address}
+          </address>
+
+          {phone && (
+            <p className="business-card__contact">
+              <strong>Phone:</strong> <span itemProp="telephone">{phone}</span>
+            </p>
+          )}
+
+          {email && (
+            <p className="business-card__contact">
+              <strong>Email:</strong> {email}
+            </p>
+          )}
+
+          {website && (
+            <p className="business-card__contact">
+              <a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="business-card__link"
+                itemProp="url"
+              >
+                {website
+                  .replace("https://", "")
+                  .replace("http://", "")
+                  .replace("www.", "")}
+              </a>
+            </p>
+          )}
+
+          {todayHours && (
+            <p className="business-card__status">
+              <strong>Today:</strong> <time>{todayHours}</time>
+              <button
+                className="hours-toggle"
+                aria-expanded={showFullHours}
+                onClick={() => setShowFullHours(!showFullHours)}
+              >
+                {showFullHours ? "Hide full hours" : "View full hours"}
+              </button>
+            </p>
+          )}
+        </section>
+
+        {renderFullHours()}
+
+        <section className="business-card__section">
+          <h2>Services include:</h2>
+          <ul className="business-card-services">
+            {limitedServices.map((s) => (
+              <li key={s.name_en}>{s.name_en}</li>
+            ))}
+          </ul>
+
+          {website && (
+            <p className="business-card__more-services">
+              For a full list of services, visit{" "}
+              <strong>
+                {website
+                  .replace("https://", "")
+                  .replace("http://", "")
+                  .replace("www.", "")}
+              </strong>
+            </p>
+          )}
+        </section>
+
+        {areas.length > 0 && (
+          <section className="business-card__section">
+            <h2>Service Areas</h2>
+            <ul className="business-card-areas">
+              {areas.map((a) => (
+                <li key={a}>{a}</li>
+              ))}
+            </ul>
+          </section>
         )}
 
-        {email && (
-          <p className="business-card__contact">
-            <strong>Email:</strong> {email}
-          </p>
-        )}
+        <footer className="business-card-footer">
+          {callNow && (
+            <a
+              href={callNow}
+              className="business-card-btn"
+              aria-label={`Call ${name}`}
+            >
+              Call Now
+            </a>
+          )}
 
-        {website && (
-          <p className="business-card__contact">
+          {mapsUrl && (
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="business-card-btn"
+              aria-label={`Get directions to ${name}`}
+            >
+              Get Directions
+            </a>
+          )}
+
+          {website && (
             <a
               href={website}
               target="_blank"
               rel="noopener noreferrer"
-              className="business-card__link"
+              className="business-card-btn"
+              aria-label={`Get a quote from ${name}`}
             >
-              Visit website →
+              Get a Quote
             </a>
-          </p>
-        )}
-
-        {isOpen !== null && (
-          <p className={`business-card__status ${isOpen ? "open" : "closed"}`}>
-            {isOpen ? "Open now" : "Closed"}
-          </p>
-        )}
-      </section>
-
-      {renderHours()}
-    </article>
+          )}
+        </footer>
+      </article>
+    </>
   );
 }

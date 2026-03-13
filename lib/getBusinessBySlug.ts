@@ -1,16 +1,14 @@
-"use server";
+// lib/getBusinessBySlug.ts
 
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function getBusinessBySlug(slug: string) {
   const supabase = await supabaseServer();
 
-  // Fetch business
   const { data: business, error: businessError } = await supabase
     .from("businesses")
     .select("*")
     .eq("slug", slug)
-    .limit(1)
     .single();
 
   if (businessError || !business) {
@@ -18,45 +16,19 @@ export async function getBusinessBySlug(slug: string) {
     return { business: null, services: [], areas: [] };
   }
 
-  // Normalize empty strings → null
-  const businessClean = Object.fromEntries(
-    Object.entries(business).map(([key, value]) => [
-      key,
-      value === "" ? null : value,
-    ])
-  );
-
-  // Fetch services (ordered)
-  const { data: servicesRaw, error: servicesError } = await supabase
-    .from("services")
-    .select("id, business_id, category_en, name_en, description_en, tags")
-    .eq("business_id", business.id)
-    .order("name_en", { ascending: true });
-
-  if (servicesError) {
-    console.error("Service fetch failed:", servicesError);
-  }
-
-  const services = servicesRaw ?? [];
-
-  // Fetch service areas (ordered)
-  const { data: areasRaw, error: areasError } = await supabase
-    .from("service_areas")
+  const { data: services } = await supabase
+    .from("business_services_view")
     .select("name_en")
-    .eq("business_id", business.id)
-    .order("name_en", { ascending: true });
+    .eq("business_id", business.id);
 
-  if (areasError) {
-    console.error("Areas fetch failed:", areasError);
-  }
-
-  const areas =
-    areasRaw?.map((a) => (a.name_en && a.name_en.trim() !== "" ? a.name_en : null))
-      .filter(Boolean) ?? [];
+  const { data: areas } = await supabase
+    .from("business_service_areas_view")
+    .select("area_name")
+    .eq("business_id", business.id);
 
   return {
-    business: businessClean,
-    services,
-    areas,
+    business,
+    services: services?.map((s) => ({ name_en: s.name_en })) || [],
+    areas: areas?.map((a) => a.area_name) || [],
   };
 }

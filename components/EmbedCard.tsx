@@ -31,7 +31,6 @@ export default function EmbedCard({
         border: `1px solid ${theme.primary}20`,
       }}
     >
-      {/* NAME */}
       <h2
         style={{
           margin: "0 0 8px 0",
@@ -42,21 +41,12 @@ export default function EmbedCard({
         {business.name}
       </h2>
 
-      {/* TAGLINE */}
       {business.tagline_en && (
-        <p
-          style={{
-            margin: "0 0 12px 0",
-            fontSize: "1rem",
-            color: theme.text,
-            opacity: 0.85,
-          }}
-        >
+        <p style={{ margin: "0 0 12px 0", opacity: 0.85 }}>
           {business.tagline_en}
         </p>
       )}
 
-      {/* SERVICES */}
       {services.length > 0 && (
         <div style={{ marginBottom: "12px" }}>
           <strong style={{ color: theme.primary }}>Services:</strong>
@@ -66,7 +56,6 @@ export default function EmbedCard({
         </div>
       )}
 
-      {/* AREAS */}
       {areas.length > 0 && (
         <div style={{ marginBottom: "12px" }}>
           <strong style={{ color: theme.primary }}>Service Areas:</strong>
@@ -76,7 +65,6 @@ export default function EmbedCard({
         </div>
       )}
 
-      {/* CONTACT */}
       <div style={{ marginTop: "16px" }}>
         {business.phone && (
           <p style={{ margin: "4px 0" }}>

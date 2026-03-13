@@ -1,6 +1,9 @@
+// app/business/[slug]/embed-code/page.tsx
+
 import BusinessCard from "@/components/cards/BusinessCard";
 import Link from "next/link";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
+import "@/styles/styles.css";
 
 export default async function EmbedCodePage(props: {
   params: Promise<{ slug: string }>;
@@ -42,21 +45,20 @@ export default async function EmbedCodePage(props: {
 
       <div className="embed-preview-wrapper">
         <BusinessCard
-          business={business}
+          name={business.name}
+          tagline={business.tagline_en}
+          address={business.address}
+          phone={business.phone}
+          email={business.email}
+          website={business.website_url}
+          hours={business.hours_json}
           services={services}
           areas={areas}
-          hours_json={business.hours_json} // ⭐ FIXED — HOURS NOW SHOW
-          searchParams={{ embed: "1" }}
+          slug={business.slug}
         />
       </div>
 
       <h2 className="embed-title">Embed code</h2>
-
-      <p className="embed-description">
-        Copy and paste this code into your website, Facebook page, Instagram
-        bio, or builders like Wix and Squarespace. It always stays up‑to‑date
-        automatically.
-      </p>
 
       <textarea readOnly value={iframeCode} className="embed-textarea" />
     </div>

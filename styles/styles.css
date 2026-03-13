@@ -631,6 +631,124 @@
   border: 1px solid rgba(148, 163, 184, 0.45);
   resize: none;
 }
+/* ==========================================================
+   PREMIUM EMBED CARD (INSIDE IFRAME)
+   Cinematic, glossy, light blue-grey, expensive feel
+========================================================== */
+
+.embed-card {
+  background: #f3f6fb; /* light blue-grey */
+  color: #1a1f2c; /* dark slate text */
+  padding: 28px;
+  border-radius: 18px;
+  max-width: 420px;
+  margin: 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  /* Cinematic shadow */
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 20px 40px rgba(0, 0, 0, 0.08);
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+/* Title */
+.embed-card h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Tagline */
+.embed-card .tagline {
+  margin: 6px 0 16px;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+/* Sections */
+.embed-card section {
+  margin-top: 16px;
+}
+
+/* Labels */
+.embed-card strong {
+  color: #111827;
+}
+
+/* Contact links */
+.embed-card a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.embed-card a:hover {
+  text-decoration: underline;
+}
+
+/* Hours block */
+.embed-card-hours {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.embed-card-hours-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.embed-card-hours-item:last-child {
+  border-bottom: none;
+}
+
+/* Services + Areas */
+.embed-card ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.embed-card li {
+  margin-bottom: 4px;
+}
+
+/* Buttons */
+.embed-card .btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.embed-card .btn:hover {
+  background: #1d4ed8;
+}
+
+/* Directions button (secondary) */
+.embed-card .btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.embed-card .btn-secondary:hover {
+  background: #d1d5db;
+}
 
 /* Copy embed button */
 

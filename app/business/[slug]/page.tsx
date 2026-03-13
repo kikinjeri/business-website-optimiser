@@ -1,5 +1,6 @@
+// app/business/[slug]/page.tsx
+
 import BusinessCard from "@/components/cards/BusinessCard";
-import Link from "next/link";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
 export default async function BusinessPage(props: {
@@ -11,7 +12,7 @@ export default async function BusinessPage(props: {
 
   if (!business) {
     return (
-      <div className="business-page">
+      <div className="page">
         <h1>Business not found</h1>
         <p>No business exists with the slug: {slug}</p>
       </div>
@@ -19,24 +20,17 @@ export default async function BusinessPage(props: {
   }
 
   return (
-    <div className="business-page">
-      <div className="business-page__topbar">
-        <Link
-          href={`/business/${slug}/embed-code`}
-          className="business-page__embed-btn"
-        >
-          Get embed code →
-        </Link>
-      </div>
-
-      <div className="business-page__card-wrapper">
-        <BusinessCard
-          business={business}
-          services={services}
-          areas={areas}
-          hours_json={business.hours_json} // ✅ FIXED — HOURS NOW SHOW
-        />
-      </div>
-    </div>
+    <BusinessCard
+      name={business.name}
+      tagline={business.tagline_en}
+      address={business.address}
+      phone={business.phone}
+      email={business.email}
+      website={business.website_url}
+      hours={business.hours_json}
+      services={services}
+      areas={areas}
+      slug={business.slug}
+    />
   );
 }

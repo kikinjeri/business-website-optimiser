@@ -20,20 +20,12 @@ export type Service = {
   tags: string[] | null;
 };
 
-/* ---------------------------------------------------------
-   HTML ESCAPER (prevents broken markup + XSS)
---------------------------------------------------------- */
-
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
-
-/* ---------------------------------------------------------
-   HOURS FORMATTER
---------------------------------------------------------- */
 
 function formatHours(hours: Record<string, string> | null): string {
   if (!hours) return "";
@@ -65,10 +57,6 @@ function formatHours(hours: Record<string, string> | null): string {
   return normalized.filter(Boolean).join("\n");
 }
 
-/* ---------------------------------------------------------
-   SERVICES FORMATTER
---------------------------------------------------------- */
-
 function formatServices(services: Service[]): string {
   if (!services || services.length === 0) return "";
 
@@ -90,10 +78,6 @@ function formatServices(services: Service[]): string {
   </ul>
 </section>`;
 }
-
-/* ---------------------------------------------------------
-   MAIN CARD GENERATOR
---------------------------------------------------------- */
 
 export function generateBusinessCard(
   business: Business,
