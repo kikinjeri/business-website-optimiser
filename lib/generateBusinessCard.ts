@@ -1,5 +1,3 @@
-// /lib/generateBusinessCard.ts
-
 export type Business = {
   id: string;
   name: string;
@@ -22,9 +20,20 @@ export type Service = {
   tags: string[] | null;
 };
 
-/* ---------------------------
+/* ---------------------------------------------------------
+   HTML ESCAPER (prevents broken markup + XSS)
+--------------------------------------------------------- */
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/* ---------------------------------------------------------
    HOURS FORMATTER
----------------------------- */
+--------------------------------------------------------- */
 
 function formatHours(hours: Record<string, string> | null): string {
   if (!hours) return "";
@@ -40,26 +49,29 @@ function formatHours(hours: Record<string, string> | null): string {
   ];
 
   const normalized = days.map((day) => {
-    const value = hours[day];
-    if (!value) return null;
+    const value =
+      hours[day] ||
+      hours[day.charAt(0).toUpperCase() + day.slice(1)];
 
-    const label =
-      day.charAt(0).toUpperCase() + day.slice(1); // Monday → Monday
+    if (!value || value.trim() === "") return null;
 
-    return `<p style="margin: 0.25rem 0;"><strong>${label}:</strong> ${value}</p>`;
+    const label = day.charAt(0).toUpperCase() + day.slice(1);
+
+    return `<p style="margin: 0.25rem 0;"><strong>${label}:</strong> ${escapeHtml(
+      value
+    )}</p>`;
   });
 
   return normalized.filter(Boolean).join("\n");
 }
 
-/* ---------------------------
+/* ---------------------------------------------------------
    SERVICES FORMATTER
----------------------------- */
+--------------------------------------------------------- */
 
 function formatServices(services: Service[]): string {
   if (!services || services.length === 0) return "";
 
-  // Sort: match category first, then alphabetical
   const sorted = [...services].sort((a, b) =>
     a.name_en.localeCompare(b.name_en)
   );
@@ -67,7 +79,7 @@ function formatServices(services: Service[]): string {
   const topFive = sorted.slice(0, 5);
 
   const items = topFive
-    .map((s) => `<li>${s.name_en}</li>`)
+    .map((s) => `<li>${escapeHtml(s.name_en)}</li>`)
     .join("\n");
 
   return `
@@ -79,9 +91,9 @@ function formatServices(services: Service[]): string {
 </section>`;
 }
 
-/* ---------------------------
+/* ---------------------------------------------------------
    MAIN CARD GENERATOR
----------------------------- */
+--------------------------------------------------------- */
 
 export function generateBusinessCard(
   business: Business,
@@ -93,28 +105,57 @@ export function generateBusinessCard(
 
   const contactBlock = [
     business.phone
-      ? `<p style="margin: 0.25rem 0;"><strong>Phone:</strong> ${business.phone}</p>`
+      ? `<p style="margin: 0.25rem 0;"><strong>Phone:</strong> ${escapeHtml(
+          business.phone
+        )}</p>`
       : "",
     business.email
-      ? `<p style="margin: 0.25rem 0;"><strong>Email:</strong> ${business.email}</p>`
+      ? `<p style="margin: 0.25rem 0;"><strong>Email:</strong> ${escapeHtml(
+          business.email
+        )}</p>`
       : "",
   ]
     .filter(Boolean)
     .join("\n");
 
   const websiteLink = business.website_url
-    ? `<a href="${business.website_url}" style="color: #0055ff;">Visit website →</a>`
+    ? `<a href="${business.website_url}" target="_blank" rel="noopener noreferrer" style="color: #0055ff;">Visit website →</a>`
     : "";
 
   return `
-<article aria-labelledby="business-name" style="font-family: system-ui; border: 1px solid #e5e5e5; padding: 1.25rem; border-radius: 12px; max-width: 380px;">
+<article aria-labelledby="business-name" style="
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 380px;
+  font-family: system-ui, sans-serif;
+">
   <header>
-    <h2 id="business-name" style="margin: 0; font-size: 1.35rem;">${business.name}</h2>
-    <p style="margin: 0.5rem 0 1rem;">${tagline}</p>
+    <h2 id="business-name" style="
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #111;
+    ">
+      ${escapeHtml(business.name)}
+    </h2>
+
+    <p style="
+      margin: 0.5rem 0 1rem;
+      color: #555;
+      font-size: 1rem;
+    ">
+      ${escapeHtml(tagline)}
+    </p>
   </header>
 
   <section aria-label="Business details">
-    <p style="margin: 0.25rem 0;"><strong>Location:</strong> ${business.address}</p>
+    <p style="margin: 0.25rem 0; font-size: 1rem; color: #111;">
+      <strong>Location:</strong> ${escapeHtml(business.address)}
+    </p>
+
     ${hoursBlock}
     ${contactBlock}
   </section>

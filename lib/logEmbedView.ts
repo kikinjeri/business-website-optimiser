@@ -16,13 +16,13 @@ export async function logEmbedView({
   embed: boolean;
 }) {
   try {
-   const supabase = await supabaseServer();
+    const supabase = await supabaseServer();
 
     await supabase.from("embed_analytics").insert({
       business_id: businessId,
       slug,
-      referrer,
-      user_agent: userAgent,
+      referrer: referrer || null,
+      user_agent: userAgent || null,
       embed,
     });
   } catch (err) {
