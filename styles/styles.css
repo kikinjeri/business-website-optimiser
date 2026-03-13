@@ -23,6 +23,12 @@
   font-size: var(--font-md);
   color: var(--text-soft);
   max-width: 650px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-supporting {
+  font-size: var(--font-lg);
+  color: var(--accent);
   margin-bottom: 2rem;
 }
 
@@ -32,11 +38,19 @@
 }
 
 /* ==========================================================
-   HOMEPAGE PREVIEW GRID
+   PREVIEW GRID SECTION
 ========================================================== */
 
-.app-preview-grid {
+.feature-section {
   margin-top: 3rem;
+}
+
+.section-heading {
+  font-size: var(--font-lg);
+  margin-bottom: 1.5rem;
+}
+
+.app-preview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
@@ -48,11 +62,18 @@
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   transition: var(--transition);
+  min-height: 130px;
+  outline: none;
 }
 
 .preview-card:hover {
   transform: translateY(-4px);
   background: var(--bg-soft);
+}
+
+.preview-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 .preview-card h3 {
@@ -66,49 +87,24 @@
 }
 
 /* ==========================================================
-   FEATURE ROWS
+   TRUST BADGES
 ========================================================== */
 
-.feature-rows {
+.about-badges {
   margin: 4rem auto;
   max-width: 1100px;
   padding: 0 2rem;
-}
-
-.section-title {
-  font-size: var(--font-lg);
-  margin-bottom: 1.5rem;
-}
-
-.row {
   display: flex;
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.row-card {
-  min-width: 260px;
+.badge {
   background: var(--bg-card);
-  padding: 1.25rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--radius);
+  font-size: var(--font-sm);
   box-shadow: var(--shadow);
-  transition: var(--transition);
-}
-
-.row-card:hover {
-  transform: translateY(-4px);
-  background: var(--bg-soft);
-}
-
-.row-card h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: var(--font-md);
-}
-
-.row-card p {
-  margin: 0;
-  color: var(--text-soft);
 }
 
 /* ==========================================================
@@ -129,6 +125,29 @@
 .accessibility-section p {
   color: var(--text-soft);
   line-height: 1.6;
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.footer {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--text-soft);
+  font-size: var(--font-sm);
+}
+
+/* ==========================================================
+   REDUCED MOTION SUPPORT
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-card,
+  .row-card {
+    transition: none;
+    transform: none !important;
+  }
 }
 
 /* ==========================================================
