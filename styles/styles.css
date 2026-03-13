@@ -155,65 +155,166 @@
 /* ==========================================================
    ABOUT PAGE
 ========================================================== */
+/* ==========================================================
+   ABOUT PAGE LAYOUT
+========================================================== */
 
 .about-page {
   max-width: 900px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 20px 60px;
 }
 
-.about-intro h1 {
+.about-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
   font-size: var(--font-lg);
-  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
-.about-tagline {
-  color: var(--text-soft);
-  font-size: var(--font-md);
-}
+/* ==========================================================
+   HERO
+========================================================== */
 
-.about-content {
+.about-hero {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 3rem;
 }
 
-.about-content p {
+.about-text {
+  flex: 1;
+}
+
+.page-intro {
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.about-image-wrapper {
+  flex-shrink: 0;
+}
+
+.about-image {
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  display: block;
+}
+
+/* Stack on small screens */
+@media (max-width: 720px) {
+  .about-hero {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+
+  .about-image-wrapper {
+    align-self: center;
+  }
+}
+
+/* ==========================================================
+   SECTIONS
+========================================================== */
+
+.guide-section {
+  margin-bottom: 2.5rem;
+}
+
+.section-title {
+  font-size: var(--font-md);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.section-list {
+  list-style: disc;
+  padding-left: 1.25rem;
   color: var(--text-soft);
   line-height: 1.6;
 }
 
-.about-benefits h2 {
-  font-size: var(--font-md);
-  margin-bottom: 16px;
+.section-list li + li {
+  margin-top: 0.35rem;
 }
 
-.about-benefits li {
-  margin-bottom: 12px;
+.section-text {
   color: var(--text-soft);
+  line-height: 1.7;
+  max-width: 60ch;
 }
+
+.section-text + .section-text {
+  margin-top: 0.75rem;
+}
+
+/* ==========================================================
+   LINKS & FOOTER
+========================================================== */
+
+.link-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.link-underline:hover {
+  text-decoration-thickness: 2px;
+}
+
+.guide-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: var(--font-sm);
+}
+
+/* ==========================================================
+   ANIMATED BADGES (if reused)
+========================================================== */
+
 .about-badges {
   display: flex;
   flex-direction: row;
   gap: 12px;
   justify-content: center;
-  flex-wrap: wrap; /* keeps it responsive */
+  flex-wrap: wrap;
 }
+
 .about-badges .badge {
   opacity: 0;
   transform: translateY(6px);
   animation: fadeInUp 0.4s ease forwards;
 }
 
-.about-badges .badge:nth-child(2) { animation-delay: 0.05s; }
-.about-badges .badge:nth-child(3) { animation-delay: 0.1s; }
-.about-badges .badge:nth-child(4) { animation-delay: 0.15s; }
+.about-badges .badge:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.about-badges .badge:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.about-badges .badge:nth-child(4) {
+  animation-delay: 0.15s;
+}
 
 @keyframes fadeInUp {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .about-badges .badge {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
