@@ -10,30 +10,37 @@ export default function DashboardPage() {
           </p>
         </header>
 
-        <section aria-label="Dashboard navigation" className="dashboard-grid">
-          <DashboardCard
-            title="Business Directory"
-            description="Browse all businesses in a clean, SEO‑optimized directory."
-            href="/business"
-          />
+        <section
+          aria-label="Dashboard navigation"
+          className="dashboard-grid-section"
+        >
+          <h2 className="dashboard-section-title">Your tools</h2>
 
-          <DashboardCard
-            title="About"
-            description="Understand the mission and accessibility‑first philosophy."
-            href="/about"
-          />
+          <div className="dashboard-grid">
+            <DashboardCard
+              title="Business Directory"
+              description="Browse all businesses in a clean, SEO‑optimized directory."
+              href="/business"
+            />
 
-          <DashboardCard
-            title="Embed Code"
-            description="Generate iframe embed code for any business."
-            href="/business/pest-control-ottawa/embed-code"
-          />
+            <DashboardCard
+              title="About"
+              description="Understand the mission and accessibility‑first philosophy."
+              href="/about"
+            />
 
-          <DashboardCard
-            title="Analytics"
-            description="Track views, referrers, and performance for each business."
-            href="/dashboard/analytics/pest-control-ottawa"
-          />
+            <DashboardCard
+              title="Embed Code"
+              description="Generate iframe embed code for any business."
+              href="/business/pest-control-ottawa/embed-code"
+            />
+
+            <DashboardCard
+              title="Analytics"
+              description="Track views, referrers, and performance for each business."
+              href="/dashboard/analytics/pest-control-ottawa"
+            />
+          </div>
         </section>
       </div>
     </main>
@@ -42,7 +49,7 @@ export default function DashboardPage() {
 
 function DashboardCard({ title, description, href }) {
   return (
-    <a href={href} className="dashboard-card">
+    <a href={href} className="dashboard-card" tabIndex={0}>
       <h3>{title}</h3>
       <p>{description}</p>
     </a>
