@@ -250,6 +250,191 @@ a:hover {
   }
 }
 
+/* ================================
+   DIRECTORY — GLOBAL LAYOUT
+   ================================ */
+
+.directory-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.directory-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.directory-header p {
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+/* ================================
+   SEARCH BAR
+   ================================ */
+
+.directory-search {
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  padding: 0.75rem 0;
+  z-index: 10;
+}
+
+.directory-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.directory-search-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ================================
+   LETTER SECTIONS
+   ================================ */
+
+.directory-section {
+  margin-top: 2rem;
+}
+
+.directory-section-letter {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+/* ================================
+   BUSINESS ROWS
+   ================================ */
+
+.directory-section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.directory-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  gap: 1rem;
+}
+
+.directory-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.directory-row:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ================================
+   LEFT SIDE (NAME + META)
+   ================================ */
+
+.directory-row-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.directory-row-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.directory-row-meta {
+  margin: 0;
+  opacity: 0.75;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 6px;
+}
+
+/* ================================
+   BADGES (STATUS + QUALITY)
+   ================================ */
+
+.directory-row-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-status {
+  background: rgba(0, 200, 0, 0.15);
+  color: #4cff4c;
+}
+
+.badge-quality {
+  background: rgba(0, 150, 255, 0.15);
+  color: #6ecbff;
+}
+
+/* ================================
+   ACTION LINKS
+   ================================ */
+
+.directory-row-actions {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.directory-row-actions a {
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.directory-row-actions a:hover,
+.directory-row-actions a:focus {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ================================
+   MOBILE RESPONSIVE
+   ================================ */
+
+@media (max-width: 640px) {
+  .directory-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .directory-row-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
+
+
 /* ==========================================================
    BUSINESS CARD — APP VERSION (NOT IFRAME)
    Premium, clean, accessible, matches global tokens

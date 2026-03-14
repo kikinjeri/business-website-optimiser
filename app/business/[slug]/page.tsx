@@ -1,36 +1,26 @@
-// app/business/[slug]/page.tsx
+import { supabaseServer } from "@/lib/supabase/server";
 
-import BusinessCard from "@/components/cards/BusinessCard";
-import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
+export default async function BusinessPage({ params }) {
+  const { slug } = await params; // <-- FIX
 
-export default async function BusinessPage(props: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await props.params;
+  console.log("Slug received by BusinessPage:", slug);
 
-  const { business, services, areas } = await getBusinessBySlug(slug);
+  const supabase = await supabaseServer();
+
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .single();
 
   if (!business) {
-    return (
-      <div className="page">
-        <h1>Business not found</h1>
-        <p>No business exists with the slug: {slug}</p>
-      </div>
-    );
+    return <p>No business found.</p>;
   }
 
   return (
-    <BusinessCard
-      name={business.name}
-      tagline={business.tagline_en}
-      address={business.address}
-      phone={business.phone}
-      email={business.email}
-      website={business.website_url}
-      hours={business.hours_json}
-      services={services}
-      areas={areas}
-      slug={business.slug}
-    />
+    <div>
+      <h1>{business.name}</h1>
+      {/* your card component here */}
+    </div>
   );
 }

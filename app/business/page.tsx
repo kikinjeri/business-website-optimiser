@@ -10,6 +10,8 @@ type Business = {
   slug: string;
   category?: string;
   location?: string;
+  status?: string;
+  dataQuality?: number;
 };
 
 const supabase = createClient(
@@ -45,6 +47,8 @@ export default function DirectoryPage() {
           slug: b.slug,
           category: b.category || "",
           location: b.neighborhood || "Ottawa",
+          status: "active", // placeholder for future
+          dataQuality: 82, // placeholder for future
         }));
 
         setBusinesses(mapped);
@@ -87,117 +91,74 @@ export default function DirectoryPage() {
 
   return (
     <main className="directory-page">
-      <section className="directory-header">
+      <header className="directory-header">
         <h1>Business Directory</h1>
-        <p>
-          Browse all tracked businesses in alphabetical order. Use this
-          directory to quickly access analytics, embed code, and card previews.
-        </p>
-      </section>
+        <p>Browse and manage all businesses in the system.</p>
 
-      <section className="directory-search" aria-label="Search businesses">
-        <label htmlFor="directory-search-input" className="sr-only">
-          Search businesses
-        </label>
-        <input
-          id="directory-search-input"
-          type="search"
-          className="directory-search-input"
-          placeholder="Search businesses…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </section>
+        <div className="directory-search">
+          <label htmlFor="directory-search-input" className="sr-only">
+            Search businesses
+          </label>
+          <input
+            id="directory-search-input"
+            type="search"
+            placeholder="Search businesses…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="directory-search-input"
+          />
+        </div>
+      </header>
 
       {loading && <p>Loading businesses…</p>}
 
       {!loading && (
-        <section className="directory-list" aria-label="Business directory">
+        <section aria-label="Business directory" className="directory-list">
           {filteredAndGrouped.length === 0 && (
-            <p className="directory-empty">
-              No businesses found. Try a different search.
-            </p>
+            <p className="directory-empty">No businesses found.</p>
           )}
 
           {filteredAndGrouped.map(({ letter, businesses }) => (
-            <div key={letter} className="directory-section">
+            <section key={letter} className="directory-section">
               <h2 className="directory-section-letter">{letter}</h2>
 
               <ul className="directory-section-list">
                 {businesses.map((b) => (
-                  <li
-                    key={b.slug}
-                    className="directory-row"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "14px 0",
-                      borderBottom: "1px solid rgba(255,255,255,0.08)",
-                    }}
-                  >
-                    {/* LEFT SIDE */}
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "4px",
-                      }}
-                    >
-                      <h3
-                        className="directory-row-name"
-                        style={{
-                          margin: 0,
-                          fontSize: "1.05rem",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {b.name}
-                      </h3>
+                  <li key={b.slug} className="directory-row">
+                    <div className="directory-row-left">
+                      <h3 className="directory-row-name">{b.name}</h3>
 
                       {(b.category || b.location) && (
-                        <p
-                          className="directory-row-meta"
-                          style={{
-                            margin: 0,
-                            opacity: 0.75,
-                            fontSize: "0.9rem",
-                            display: "flex",
-                            gap: "6px",
-                            alignItems: "center",
-                          }}
-                        >
+                        <p className="directory-row-meta">
                           {b.category && <span>{b.category}</span>}
                           {b.category && b.location && <span>•</span>}
                           {b.location && <span>{b.location}</span>}
                         </p>
                       )}
+
+                      <div className="directory-row-badges">
+                        <span className="badge badge-status">{b.status}</span>
+                        <span className="badge badge-quality">
+                          {b.dataQuality}% quality
+                        </span>
+                      </div>
                     </div>
 
-                    {/* RIGHT SIDE — ACTION LINKS */}
                     <nav
                       className="directory-row-actions"
                       aria-label={`Actions for ${b.name}`}
-                      style={{
-                        display: "flex",
-                        gap: "16px",
-                        fontSize: "0.9rem",
-                        whiteSpace: "nowrap",
-                      }}
                     >
+                      <Link href={`/business/${b.slug}`}>View</Link>
+                      <Link href={`/business/${b.slug}?embed=1`}>Preview</Link>
+                      <Link href={`/business/${b.slug}/embed-code`}>Embed</Link>
                       <Link href={`/dashboard/analytics/${b.slug}`}>
                         Analytics
                       </Link>
-                      <Link href={`/business/${b.slug}/embed-code`}>
-                        Embed Code
-                      </Link>
-                      <Link href={`/card/${b.slug}?embed=1`}>Preview</Link>
-                      <Link href={`/business/${b.slug}`}>View</Link>
                     </nav>
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           ))}
         </section>
       )}

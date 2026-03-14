@@ -5,6 +5,15 @@ import { useMemo, useState } from "react";
 
 type Hours = Record<string, string>;
 
+type Service = {
+  id: string;
+  name_en: string;
+  category_en?: string | null;
+  description_en?: string | null;
+  starting_price?: string | null;
+  tags?: string[] | null;
+};
+
 export default function BusinessCard({
   name,
   tagline,
@@ -28,7 +37,7 @@ export default function BusinessCard({
   email: string | null;
   website: string | null;
   hours: Hours | null;
-  services: { name_en: string }[];
+  services: Service[];
   areas: string[];
   slug: string;
 
@@ -214,6 +223,20 @@ export default function BusinessCard({
             <strong>Location:</strong> {address}
           </address>
 
+          {/* ⭐ MOVED HERE: Get Directions under the address */}
+          {mapsUrl && (
+            <p className="business-card__contact">
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="business-card__link"
+              >
+                Get Directions
+              </a>
+            </p>
+          )}
+
           {phone && (
             <p className="business-card__contact">
               <strong>Phone:</strong> <span itemProp="telephone">{phone}</span>
@@ -229,7 +252,7 @@ export default function BusinessCard({
           {website && (
             <p className="business-card__contact">
               <a
-                href={website} // FULL URL — correct routing
+                href={website}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="business-card__link"
@@ -243,7 +266,6 @@ export default function BusinessCard({
           {todayHours && (
             <p className="business-card__status">
               <strong>Today:</strong> <time>{todayHours}</time>
-              {/* FIXED SPACING */}
               <span style={{ marginLeft: "0.5rem" }} />
               <button
                 className="hours-toggle"
@@ -263,7 +285,7 @@ export default function BusinessCard({
           <h2>Services include:</h2>
           <ul className="business-card-services">
             {limitedServices.map((s) => (
-              <li key={s.name_en}>{s.name_en}</li>
+              <li key={s.id}>{s.name_en}</li>
             ))}
           </ul>
 
@@ -297,21 +319,9 @@ export default function BusinessCard({
             </a>
           )}
 
-          {mapsUrl && (
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="business-card-btn"
-              aria-label={`Get directions to ${name}`}
-            >
-              Get Directions
-            </a>
-          )}
-
           {website && (
             <a
-              href={website} // FULL URL — correct routing
+              href={website}
               target="_blank"
               rel="noopener noreferrer"
               className="business-card-btn"

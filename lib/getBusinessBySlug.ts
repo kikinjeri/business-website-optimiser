@@ -3,48 +3,41 @@
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function getBusinessBySlug(slug: string) {
+  // Create server-side Supabase client
   const supabase = await supabaseServer();
 
-  // Explicitly select the fields you actually use
+  // Fetch the business
   const { data: business, error: businessError } = await supabase
     .from("businesses")
-    .select(`
-      id,
-      name,
-      slug,
-      tagline_en,
-      address,
-      phone,
-      email,
-      website_url,
-      hours_json,
-      is_accessible,
-      supports_screen_readers,
-      supports_keyboard_navigation
-    `)
+    .select("*")
     .eq("slug", slug)
     .single();
 
   if (businessError || !business) {
-    console.error("Business fetch failed:", businessError);
     return { business: null, services: [], areas: [] };
   }
 
-  // SERVICES
+  // Fetch services for this business
   const { data: services } = await supabase
-    .from("business_services_view")
-    .select("name_en")
-    .eq("business_id", business.id);
+    .from("services")
+    .select(
+      "id, name_en, category_en, description_en, starting_price, tags"
+    )
+    .eq("business_id", business.id)
+    .order("name_en", { ascending: true });
 
-  // SERVICE AREAS
-  const { data: areas } = await supabase
-    .from("business_service_areas_view")
-    .select("area_name")
-    .eq("business_id", business.id);
+  // Fetch service areas for this business
+  const { data: areasRaw } = await supabase
+    .from("service_areas")
+    .select("name_en")
+    .eq("business_id", business.id)
+    .order("name_en", { ascending: true });
+
+  const areas = areasRaw?.map((a) => a.name_en) ?? [];
 
   return {
     business,
-    services: services?.map((s) => ({ name_en: s.name_en })) || [],
-    areas: areas?.map((a) => a.area_name) || [],
+    services: services ?? [],
+    areas,
   };
 }
