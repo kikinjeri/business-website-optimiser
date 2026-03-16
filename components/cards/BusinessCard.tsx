@@ -5,15 +5,6 @@ import { useMemo, useState } from "react";
 
 type Hours = Record<string, string>;
 
-type Service = {
-  id: string;
-  name_en: string;
-  category_en?: string | null;
-  description_en?: string | null;
-  starting_price?: string | null;
-  tags?: string[] | null;
-};
-
 export default function BusinessCard({
   name,
   tagline,
@@ -22,7 +13,6 @@ export default function BusinessCard({
   email,
   website,
   hours,
-  services,
   areas,
   slug,
   is_accessible,
@@ -37,7 +27,6 @@ export default function BusinessCard({
   email: string | null;
   website: string | null;
   hours: Hours | null;
-  services: Service[];
   areas: string[];
   slug: string;
 
@@ -49,7 +38,9 @@ export default function BusinessCard({
 }) {
   const [showFullHours, setShowFullHours] = useState(false);
 
-  /* BREADCRUMBS */
+  /* ----------------------------------------------
+   * BREADCRUMBS
+   * ---------------------------------------------- */
   const breadcrumbs = (
     <nav aria-label="Breadcrumb" className="breadcrumbs">
       <ol>
@@ -64,9 +55,12 @@ export default function BusinessCard({
     </nav>
   );
 
-  /* TIME PARSER */
+  /* ----------------------------------------------
+   * TIME PARSER
+   * ---------------------------------------------- */
   function parseTime(str: string): number | null {
     if (!str) return null;
+
     const match = str.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)?/i);
     if (!match) return null;
 
@@ -80,7 +74,9 @@ export default function BusinessCard({
     return hour * 60 + minute;
   }
 
-  /* IS BUSINESS OPEN? */
+  /* ----------------------------------------------
+   * IS BUSINESS OPEN?
+   * ---------------------------------------------- */
   const isOpen = useMemo(() => {
     if (!hours) return null;
 
@@ -88,6 +84,7 @@ export default function BusinessCard({
     const day = now
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
+
     const todayHours =
       hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
 
@@ -100,12 +97,18 @@ export default function BusinessCard({
     if (open === null || close === null) return null;
 
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    if (close < open) return nowMinutes >= open || nowMinutes <= close;
+
+    // Handles overnight hours (e.g., 8 PM – 2 AM)
+    if (close < open) {
+      return nowMinutes >= open || nowMinutes <= close;
+    }
 
     return nowMinutes >= open && nowMinutes <= close;
   }, [hours]);
 
-  /* TODAY'S HOURS */
+  /* ----------------------------------------------
+   * TODAY'S HOURS
+   * ---------------------------------------------- */
   function getTodayHours() {
     if (!hours) return null;
 
@@ -113,12 +116,15 @@ export default function BusinessCard({
     const day = now
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
+
     return hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
   }
 
   const todayHours = getTodayHours();
 
-  /* FULL HOURS DROPDOWN */
+  /* ----------------------------------------------
+   * FULL HOURS DROPDOWN
+   * ---------------------------------------------- */
   function renderFullHours() {
     if (!hours || !showFullHours) return null;
 
@@ -154,7 +160,9 @@ export default function BusinessCard({
     );
   }
 
-  /* ACTION LINKS */
+  /* ----------------------------------------------
+   * ACTION LINKS
+   * ---------------------------------------------- */
   const mapsUrl = address
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         address,
@@ -163,16 +171,18 @@ export default function BusinessCard({
 
   const callNow = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
 
-  /* SERVICE LIMITING (max 6) */
-  const limitedServices = services.slice(0, 6);
-
-  /* CLEAN DISPLAY URL (visual only) */
+  /* ----------------------------------------------
+   * CLEAN DISPLAY URL
+   * ---------------------------------------------- */
   const displayUrl =
     website
       ?.replace("https://", "")
       .replace("http://", "")
       .replace("www.", "") ?? "";
 
+  /* ----------------------------------------------
+   * RENDER
+   * ---------------------------------------------- */
   return (
     <>
       {breadcrumbs}
@@ -223,7 +233,6 @@ export default function BusinessCard({
             <strong>Location:</strong> {address}
           </address>
 
-          {/* ⭐ MOVED HERE: Get Directions under the address */}
           {mapsUrl && (
             <p className="business-card__contact">
               <a
@@ -279,22 +288,6 @@ export default function BusinessCard({
         </section>
 
         {renderFullHours()}
-
-        {/* SERVICES */}
-        <section className="business-card__section">
-          <h2>Services include:</h2>
-          <ul className="business-card-services">
-            {limitedServices.map((s) => (
-              <li key={s.id}>{s.name_en}</li>
-            ))}
-          </ul>
-
-          {website && (
-            <p className="business-card__more-services">
-              For a full list of services, visit <strong>{displayUrl}</strong>
-            </p>
-          )}
-        </section>
 
         {/* SERVICE AREAS */}
         {areas.length > 0 && (

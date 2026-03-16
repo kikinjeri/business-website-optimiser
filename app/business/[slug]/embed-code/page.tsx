@@ -1,16 +1,19 @@
-// app/business/[slug]/embed-code/page.tsx
+// File: app/business/[slug]/embed-code/page.tsx
 
 import BusinessCard from "@/components/cards/BusinessCard";
 import Link from "next/link";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import "@/styles/styles.css";
 
-export default async function EmbedCodePage(props: {
-  params: Promise<{ slug: string }>;
+export default async function EmbedCodePage({
+  params,
+}: {
+  params: { slug: string };
 }) {
-  const { slug } = await props.params;
+  const { slug } = params;
 
-  const { business, services, areas } = await getBusinessBySlug(slug);
+  // Canonical data fetcher (services removed, consistent shape)
+  const { business, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
     return (
@@ -52,9 +55,12 @@ export default async function EmbedCodePage(props: {
           email={business.email}
           website={business.website_url}
           hours={business.hours_json}
-          services={services}
           areas={areas}
           slug={business.slug}
+          is_accessible={business.is_accessible}
+          supports_screen_readers={business.supports_screen_readers}
+          supports_keyboard_navigation={business.supports_keyboard_navigation}
+          tags={business.tags}
         />
       </div>
 

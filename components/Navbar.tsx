@@ -39,9 +39,11 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="navbar-links">
-          <Link href="/business">Directory</Link>
+          <Link href="/">Home</Link>
           <Link href="/about">About</Link>
+          <Link href="/business">Directory</Link>
           <Link href="/dashboard">Dashboard</Link>
+          <Link href="/contact">Contact</Link>
 
           <button
             className="theme-toggle"
@@ -67,14 +69,20 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div className={`navbar-mobile ${menuOpen ? "open" : ""}`}>
-        <Link href="/business" onClick={() => setMenuOpen(false)}>
-          Directory
+        <Link href="/" onClick={() => setMenuOpen(false)}>
+          Home
         </Link>
         <Link href="/about" onClick={() => setMenuOpen(false)}>
           About
         </Link>
+        <Link href="/business" onClick={() => setMenuOpen(false)}>
+          Directory
+        </Link>
         <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
           Dashboard
+        </Link>
+        <Link href="/contact" onClick={() => setMenuOpen(false)}>
+          Contact
         </Link>
 
         <button

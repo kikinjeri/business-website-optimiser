@@ -1,16 +1,23 @@
-// components/EmbedCard.tsx
+// File: components/EmbedCard.tsx
 
 interface EmbedCardProps {
-  business: any;
-  services: string[];
+  business: {
+    name: string;
+    tagline_en?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    website_url?: string | null;
+
+    theme_primary?: string | null;
+    theme_accent?: string | null;
+    theme_text?: string | null;
+    theme_background?: string | null;
+  };
   areas: string[];
 }
 
-export default function EmbedCard({
-  business,
-  services,
-  areas,
-}: EmbedCardProps) {
+export default function EmbedCard({ business, areas }: EmbedCardProps) {
+  // Theme fallback values ensure the card never breaks visually
   const theme = {
     primary: business.theme_primary || "#111827",
     accent: business.theme_accent || "#2563eb",
@@ -31,6 +38,7 @@ export default function EmbedCard({
         border: `1px solid ${theme.primary}20`,
       }}
     >
+      {/* NAME */}
       <h2
         style={{
           margin: "0 0 8px 0",
@@ -41,21 +49,14 @@ export default function EmbedCard({
         {business.name}
       </h2>
 
+      {/* TAGLINE */}
       {business.tagline_en && (
         <p style={{ margin: "0 0 12px 0", opacity: 0.85 }}>
           {business.tagline_en}
         </p>
       )}
 
-      {services.length > 0 && (
-        <div style={{ marginBottom: "12px" }}>
-          <strong style={{ color: theme.primary }}>Services:</strong>
-          <p style={{ margin: "4px 0 0 0", opacity: 0.9 }}>
-            {services.join(", ")}
-          </p>
-        </div>
-      )}
-
+      {/* SERVICE AREAS */}
       {areas.length > 0 && (
         <div style={{ marginBottom: "12px" }}>
           <strong style={{ color: theme.primary }}>Service Areas:</strong>
@@ -65,6 +66,7 @@ export default function EmbedCard({
         </div>
       )}
 
+      {/* CONTACT INFO */}
       <div style={{ marginTop: "16px" }}>
         {business.phone && (
           <p style={{ margin: "4px 0" }}>

@@ -1,3 +1,5 @@
+// File: app/card/[slug]/page.tsx
+
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import EmbedCard from "@/components/EmbedCard";
 import "@/styles/styles.css";
@@ -11,7 +13,8 @@ export default async function CardPage({
 }) {
   const { slug } = params;
 
-  const { business, services, areas } = await getBusinessBySlug(slug);
+  // Canonical data fetcher (services removed, consistent shape)
+  const { business, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
     return (
@@ -29,13 +32,17 @@ export default async function CardPage({
       style={{
         padding: isEmbed ? 0 : 20,
         background: isEmbed ? "transparent" : "#f9fafb",
-        minHeight: "100vh",
+        minHeight: isEmbed ? "auto" : "100vh",
         display: "flex",
         justifyContent: "center",
       }}
     >
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <EmbedCard business={business} services={services} areas={areas} />
+        <EmbedCard
+          business={business}
+          areas={areas}
+          tags={business.tags} // ← Correct, consistent with new data model
+        />
       </div>
     </div>
   );

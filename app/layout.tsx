@@ -17,10 +17,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="dark">
-      <body>
+      <body className="app-body">
         <Navbar />
 
-        <main className="page-container">{children}</main>
+        {/* Main content wrapper */}
+        <main id="main-content" className="page-container">
+          {children}
+        </main>
       </body>
     </html>
   );

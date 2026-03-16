@@ -1,23 +1,7 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
+// File: app/business/page.tsx
 import Link from "next/link";
-import { createClient } from "@supabase/supabase-js";
-
-type Business = {
-  id: string;
-  name: string;
-  slug: string;
-  category?: string;
-  location?: string;
-  status?: string;
-  dataQuality?: number;
-};
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
+import { supabaseServer } from "@/lib/supabase/server";
+import "@/styles/styles.css";
 
 function normalizeName(name: string) {
   return name.trim().toUpperCase();
@@ -29,65 +13,31 @@ function getInitial(name: string) {
   return first && first >= "A" && first <= "Z" ? first : "#";
 }
 
-export default function DirectoryPage() {
-  const [query, setQuery] = useState("");
-  const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [loading, setLoading] = useState(true);
+export default async function DirectoryPage() {
+  const supabase = supabaseServer();
 
-  useEffect(() => {
-    async function load() {
-      const { data, error } = await supabase
-        .from("businesses")
-        .select("id, name, slug, category, neighborhood");
+  // Fetch only the fields we actually use
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("id, name, slug, category, neighborhood, status")
+    .order("name", { ascending: true });
 
-      if (!error && data) {
-        const mapped = data.map((b) => ({
-          id: b.id,
-          name: b.name,
-          slug: b.slug,
-          category: b.category || "",
-          location: b.neighborhood || "Ottawa",
-          status: "active", // placeholder for future
-          dataQuality: 82, // placeholder for future
-        }));
+  const businesses = data || [];
 
-        setBusinesses(mapped);
-      }
+  // Group alphabetically
+  const groups: Record<string, typeof businesses> = {};
+  for (const b of businesses) {
+    const letter = getInitial(b.name);
+    if (!groups[letter]) groups[letter] = [];
+    groups[letter].push(b);
+  }
 
-      setLoading(false);
-    }
-
-    load();
-  }, []);
-
-  const filteredAndGrouped = useMemo(() => {
-    const q = query.trim().toLowerCase();
-
-    const filtered = businesses
-      .filter((b) => {
-        if (!q) return true;
-        const haystack =
-          `${b.name} ${b.category ?? ""} ${b.location ?? ""}`.toLowerCase();
-        return haystack.includes(q);
-      })
-      .sort((a, b) =>
-        normalizeName(a.name).localeCompare(normalizeName(b.name)),
-      );
-
-    const groups: Record<string, Business[]> = {};
-    for (const b of filtered) {
-      const initial = getInitial(b.name);
-      if (!groups[initial]) groups[initial] = [];
-      groups[initial].push(b);
-    }
-
-    return Object.keys(groups)
-      .sort()
-      .map((letter) => ({
-        letter,
-        businesses: groups[letter],
-      }));
-  }, [query, businesses]);
+  const sortedGroups = Object.keys(groups)
+    .sort()
+    .map((letter) => ({
+      letter,
+      businesses: groups[letter],
+    }));
 
   return (
     <main className="directory-page">
@@ -95,73 +45,67 @@ export default function DirectoryPage() {
         <h1>Business Directory</h1>
         <p>Browse and manage all businesses in the system.</p>
 
-        <div className="directory-search">
-          <label htmlFor="directory-search-input" className="sr-only">
+        {/* Search is client-side only, so we keep it simple */}
+        <form action="/business" method="GET" className="directory-search">
+          <label htmlFor="q" className="sr-only">
             Search businesses
           </label>
           <input
-            id="directory-search-input"
+            id="q"
+            name="q"
             type="search"
             placeholder="Search businesses…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
             className="directory-search-input"
+            defaultValue=""
           />
-        </div>
+        </form>
       </header>
 
-      {loading && <p>Loading businesses…</p>}
+      {sortedGroups.length === 0 && (
+        <p className="directory-empty">No businesses found.</p>
+      )}
 
-      {!loading && (
-        <section aria-label="Business directory" className="directory-list">
-          {filteredAndGrouped.length === 0 && (
-            <p className="directory-empty">No businesses found.</p>
-          )}
+      <section aria-label="Business directory" className="directory-list">
+        {sortedGroups.map(({ letter, businesses }) => (
+          <section key={letter} className="directory-section">
+            <h2 className="directory-section-letter">{letter}</h2>
 
-          {filteredAndGrouped.map(({ letter, businesses }) => (
-            <section key={letter} className="directory-section">
-              <h2 className="directory-section-letter">{letter}</h2>
+            <ul className="directory-section-list">
+              {businesses.map((b) => (
+                <li key={b.slug} className="directory-row">
+                  <div className="directory-row-left">
+                    <h3 className="directory-row-name">{b.name}</h3>
 
-              <ul className="directory-section-list">
-                {businesses.map((b) => (
-                  <li key={b.slug} className="directory-row">
-                    <div className="directory-row-left">
-                      <h3 className="directory-row-name">{b.name}</h3>
+                    {(b.category || b.neighborhood) && (
+                      <p className="directory-row-meta">
+                        {b.category && <span>{b.category}</span>}
+                        {b.category && b.neighborhood && <span>•</span>}
+                        {b.neighborhood && <span>{b.neighborhood}</span>}
+                      </p>
+                    )}
 
-                      {(b.category || b.location) && (
-                        <p className="directory-row-meta">
-                          {b.category && <span>{b.category}</span>}
-                          {b.category && b.location && <span>•</span>}
-                          {b.location && <span>{b.location}</span>}
-                        </p>
-                      )}
-
+                    {b.status && (
                       <div className="directory-row-badges">
                         <span className="badge badge-status">{b.status}</span>
-                        <span className="badge badge-quality">
-                          {b.dataQuality}% quality
-                        </span>
                       </div>
-                    </div>
+                    )}
+                  </div>
 
-                    <nav
-                      className="directory-row-actions"
-                      aria-label={`Actions for ${b.name}`}
-                    >
-                      <Link href={`/business/${b.slug}`}>View</Link>
-                      <Link href={`/business/${b.slug}?embed=1`}>Preview</Link>
-                      <Link href={`/business/${b.slug}/embed-code`}>Embed</Link>
-                      <Link href={`/dashboard/analytics/${b.slug}`}>
-                        Analytics
-                      </Link>
-                    </nav>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </section>
-      )}
+                  <nav
+                    className="directory-row-actions"
+                    aria-label={`Actions for ${b.name}`}
+                  >
+                    <Link href={`/business/${b.slug}`}>View</Link>
+                    <Link href={`/card/${b.slug}?embed=1`}>Preview</Link>
+                    <Link href={`/business/${b.slug}/embed-code`}>Embed</Link>
+                    <Link href={`/dashboard/${b.slug}`}>Dashboard</Link>
+                  </nav>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </section>
     </main>
   );
 }

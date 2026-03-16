@@ -1,26 +1,44 @@
-import { supabaseServer } from "@/lib/supabase/server";
+// File: app/business/[slug]/page.tsx
 
-export default async function BusinessPage({ params }) {
-  const { slug } = await params; // <-- FIX
+import BusinessCard from "@/components/cards/BusinessCard";
+import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 
-  console.log("Slug received by BusinessPage:", slug);
+export default async function BusinessPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { slug } = params;
 
-  const supabase = await supabaseServer();
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  // Canonical data fetcher (services removed, consistent shape)
+  const { business, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
-    return <p>No business found.</p>;
+    return (
+      <main className="business-page">
+        <h1>Business not found</h1>
+        <p>No business exists with the slug: {slug}</p>
+      </main>
+    );
   }
 
   return (
-    <div>
-      <h1>{business.name}</h1>
-      {/* your card component here */}
-    </div>
+    <main className="business-page">
+      <BusinessCard
+        name={business.name}
+        tagline={business.tagline_en}
+        address={business.address}
+        phone={business.phone}
+        email={business.email}
+        website={business.website_url}
+        hours={business.hours_json}
+        areas={areas}
+        slug={business.slug}
+        is_accessible={business.is_accessible}
+        supports_screen_readers={business.supports_screen_readers}
+        supports_keyboard_navigation={business.supports_keyboard_navigation}
+        tags={business.tags}
+      />
+    </main>
   );
 }

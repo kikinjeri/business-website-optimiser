@@ -11,15 +11,6 @@ export type Business = {
   tagline_en: string | null;
 };
 
-export type Service = {
-  id: string;
-  business_id: string;
-  category_en: string | null;
-  name_en: string;
-  description_en: string | null;
-  tags: string[] | null;
-};
-
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
@@ -57,35 +48,9 @@ function formatHours(hours: Record<string, string> | null): string {
   return normalized.filter(Boolean).join("\n");
 }
 
-function formatServices(services: Service[]): string {
-  if (!services || services.length === 0) return "";
-
-  const sorted = [...services].sort((a, b) =>
-    a.name_en.localeCompare(b.name_en)
-  );
-
-  const topFive = sorted.slice(0, 5);
-
-  const items = topFive
-    .map((s) => `<li>${escapeHtml(s.name_en)}</li>`)
-    .join("\n");
-
-  return `
-<section aria-label="Services offered" style="margin-top: 1rem;">
-  <strong>Services:</strong>
-  <ul style="margin: 0.5rem 0 0; padding-left: 1.2rem;">
-    ${items}
-  </ul>
-</section>`;
-}
-
-export function generateBusinessCard(
-  business: Business,
-  services: Service[]
-): string {
+export function generateBusinessCard(business: Business): string {
   const tagline = business.tagline_en || business.category;
   const hoursBlock = formatHours(business.hours_json);
-  const servicesBlock = formatServices(services);
 
   const contactBlock = [
     business.phone
@@ -143,8 +108,6 @@ export function generateBusinessCard(
     ${hoursBlock}
     ${contactBlock}
   </section>
-
-  ${servicesBlock}
 
   <footer style="margin-top: 1rem;">
     ${websiteLink}
