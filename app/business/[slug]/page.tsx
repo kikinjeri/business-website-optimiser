@@ -6,11 +6,11 @@ import "@/styles/styles.css";
 export default async function BusinessPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  // Next.js 15/16: params is a Promise
+  const { slug } = await params;
 
-  // Canonical fetcher (services removed, areas included)
   const { business, areas } = await getBusinessBySlug(slug);
 
   if (!business) {

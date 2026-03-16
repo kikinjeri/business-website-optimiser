@@ -29,11 +29,6 @@ export type GetBusinessBySlugResult = {
   areas: string[];
 };
 
-/**
- * Canonical data fetcher for a single business.
- * Used by business page, card page, embed code page, etc.
- * Returns a stable, services‑free shape: { business, areas }.
- */
 export async function getBusinessBySlug(
   slug: string,
 ): Promise<GetBusinessBySlugResult> {
@@ -58,13 +53,14 @@ export async function getBusinessBySlug(
       supports_screen_readers,
       supports_keyboard_navigation,
       neighborhood,
-      service_areas:service_areas(name_en)
+      service_areas:service_areas!service_areas_business_fk(name_en)
     `,
     )
     .eq("slug", slug)
     .maybeSingle();
 
   if (error || !data) {
+    console.error("getBusinessBySlug error:", error);
     return {
       business: null,
       areas: [],
