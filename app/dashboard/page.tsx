@@ -24,12 +24,6 @@ export default function DashboardPage() {
             />
 
             <DashboardCard
-              title="About"
-              description="Understand the mission and accessibility‑first philosophy."
-              href="/about"
-            />
-
-            <DashboardCard
               title="Embed Code"
               description="Generate iframe embed code for any business."
               href="/business/pest-control-ottawa/embed-code"

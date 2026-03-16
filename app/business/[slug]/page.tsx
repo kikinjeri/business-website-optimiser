@@ -1,7 +1,7 @@
 // File: app/business/[slug]/page.tsx
-
 import BusinessCard from "@/components/cards/BusinessCard";
 import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
+import "@/styles/styles.css";
 
 export default async function BusinessPage({
   params,
@@ -10,7 +10,7 @@ export default async function BusinessPage({
 }) {
   const { slug } = params;
 
-  // Canonical data fetcher (services removed, consistent shape)
+  // Canonical fetcher (services removed, areas included)
   const { business, areas } = await getBusinessBySlug(slug);
 
   if (!business) {
