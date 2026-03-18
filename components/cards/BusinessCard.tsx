@@ -1,9 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-type Hours = Record<string, string>;
+type BusinessCardProps = {
+  name: string;
+  tagline: string | null;
+  address: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  hours: Record<string, string> | null;
+  areas: string[];
+  slug: string;
+  tags: string[];
+  lat?: number | null;
+  lng?: number | null;
+};
 
 export default function BusinessCard({
   name,
@@ -15,316 +27,208 @@ export default function BusinessCard({
   hours,
   areas,
   slug,
-  is_accessible,
-  supports_screen_readers,
-  supports_keyboard_navigation,
-  tags = [],
-}: {
-  name: string;
-  tagline: string | null;
-  address: string | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
-  hours: Hours | null;
-  areas: string[];
-  slug: string;
+  tags,
+  lat,
+  lng,
+}: BusinessCardProps) {
+  const [showAllAreas, setShowAllAreas] = useState(false);
+  const [showHours, setShowHours] = useState(false);
 
-  is_accessible?: boolean;
-  supports_screen_readers?: boolean;
-  supports_keyboard_navigation?: boolean;
-
-  tags?: string[];
-}) {
-  const [showFullHours, setShowFullHours] = useState(false);
-
-  /* ----------------------------------------------
-   * BREADCRUMBS
-   * ---------------------------------------------- */
-  const breadcrumbs = (
-    <nav aria-label="Breadcrumb" className="breadcrumbs">
-      <ol>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/business">Business Directory</Link>
-        </li>
-        <li aria-current="page">{name}</li>
-      </ol>
-    </nav>
-  );
-
-  /* ----------------------------------------------
-   * TIME PARSER
-   * ---------------------------------------------- */
-  function parseTime(str: string): number | null {
-    if (!str) return null;
-
-    const match = str.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)?/i);
-    if (!match) return null;
-
-    let hour = parseInt(match[1], 10);
-    const minute = match[2] ? parseInt(match[2], 10) : 0;
-    const period = match[3]?.toUpperCase() ?? null;
-
-    if (period === "PM" && hour < 12) hour += 12;
-    if (period === "AM" && hour === 12) hour = 0;
-
-    return hour * 60 + minute;
-  }
-
-  /* ----------------------------------------------
-   * IS BUSINESS OPEN?
-   * ---------------------------------------------- */
-  const isOpen = useMemo(() => {
-    if (!hours) return null;
-
-    const now = new Date();
-    const day = now
-      .toLocaleDateString("en-US", { weekday: "long" })
-      .toLowerCase();
-
-    const todayHours =
-      hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
-
-    if (!todayHours || todayHours.toLowerCase() === "closed") return false;
-
-    const [openStr, closeStr] = todayHours.split("–").map((s) => s.trim());
-    const open = parseTime(openStr);
-    const close = parseTime(closeStr);
-
-    if (open === null || close === null) return null;
-
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-    // Handles overnight hours (e.g., 8 PM – 2 AM)
-    if (close < open) {
-      return nowMinutes >= open || nowMinutes <= close;
-    }
-
-    return nowMinutes >= open && nowMinutes <= close;
-  }, [hours]);
-
-  /* ----------------------------------------------
-   * TODAY'S HOURS
-   * ---------------------------------------------- */
-  function getTodayHours() {
-    if (!hours) return null;
-
-    const now = new Date();
-    const day = now
-      .toLocaleDateString("en-US", { weekday: "long" })
-      .toLowerCase();
-
-    return hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
-  }
-
-  const todayHours = getTodayHours();
-
-  /* ----------------------------------------------
-   * FULL HOURS DROPDOWN
-   * ---------------------------------------------- */
-  function renderFullHours() {
-    if (!hours || !showFullHours) return null;
-
-    const days = [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday",
-    ];
-
-    return (
-      <dl className="business-card-hours" aria-label="Weekly business hours">
-        {days.map((day) => {
-          const value =
-            hours[day] || hours[day.charAt(0).toUpperCase() + day.slice(1)];
-          if (!value) return null;
-
-          const label = day.charAt(0).toUpperCase() + day.slice(1);
-
-          return (
-            <div key={day} className="business-card-hours-item">
-              <dt>{label}</dt>
-              <dd>
-                <time>{value}</time>
-              </dd>
-            </div>
-          );
-        })}
-      </dl>
-    );
-  }
-
-  /* ----------------------------------------------
-   * ACTION LINKS
-   * ---------------------------------------------- */
-  const mapsUrl = address
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        address,
-      )}`
+  // Normalize website URL
+  const normalizedWebsite = website
+    ? website.startsWith("http")
+      ? website
+      : `https://${website}`
     : null;
 
-  const callNow = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
+  // Clean tags
+  const cleanedTags = Array.from(
+    new Set((tags || []).map((t) => t.trim().toLowerCase()).filter(Boolean)),
+  );
 
-  /* ----------------------------------------------
-   * CLEAN DISPLAY URL
-   * ---------------------------------------------- */
-  const displayUrl =
-    website
-      ?.replace("https://", "")
-      .replace("http://", "")
-      .replace("www.", "") ?? "";
+  // Service areas sorted alphabetically
+  const sortedAreas = [...areas].sort((a, b) =>
+    a.localeCompare(b, "en", { sensitivity: "base" }),
+  );
 
-  /* ----------------------------------------------
-   * RENDER
-   * ---------------------------------------------- */
+  const previewAreas = sortedAreas.slice(0, 6);
+  const showToggleAreas = sortedAreas.length > 6;
+  const areasToDisplay = showAllAreas ? sortedAreas : previewAreas;
+
+  // Hours sorted Monday → Sunday
+  const orderedDays = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+
+  const sortedHours =
+    hours &&
+    orderedDays
+      .filter((day) => hours[day])
+      .map((day) => [day, hours[day]] as [string, string]);
+
+  // Google Maps Directions URL
+  const directionsUrl =
+    lat && lng
+      ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+      : address
+        ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+            address,
+          )}`
+        : null;
+
   return (
-    <>
-      {breadcrumbs}
+    <section className="business-card">
+      {/* Title */}
+      <h1 className="business-card__title">{name}</h1>
 
-      <article
-        className="business-card"
-        itemScope
-        itemType="https://schema.org/LocalBusiness"
-      >
-        <header>
-          <h1 className="business-card__title" itemProp="name">
-            {name}
-          </h1>
+      {/* Tagline */}
+      {tagline && (
+        <p className="business-card__tagline">
+          <strong>{tagline}</strong>
+        </p>
+      )}
 
-          {tagline && (
-            <p className="business-card__tagline" itemProp="description">
-              {tagline}
-            </p>
-          )}
+      {/* Tags */}
+      {cleanedTags.length > 0 && (
+        <p className="business-card__tags">{cleanedTags.join(", ")}</p>
+      )}
 
-          {/* TRUST BADGES */}
-          <div className="business-card__trust-badges">
-            {is_accessible && (
-              <span className="badge badge--green">Accessible</span>
-            )}
-            {supports_screen_readers && (
-              <span className="badge badge--blue">Screen‑reader friendly</span>
-            )}
-            {supports_keyboard_navigation && (
-              <span className="badge badge--purple">Keyboard friendly</span>
-            )}
-          </div>
+      {/* Location + Contact */}
+      <div className="business-card__section">
+        {address && <p className="business-card__location">{address}</p>}
 
-          {/* TAGS */}
-          {tags.length > 0 && (
-            <div className="business-card__tags">
-              {tags.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        <section className="business-card__section">
-          <address className="business-card__location" itemProp="address">
-            <strong>Location:</strong> {address}
-          </address>
-
-          {mapsUrl && (
-            <p className="business-card__contact">
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="business-card__link"
-              >
-                Get Directions
-              </a>
-            </p>
-          )}
-
-          {phone && (
-            <p className="business-card__contact">
-              <strong>Phone:</strong> <span itemProp="telephone">{phone}</span>
-            </p>
-          )}
-
-          {email && (
-            <p className="business-card__contact">
-              <strong>Email:</strong> {email}
-            </p>
-          )}
-
-          {website && (
-            <p className="business-card__contact">
-              <a
-                href={website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="business-card__link"
-                itemProp="url"
-              >
-                {displayUrl}
-              </a>
-            </p>
-          )}
-
-          {todayHours && (
-            <p className="business-card__status">
-              <strong>Today:</strong> <time>{todayHours}</time>
-              <span style={{ marginLeft: "0.5rem" }} />
-              <button
-                className="hours-toggle"
-                aria-expanded={showFullHours}
-                onClick={() => setShowFullHours(!showFullHours)}
-              >
-                {showFullHours ? "Hide full hours" : "View full hours"}
-              </button>
-            </p>
-          )}
-        </section>
-
-        {renderFullHours()}
-
-        {/* SERVICE AREAS */}
-        {areas.length > 0 && (
-          <section className="business-card__section">
-            <h2>Service Areas</h2>
-            <ul className="business-card-areas">
-              {areas.map((a) => (
-                <li key={a}>{a}</li>
-              ))}
-            </ul>
-          </section>
+        {phone && (
+          <p className="business-card__contact">
+            <a href={`tel:${phone}`} className="business-card__link">
+              {phone}
+            </a>
+          </p>
         )}
 
-        <footer className="business-card-footer">
-          {callNow && (
-            <a
-              href={callNow}
-              className="business-card-btn"
-              aria-label={`Call ${name}`}
-            >
-              Call Now
+        {email && (
+          <p className="business-card__contact">
+            <a href={`mailto:${email}`} className="business-card__link">
+              {email}
             </a>
-          )}
+          </p>
+        )}
 
-          {website && (
+        {normalizedWebsite && (
+          <p className="business-card__contact">
             <a
-              href={website}
+              href={normalizedWebsite}
               target="_blank"
               rel="noopener noreferrer"
-              className="business-card-btn"
-              aria-label={`Get a quote from ${name}`}
+              className="business-card__link"
             >
-              Get a Quote
+              {normalizedWebsite}
             </a>
+          </p>
+        )}
+      </div>
+
+      {/* Hours (collapsible) */}
+      {sortedHours && (
+        <div className="business-card__section">
+          <h3>Hours</h3>
+
+          {!showHours && (
+            <button
+              className="business-card-areas-toggle"
+              onClick={() => setShowHours(true)}
+            >
+              View hours
+            </button>
           )}
-        </footer>
-      </article>
-    </>
+
+          {showHours && (
+            <>
+              <div className="business-card-hours">
+                {sortedHours.map(([day, value]) => (
+                  <div key={day} className="business-card-hours-item">
+                    <span>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                className="business-card-areas-toggle"
+                onClick={() => setShowHours(false)}
+              >
+                Hide hours
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Service Areas (clean text-only, collapsible) */}
+      {areasToDisplay.length > 0 && (
+        <div className="business-card__section">
+          <h3>Service Areas</h3>
+
+          <div className="business-card-areas-inline">
+            {areasToDisplay.map((area) => (
+              <span key={area} className="business-card-area-text">
+                {area}
+              </span>
+            ))}
+          </div>
+
+          {showToggleAreas && (
+            <button
+              className="business-card-areas-toggle"
+              onClick={() => setShowAllAreas(!showAllAreas)}
+            >
+              {showAllAreas ? "Hide full list" : "View full service area list"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* CTA Footer — bold accent links */}
+      <div className="business-card-footer">
+        {phone && (
+          <a
+            href={`tel:${phone}`}
+            className="business-card__link"
+            style={{ fontWeight: 700 }}
+          >
+            <span aria-hidden="true">📞</span> Call Now
+          </a>
+        )}
+
+        {normalizedWebsite && (
+          <a
+            href={normalizedWebsite}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="business-card__link"
+            style={{ fontWeight: 700 }}
+          >
+            <span aria-hidden="true">↗️</span> Get a Quote
+          </a>
+        )}
+
+        {directionsUrl && (
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="business-card__link"
+            style={{ fontWeight: 700 }}
+          >
+            <span aria-hidden="true">📍</span> Get Directions
+          </a>
+        )}
+      </div>
+    </section>
   );
 }

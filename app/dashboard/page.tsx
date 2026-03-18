@@ -1,37 +1,44 @@
+// app/dashboard/page.tsx
+import Link from "next/link";
+
 export default function DashboardPage() {
   return (
-    <main className="dashboard-container">
+    <main className="dashboard-container" role="main">
       <div className="dashboard-inner">
+        {/* Header */}
         <header className="dashboard-header">
-          <h1>Dashboard</h1>
-          <p>
-            Navigate your business tools, pages, embeds, and analytics — all in
-            one place.
+          <h1 className="dashboard-title">Dashboard</h1>
+          <p className="dashboard-subtitle">
+            Your control center — manage businesses, view analytics, and access
+            tools from one place.
           </p>
         </header>
 
+        {/* Tools Section */}
         <section
-          aria-label="Dashboard navigation"
+          aria-labelledby="dashboard-tools-title"
           className="dashboard-grid-section"
         >
-          <h2 className="dashboard-section-title">Your tools</h2>
+          <h2 id="dashboard-tools-title" className="dashboard-section-title">
+            Your Tools
+          </h2>
 
           <div className="dashboard-grid">
             <DashboardCard
               title="Business Directory"
-              description="Browse all businesses in a clean, SEO‑optimized directory."
+              description="Browse and manage all businesses in a clean, SEO‑optimized directory."
               href="/business"
             />
 
             <DashboardCard
               title="Embed Code"
-              description="Generate iframe embed code for any business."
+              description="Generate and preview iframe embed code for any business."
               href="/business/pest-control-ottawa/embed-code"
             />
 
             <DashboardCard
               title="Analytics"
-              description="Track views, referrers, and performance for each business."
+              description="Track views, CTA clicks, and performance for each business."
               href="/dashboard/analytics/pest-control-ottawa"
             />
           </div>
@@ -41,11 +48,23 @@ export default function DashboardPage() {
   );
 }
 
-function DashboardCard({ title, description, href }) {
+function DashboardCard({
+  title,
+  description,
+  href,
+}: {
+  title: string;
+  description: string;
+  href: string;
+}) {
   return (
-    <a href={href} className="dashboard-card" tabIndex={0}>
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </a>
+    <Link
+      href={href}
+      className="dashboard-card"
+      aria-label={`${title} — ${description}`}
+    >
+      <h3 className="dashboard-card-title">{title}</h3>
+      <p className="dashboard-card-description">{description}</p>
+    </Link>
   );
 }

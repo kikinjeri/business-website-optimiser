@@ -1,85 +1,153 @@
+// app/page.tsx
+import Link from "next/link";
+
 export default function HomePage() {
   return (
-    <>
-      <header className="app-hero" role="banner">
-        <section className="app-hero-inner">
-          <h1 className="app-hero-title">
-            Clean code. Lightning‑fast pages. Accessible by design.
-            <span className="accent"> Built to rank.</span>
-          </h1>
+    <main role="main">
+      {/* HERO — full‑bleed gradient, split layout */}
+      <header className="hero-full hero-gradient" role="banner">
+        <div className="hero-container">
+          {/* LEFT SIDE — text */}
+          <div className="hero-text">
+            <p className="hero-eyebrow">Increase traffic to your business website</p>
 
-          <p className="app-hero-subtitle">
-            Turn your business details into search‑ready, accessible,
-            high‑performance pages. Load faster, rank higher, and reach more
-            customers across Google, mobile, and assistive technologies.
-          </p>
+            <h1 className="hero-title">
+              Clean code. Fast pages. Accessible by design.
+              <span className="accent"> Built to rank.</span>
+            </h1>
 
-          <h2 className="hero-supporting">
-            Increase your business website traffic — automatically.
-          </h2>
+            <p className="hero-subtitle">
+              Your business card becomes a high‑performance mini website — fast,
+              consistent, and built for modern SEO.
+            </p>
 
-          <div className="app-hero-actions" aria-label="Primary actions"></div>
-        </section>
-
-        <section className="feature-section">
-          <h2 className="section-heading">What you get</h2>
-
-          <div className="app-preview-grid">
-            <div className="preview-card" tabIndex={0}>
-              <h3>Search‑optimised pages</h3>
-              <p>
-                Clean, semantic HTML that helps Google understand and index your
-                business instantly.
-              </p>
-            </div>
-
-            <div className="preview-card" tabIndex={0}>
-              <h3>Accessible by default</h3>
-              <p>
-                WCAG‑minded structure, keyboard‑friendly navigation, and
-                screen‑reader clarity built in.
-              </p>
-            </div>
-
-            <div className="preview-card" tabIndex={0}>
-              <h3>Embeddable business cards</h3>
-              <p>
-                Share your business anywhere and send traffic directly to your
-                website with lightweight, fast‑loading cards.
-              </p>
-            </div>
-
-            <div className="preview-card" tabIndex={0}>
-              <h3>Works everywhere you do</h3>
-              <p>
-                Embed your card on social media, Wix, Squarespace, WordPress, or
-                any site that supports links — no setup required.
-              </p>
+            <div className="hero-actions">
+              <Link href="/dashboard" className="hero-btn-primary">
+                Go to Dashboard
+              </Link>
+              <Link href="#card-explainer" className="hero-btn-secondary">
+                View Demo Card
+              </Link>
             </div>
           </div>
-        </section>
+
+          {/* RIGHT SIDE — premium business card */}
+          <div className="hero-card-wrapper">
+            <DemoBusinessCard />
+          </div>
+        </div>
       </header>
 
-      {/* ⭐ TRUST BADGES */}
-      <section className="about-badges">
-        <div className="badge">⚡ Lightning‑Fast Performance</div>
-        <div className="badge">🔍 Search‑Optimised Structure</div>
-        <div className="badge">♿ Accessibility‑First HTML</div>
-        <div className="badge">📱 Mobile‑First Layout</div>
-      </section>
+      {/* SECTION 1 — What the card is */}
+      <section id="card-explainer" className="section centered">
+        <h2 className="section-heading accent">
+          Your business card, rebuilt for the modern web.
+        </h2>
 
-      <section className="accessibility-section">
-        <h2>Built for accessibility</h2>
-        <p>
-          Every page is structured for clarity, keyboard navigation, and
-          assistive technology support — ensuring your business is usable by
-          everyone.
+        <p className="section-subtitle">
+          A single, accessible card you can embed anywhere.
         </p>
+
+        <div className="horizontal-points">
+          <div className="point">SEO‑ready</div>
+          <div className="point">Accessible</div>
+          <div className="point">Consistent everywhere</div>
+        </div>
       </section>
 
+      {/* SECTION 2 — Why it helps your business */}
+      <section className="section centered section-muted">
+        <h2 className="section-heading accent">
+          Built to help customers find you.
+        </h2>
+
+        <div className="value-grid">
+          <div className="value-block">
+            <h3>Search visibility</h3>
+            <p>Clean HTML helps Google understand your business.</p>
+          </div>
+
+          <div className="value-block">
+            <h3>Accessibility</h3>
+            <p>WCAG‑minded structure works for everyone.</p>
+          </div>
+
+          <div className="value-block">
+            <h3>Consistency</h3>
+            <p>One source of truth across the web.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST BADGES */}
+      <section className="trust-row">
+        <div className="trust-badge">⚡ Lightning‑Fast</div>
+        <div className="trust-badge">🔍 Search‑Optimised</div>
+        <div className="trust-badge">♿ Accessibility‑First</div>
+        <div className="trust-badge">📱 Mobile‑Ready</div>
+      </section>
+
+      {/* FOOTER */}
       <footer className="footer">
         © {new Date().getFullYear()} Business Website Optimiser
       </footer>
-    </>
+    </main>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               DEMO CARD                                    */
+/* -------------------------------------------------------------------------- */
+
+function DemoBusinessCard() {
+  return (
+    <article
+      className="demo-card"
+      aria-label="Demo business card for Ottawa Pest Pros"
+    >
+      {/* Gradient border wrapper */}
+      <div className="demo-card-border">
+        <div className="demo-card-inner">
+          {/* Header */}
+          <header className="demo-card-header">
+            <h3 className="demo-card-title">Ottawa Pest Pros</h3>
+            <p className="demo-card-tagline">
+              Fast, reliable pest control for homes & businesses.
+            </p>
+          </header>
+
+          {/* Details */}
+          <dl className="demo-card-details">
+            <div className="detail-row">
+              <dt>Location</dt>
+              <dd>123 Mapleview Drive, Ottawa, ON</dd>
+            </div>
+
+            <div className="detail-row">
+              <dt>Phone</dt>
+              <dd>(613) 555‑0192</dd>
+            </div>
+
+            <div className="detail-row">
+              <dt>Website</dt>
+              <dd>ottawapestpros.example</dd>
+            </div>
+          </dl>
+
+          {/* CTAs */}
+          <div className="demo-card-ctas">
+            <button className="demo-cta gradient-btn" disabled>
+              Call Now
+            </button>
+            <button className="demo-cta gradient-btn" disabled>
+              Get a Quote
+            </button>
+            <button className="demo-cta gradient-btn" disabled>
+              Directions
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }

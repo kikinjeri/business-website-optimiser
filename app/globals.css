@@ -70,12 +70,18 @@ a:hover {
 
   --border-subtle: rgba(148, 163, 184, 0.22);
 
+  /* NEW — BLUE GRADIENT SYSTEM */
+  --accent-blue: #2563eb;
+  --accent-indigo: #4f46e5;
+  --accent-gradient: linear-gradient(90deg, #2563eb, #4f46e5);
+  --accent-glow: 0 0 22px rgba(37, 99, 235, 0.35);
+
   /* Shadows */
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.55);
 
-  /* Radii (Hybrid System) */
+  /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 18px;
@@ -88,8 +94,8 @@ a:hover {
   --max-preview: 520px;
 
   /* Typography */
-  --font-xl: clamp(2.2rem, 3vw, 2.8rem);
-  --font-lg: 1.4rem;
+  --font-xl: clamp(2.4rem, 3.5vw, 3rem);
+  --font-lg: 1.5rem;
   --font-md: 1.1rem;
   --font-sm: 0.9rem;
 }
@@ -112,6 +118,12 @@ a:hover {
 
   --border-subtle: rgba(15, 23, 42, 0.08);
 
+  /* NEW — BLUE GRADIENT SYSTEM (LIGHT MODE) */
+  --accent-blue: #2563eb;
+  --accent-indigo: #4f46e5;
+  --accent-gradient: linear-gradient(90deg, #2563eb, #4f46e5);
+  --accent-glow: 0 0 22px rgba(37, 99, 235, 0.25);
+
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.18);
@@ -129,6 +141,7 @@ a:hover {
     transition-duration: 0.001ms !important;
   }
 }
+
 /* ==========================================================
    APP LAYOUT
 ========================================================== */
@@ -152,7 +165,7 @@ a:hover {
 }
 
 /* ==========================================================
-   NAVBAR — PREMIUM, ACCESSIBLE, RESPONSIVE
+   NAVBAR — PREMIUM STRIPE STYLE
 ========================================================== */
 
 .navbar {
@@ -171,30 +184,30 @@ a:hover {
 .navbar-inner {
   max-width: var(--max-page);
   margin: 0 auto;
-  padding: 14px 20px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Logo */
+/* Logo — Medium-Large */
 .navbar-logo {
   font-weight: 700;
   letter-spacing: 0.03em;
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   text-transform: uppercase;
   color: var(--text);
 }
 
-/* Desktop links */
+/* Desktop links — Medium-Large */
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 24px;
 }
 
 .navbar-links a {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   color: var(--text-soft);
   transition: color 0.18s ease;
 }
@@ -209,7 +222,7 @@ a:hover {
   border: 1px solid var(--border-subtle);
   background: rgba(15, 23, 42, 0.7);
   color: var(--text-soft);
-  padding: 6px 10px;
+  padding: 6px 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -232,12 +245,12 @@ a:hover {
 }
 
 .hamburger-line {
-  width: 18px;
+  width: 20px;
   height: 2px;
   border-radius: 999px;
   background: var(--text);
   display: block;
-  margin: 3px 0;
+  margin: 4px 0;
 }
 
 /* Mobile menu */
@@ -252,9 +265,9 @@ a:hover {
 
 .navbar-mobile a {
   display: block;
-  padding: 8px 0;
+  padding: 10px 0;
   color: var(--text-soft);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
 }
 
 .navbar-mobile a:hover {
@@ -408,6 +421,88 @@ a:hover {
   flex-wrap: wrap;
   margin-top: 12px;
 }
+/* Service Areas Grid */
+.business-card-areas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.business-card-area-item {
+  background: var(--bg-soft);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Clean text-only service areas */
+.business-card-areas-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.business-card-area-text {
+  font-size: var(--font-md);
+  color: var(--text);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+
+/* Toggle */
+.business-card-areas-toggle {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* CTA Buttons */
+.business-card-footer__cta {
+  flex: 1;
+  min-width: 160px;
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--bg-card);
+  text-decoration: none;
+  font-size: var(--font-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .business-card-footer {
+    flex-direction: column;
+  }
+}
+.business-card-areas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.business-card-area-item {
+  background: var(--bg-soft);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
 
 /* ==========================================================
    EMBED CARD — PREMIUM LIGHT (INSIDE IFRAME)

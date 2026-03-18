@@ -1,4 +1,5 @@
 // File: app/dashboard/[slug]/page.tsx
+// app/dashboard/[slug]/page.tsx
 import { supabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import "@/styles/styles.css";
@@ -12,7 +13,7 @@ export default async function DashboardPage({
   const supabase = supabaseServer();
 
   // Fetch business
-  const { data: business, error } = await supabase
+  const { data: business } = await supabase
     .from("businesses")
     .select(
       `
@@ -35,11 +36,6 @@ export default async function DashboardPage({
       theme_accent,
       theme_text,
       theme_background,
-      views_total,
-      views_30d,
-      clicks_phone,
-      clicks_website,
-      clicks_map,
       seo_title,
       seo_description,
       seo_keywords
@@ -50,8 +46,8 @@ export default async function DashboardPage({
 
   if (!business) {
     return (
-      <main className="dashboard-page">
-        <h1>Business not found</h1>
+      <main className="dashboard-page" role="main">
+        <h1 className="dashboard-title">Business not found</h1>
         <p>No business exists with slug: {slug}</p>
       </main>
     );
@@ -66,56 +62,93 @@ export default async function DashboardPage({
   const serviceAreas = areas?.map((a) => a.name_en) ?? [];
 
   return (
-    <main className="dashboard-page">
+    <main className="dashboard-page" role="main">
+      {/* Header */}
       <header className="dashboard-header">
         <h1 className="dashboard-title">{business.name}</h1>
         <p className="dashboard-subtitle">
-          Manage your business, analytics, card, and settings.
+          Your business control center — analytics, card preview, embed tools,
+          and settings.
         </p>
       </header>
 
-      {/* TAB NAVIGATION */}
-      <nav className="dashboard-tabs" aria-label="Dashboard navigation">
-        <Link href={`/dashboard/${slug}`} className="dashboard-tab active">
-          Overview
-        </Link>
-        <Link
+      {/* Tab Navigation */}
+      <nav
+        className="dashboard-tabs"
+        aria-label="Business dashboard navigation"
+      >
+        <DashboardTab href={`/dashboard/${slug}`} label="Overview" active />
+        <DashboardTab
           href={`/dashboard/${slug}?tab=analytics`}
-          className="dashboard-tab"
-        >
-          Analytics
-        </Link>
-        <Link href={`/dashboard/${slug}?tab=card`} className="dashboard-tab">
-          Card Editor
-        </Link>
-        <Link href={`/dashboard/${slug}?tab=embed`} className="dashboard-tab">
-          Embed Code
-        </Link>
-        <Link
+          label="Analytics"
+        />
+        <DashboardTab
+          href={`/dashboard/${slug}?tab=card`}
+          label="Card Editor"
+        />
+        <DashboardTab
+          href={`/dashboard/${slug}?tab=embed`}
+          label="Embed Code"
+        />
+        <DashboardTab
           href={`/dashboard/${slug}?tab=settings`}
-          className="dashboard-tab"
-        >
-          Settings
-        </Link>
+          label="Settings"
+        />
       </nav>
 
-      {/* TAB CONTENT */}
-      <section className="dashboard-content">
-        {/* We will replace this with real tab components */}
-        <p>Select a tab above to manage your business.</p>
+      {/* Content */}
+      <section className="dashboard-content" aria-live="polite">
+        <p className="dashboard-placeholder">
+          Select a tab above to manage your business.
+        </p>
 
+        {/* Quick Links */}
         <div className="dashboard-quick-links">
-          <Link href={`/business/${slug}`} className="dashboard-btn">
+          <Link
+            href={`/business/${slug}`}
+            className="dashboard-btn"
+            aria-label="View public business page"
+          >
             View Public Page
           </Link>
-          <Link href={`/card/${slug}?embed=1`} className="dashboard-btn">
+
+          <Link
+            href={`/card/${slug}?embed=1`}
+            className="dashboard-btn"
+            aria-label="Preview business card"
+          >
             Preview Card
           </Link>
-          <Link href={`/business/${slug}/embed-code`} className="dashboard-btn">
+
+          <Link
+            href={`/business/${slug}/embed-code`}
+            className="dashboard-btn"
+            aria-label="View embed code"
+          >
             Embed Code
           </Link>
         </div>
       </section>
     </main>
+  );
+}
+
+function DashboardTab({
+  href,
+  label,
+  active = false,
+}: {
+  href: string;
+  label: string;
+  active?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`dashboard-tab ${active ? "active" : ""}`}
+      aria-current={active ? "page" : undefined}
+    >
+      {label}
+    </Link>
   );
 }

@@ -34,7 +34,7 @@ export default function Navbar() {
     <nav className="navbar" aria-label="Main navigation">
       <div className="navbar-inner">
         <Link href="/" className="navbar-logo">
-          Business Optimiser
+          Business Website Optimiser
         </Link>
 
         {/* Desktop Navigation */}
