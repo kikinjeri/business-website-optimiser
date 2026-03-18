@@ -9,7 +9,9 @@ export default function HomePage() {
         <div className="hero-container">
           {/* LEFT SIDE — text */}
           <div className="hero-text">
-            <p className="hero-eyebrow">Increase traffic to your business website</p>
+            <p className="hero-eyebrow">
+              Increase traffic to your business website
+            </p>
 
             <h1 className="hero-title">
               Clean code. Fast pages. Accessible by design.
@@ -26,7 +28,7 @@ export default function HomePage() {
                 Go to Dashboard
               </Link>
               <Link href="#card-explainer" className="hero-btn-secondary">
-                View Demo Card
+                Boost Traffic
               </Link>
             </div>
           </div>
@@ -40,41 +42,67 @@ export default function HomePage() {
 
       {/* SECTION 1 — What the card is */}
       <section id="card-explainer" className="section centered">
-        <h2 className="section-heading accent">
-          Your business card, rebuilt for the modern web.
-        </h2>
+        <h2 className="section-heading accent">Built for the modern web.</h2>
 
         <p className="section-subtitle">
-          A single, accessible card you can embed anywhere.
+          A single, accessible card you can embed anywhere — designed to boost
+          visibility and clicks.
         </p>
-
-        <div className="horizontal-points">
-          <div className="point">SEO‑ready</div>
-          <div className="point">Accessible</div>
-          <div className="point">Consistent everywhere</div>
-        </div>
-      </section>
-
-      {/* SECTION 2 — Why it helps your business */}
-      <section className="section centered section-muted">
-        <h2 className="section-heading accent">
-          Built to help customers find you.
-        </h2>
 
         <div className="value-grid">
           <div className="value-block">
-            <h3>Search visibility</h3>
-            <p>Clean HTML helps Google understand your business.</p>
+            <h3>SEO‑ready</h3>
+            <p>
+              Optimised markup helps your site rank higher in search results.
+            </p>
           </div>
 
           <div className="value-block">
-            <h3>Accessibility</h3>
-            <p>WCAG‑minded structure works for everyone.</p>
+            <h3>Accessible</h3>
+            <p>WCAG‑minded design ensures your card works for everyone.</p>
+          </div>
+
+          <div className="value-block">
+            <h3>Consistent everywhere</h3>
+            <p>
+              One source of truth keeps your brand aligned across platforms.
+            </p>
+          </div>
+
+          <div className="value-block">
+            <h3>Mobile‑friendly</h3>
+            <p>Responsive layouts deliver a smooth experience on any device.</p>
+          </div>
+        </div>
+
+        <h3 className="section-heading accent">
+          Built to help customers find you.
+        </h3>
+
+        <div className="value-grid">
+          <div className="value-block">
+            <h3>Search Visibility</h3>
+            <p>
+              Clean HTML and structured data help Google understand your
+              business.
+            </p>
+          </div>
+
+          <div className="value-block">
+            <h3>Inclusive Design</h3>
+            <p>WCAG‑minded structure ensures your card works for everyone.</p>
           </div>
 
           <div className="value-block">
             <h3>Consistency</h3>
-            <p>One source of truth across the web.</p>
+            <p>
+              One source of truth across platforms keeps your brand aligned.
+            </p>
+          </div>
+
+          <div className="value-block">
+            <h3>Conversion Power</h3>
+            <p>Fast, responsive pages encourage customers to click and act.</p>
           </div>
         </div>
       </section>
@@ -103,17 +131,18 @@ function DemoBusinessCard() {
   return (
     <article
       className="demo-card"
-      aria-label="Demo business card for Ottawa Pest Pros"
+      aria-label="Demo business card for Ottawa Electric Pros"
     >
       {/* Gradient border wrapper */}
       <div className="demo-card-border">
         <div className="demo-card-inner">
           {/* Header */}
           <header className="demo-card-header">
-            <h3 className="demo-card-title">Ottawa Pest Pros</h3>
+            <h3 className="demo-card-title">Ottawa Electric Pros</h3>
             <p className="demo-card-tagline">
-              Fast, reliable pest control for homes & businesses.
+              Fast, reliable electrical services for homes & businesses.
             </p>
+            <p className="demo-card-status accent">Open Now</p>
           </header>
 
           {/* Details */}
@@ -130,7 +159,17 @@ function DemoBusinessCard() {
 
             <div className="detail-row">
               <dt>Website</dt>
-              <dd>ottawapestpros.example</dd>
+              <dd>www.ottawaelectricpros.example</dd>
+            </div>
+
+            <div className="detail-row">
+              <dt>Hours</dt>
+              <dd>Open 24/7</dd>
+            </div>
+
+            <div className="detail-row">
+              <dt>Service Area</dt>
+              <dd>Ottawa</dd>
             </div>
           </dl>
 

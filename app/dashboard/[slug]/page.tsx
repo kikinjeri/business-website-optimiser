@@ -1,7 +1,6 @@
-// File: app/dashboard/[slug]/page.tsx
 // app/dashboard/[slug]/page.tsx
 import { supabaseServer } from "@/lib/supabase/server";
-import Link from "next/link";
+import DashboardClient from "./DashboardClient";
 import "@/styles/styles.css";
 
 export default async function DashboardPage({
@@ -13,7 +12,7 @@ export default async function DashboardPage({
   const supabase = supabaseServer();
 
   // Fetch business
-  const { data: business } = await supabase
+  const { data: business, error: businessError } = await supabase
     .from("businesses")
     .select(
       `
@@ -44,7 +43,7 @@ export default async function DashboardPage({
     .eq("slug", slug)
     .single();
 
-  if (!business) {
+  if (!business || businessError) {
     return (
       <main className="dashboard-page" role="main">
         <h1 className="dashboard-title">Business not found</h1>
@@ -61,94 +60,65 @@ export default async function DashboardPage({
 
   const serviceAreas = areas?.map((a) => a.name_en) ?? [];
 
+  // Fetch analytics events (last 30 days)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const { data: events } = await supabase
+    .from("analytics_events")
+    .select("event_type, created_at")
+    .eq("business_id", business.id)
+    .gte("created_at", thirtyDaysAgo.toISOString());
+
+  const analyticsSummary = computeAnalytics(events ?? []);
+
   return (
-    <main className="dashboard-page" role="main">
-      {/* Header */}
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">{business.name}</h1>
-        <p className="dashboard-subtitle">
-          Your business control center — analytics, card preview, embed tools,
-          and settings.
-        </p>
-      </header>
-
-      {/* Tab Navigation */}
-      <nav
-        className="dashboard-tabs"
-        aria-label="Business dashboard navigation"
-      >
-        <DashboardTab href={`/dashboard/${slug}`} label="Overview" active />
-        <DashboardTab
-          href={`/dashboard/${slug}?tab=analytics`}
-          label="Analytics"
-        />
-        <DashboardTab
-          href={`/dashboard/${slug}?tab=card`}
-          label="Card Editor"
-        />
-        <DashboardTab
-          href={`/dashboard/${slug}?tab=embed`}
-          label="Embed Code"
-        />
-        <DashboardTab
-          href={`/dashboard/${slug}?tab=settings`}
-          label="Settings"
-        />
-      </nav>
-
-      {/* Content */}
-      <section className="dashboard-content" aria-live="polite">
-        <p className="dashboard-placeholder">
-          Select a tab above to manage your business.
-        </p>
-
-        {/* Quick Links */}
-        <div className="dashboard-quick-links">
-          <Link
-            href={`/business/${slug}`}
-            className="dashboard-btn"
-            aria-label="View public business page"
-          >
-            View Public Page
-          </Link>
-
-          <Link
-            href={`/card/${slug}?embed=1`}
-            className="dashboard-btn"
-            aria-label="Preview business card"
-          >
-            Preview Card
-          </Link>
-
-          <Link
-            href={`/business/${slug}/embed-code`}
-            className="dashboard-btn"
-            aria-label="View embed code"
-          >
-            Embed Code
-          </Link>
-        </div>
-      </section>
+    <main role="main">
+      <DashboardClient
+        business={business}
+        serviceAreas={serviceAreas}
+        analytics={analyticsSummary}
+      />
     </main>
   );
 }
 
-function DashboardTab({
-  href,
-  label,
-  active = false,
-}: {
-  href: string;
-  label: string;
-  active?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`dashboard-tab ${active ? "active" : ""}`}
-      aria-current={active ? "page" : undefined}
-    >
-      {label}
-    </Link>
-  );
+type AnalyticsEvent = {
+  event_type: string;
+  created_at: string;
+};
+
+type AnalyticsSummary = {
+  views30d: number;
+  totalViews: number;
+  ctaCall: number;
+  ctaQuote: number;
+  ctaDirections: number;
+  ctaWebsite: number;
+  ctr: number;
+};
+
+function computeAnalytics(events: AnalyticsEvent[]): AnalyticsSummary {
+  const views = events.filter((e) => e.event_type === "view").length;
+  const ctaCall = events.filter((e) => e.event_type === "cta_call").length;
+  const ctaQuote = events.filter((e) => e.event_type === "cta_quote").length;
+  const ctaDirections = events.filter(
+    (e) => e.event_type === "cta_directions",
+  ).length;
+  const ctaWebsite = events.filter(
+    (e) => e.event_type === "cta_website",
+  ).length;
+
+  const totalClicks = ctaCall + ctaQuote + ctaDirections + ctaWebsite;
+  const ctr = views > 0 ? Math.round((totalClicks / views) * 100) : 0;
+
+  return {
+    views30d: views,
+    totalViews: views, // can expand to lifetime later
+    ctaCall,
+    ctaQuote,
+    ctaDirections,
+    ctaWebsite,
+    ctr,
+  };
 }
