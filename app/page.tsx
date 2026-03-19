@@ -1,6 +1,12 @@
 // app/page.tsx
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "About | Business Web Optimiser",
+  description:
+    "Learn about Mwihaki, an Ottawa-based developer helping showcase local businesses online with accessible, SEO-friendly profiles.",
+};
+
 export default function HomePage() {
   return (
     <main role="main">

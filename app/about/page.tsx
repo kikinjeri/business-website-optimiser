@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 
+export const metadata: Metadata = {
+  title: "About | Business Web Optimiser",
+  description:
+    "Learn about Mwihaki, an Ottawa-based developer helping showcase local businesses online with accessible, SEO-friendly profiles.",
+};
+
 export default function AboutPage() {
   return (
     <main className="page-shell" aria-labelledby="about-title">
@@ -16,7 +22,7 @@ export default function AboutPage() {
           <div className="about-text">
             <p className="page-intro">
               Hi, I’m Mwihaki — a web developer in Ottawa passionate about
-              helping local businesses shine online.
+              helping showcase local businesses online.
             </p>
           </div>
 

@@ -2,6 +2,12 @@
 import ContactForm from "./ContactForm";
 import "@/styles/styles.css";
 
+export const metadata: Metadata = {
+  title: "About | Business Web Optimiser",
+  description:
+    "Learn about Mwihaki, an Ottawa-based developer helping showcase local businesses online with accessible, SEO-friendly profiles.",
+};
+
 export default function ContactPage() {
   return (
     <main className="contact-page" role="main">

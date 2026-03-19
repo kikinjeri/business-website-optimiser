@@ -4,6 +4,12 @@ import { getBusinessBySlug } from "@/lib/getBusinessBySlug";
 import EmbedCard from "@/components/EmbedCard";
 import "@/styles/styles.css";
 
+export const metadata: Metadata = {
+  title: "About | Business Web Optimiser",
+  description:
+    "Learn about Mwihaki, an Ottawa-based developer helping showcase local businesses online with accessible, SEO-friendly profiles.",
+};
+
 export default async function CardPage({
   params,
   searchParams,
