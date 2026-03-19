@@ -1,5 +1,3 @@
-// File: components/EmbedCard.tsx
-
 interface EmbedCardProps {
   business: {
     name: string;
@@ -24,6 +22,13 @@ export default function EmbedCard({ business, areas }: EmbedCardProps) {
     text: business.theme_text || "#111827",
     background: business.theme_background || "#ffffff",
   };
+
+  // Google Maps Directions URL
+  const directionsUrl = business.address
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+        business.address,
+      )}`
+    : null;
 
   return (
     <div
@@ -95,6 +100,25 @@ export default function EmbedCard({ business, areas }: EmbedCardProps) {
               Visit Website →
             </a>
           </p>
+        )}
+      </div>
+
+      {/* CTA FOOTER */}
+      <div className="embed-card-footer">
+        {business.website_url && (
+          <a
+            href={business.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ↗️ Visit Website
+          </a>
+        )}
+        {business.phone && <a href={`tel:${business.phone}`}>📞 Call Now</a>}
+        {directionsUrl && (
+          <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+            📍 Get Directions
+          </a>
         )}
       </div>
     </div>

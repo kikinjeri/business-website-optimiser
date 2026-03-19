@@ -1114,6 +1114,34 @@
 }
 
 /* ==========================================================
+   EMBED CARD — CTA FOOTER
+========================================================== */
+
+.embed-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.embed-card-footer a {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--accent-blue);
+  transition: background 0.2s ease;
+}
+
+.embed-card-footer a:hover {
+  background: var(--accent-blue-hover);
+  color: #fff;
+}
+
+/* ==========================================================
    EMBED PAGE — RESPONSIVE
 ========================================================== */
 
@@ -1124,6 +1152,14 @@
 
   .embed-code-block {
     font-size: 0.85rem;
+  }
+
+  .embed-card-footer {
+    flex-direction: column;
+  }
+
+  .embed-card-footer a {
+    width: 100%;
   }
 }
 
