@@ -20,6 +20,9 @@ export default async function DashboardOverviewPage() {
     );
   }
 
+  // Sort alphabetically
+  businesses.sort((a, b) => a.name.localeCompare(b.name));
+
   // Fetch analytics events for last 30 days
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -50,7 +53,7 @@ export default async function DashboardOverviewPage() {
         <KPI label="Average CTR" value={`${avgCtr}%`} />
       </section>
 
-      {/* Styled business list */}
+      {/* Business list */}
       <section className="panel">
         <div className="panel-header">
           <h2>Businesses</h2>
@@ -59,39 +62,34 @@ export default async function DashboardOverviewPage() {
         <div className="business-list">
           {summaries.map((s) => (
             <div key={s.id} className="business-row">
-              {/* Left: Name + Status */}
+              {/* Left: Business name */}
               <div className="business-row-main">
-                <p className="business-name">{s.name}</p>
+                <Link
+                  href={`/business/${s.slug}`}
+                  className="business-name-link"
+                >
+                  {s.name}
+                </Link>
                 <span className={`status-badge status-${s.status ?? "draft"}`}>
                   {s.status ?? "Draft"}
                 </span>
               </div>
 
-              {/* Middle: Stats */}
+              {/* Middle: Side-by-side analytics */}
               <div className="business-row-stats">
-                <div className="stat">
-                  <span className="stat-label">Views</span>
-                  <span className="stat-value">{s.views30d}</span>
-                </div>
-
-                <div className="stat">
-                  <span className="stat-label">Clicks</span>
-                  <span className="stat-value">{s.clicks30d}</span>
-                </div>
-
-                <div className="stat">
-                  <span className="stat-label">CTR</span>
-                  <span className={`stat-value ctr-${getCtrClass(s.ctr)}`}>
-                    {s.ctr}%
+                <div className="stat-block">
+                  <span className="stat-title">Card</span>
+                  <span className="stat-line">
+                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
                   </span>
                 </div>
-              </div>
 
-              {/* Right: Link */}
-              <div className="business-row-action">
-                <Link href={`/dashboard/${s.slug}`} className="row-link">
-                  View →
-                </Link>
+                <div className="stat-block">
+                  <span className="stat-title">Embed</span>
+                  <span className="stat-line">
+                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
+                  </span>
+                </div>
               </div>
             </div>
           ))}
@@ -143,11 +141,4 @@ function KPI({ label, value }) {
       <p className="kpi-value">{value}</p>
     </div>
   );
-}
-
-/* CTR color helper */
-function getCtrClass(ctr: number) {
-  if (ctr >= 20) return "high";
-  if (ctr >= 10) return "medium";
-  return "low";
 }
