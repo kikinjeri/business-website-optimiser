@@ -15,17 +15,8 @@ export default function AboutPage() {
         <section className="about-hero about-hero--right">
           <div className="about-text">
             <p className="page-intro">
-              I’m Mwihaki, a web developer based in Ottawa who builds tools that
-              help local businesses get discovered online. Many small businesses
-              don’t have the time or resources to manage websites, SEO, or
-              digital profiles — so I created a simple system that handles the
-              essentials for them.
-            </p>
-
-            <p className="page-intro">
-              My focus is on making it easier for people to find the services
-              they need by connecting them with the businesses that provide
-              them.
+              Hi, I’m Mwihaki — a web developer in Ottawa passionate about
+              helping local businesses shine online.
             </p>
           </div>
 
@@ -40,47 +31,17 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* BUSINESS BENEFITS */}
-        <section className="guide-section" aria-labelledby="business-benefits">
-          <h2 id="business-benefits" className="section-title">
-            How This Helps Your Business
-          </h2>
-          <ul className="section-list">
-            <li>Stronger visibility in local search</li>
-            <li>Clear, trustworthy information for customers</li>
-            <li>Faster indexing and better understanding by Google</li>
-            <li>Fully accessible pages for all users</li>
-            <li>Smooth performance across all devices</li>
-          </ul>
-        </section>
-
-        {/* BUSINESS CARD BENEFITS */}
-        <section
-          className="guide-section"
-          aria-labelledby="business-card-benefits"
-        >
-          <h2 id="business-card-benefits" className="section-title">
-            Why Your Business Card Matters
-          </h2>
-          <ul className="section-list">
-            <li>A clean, professional page you can share anywhere</li>
-            <li>Fast, mobile‑friendly, and easy to read</li>
-            <li>One place for your hours, services, and contact details</li>
-            <li>Helps Google understand your business structure</li>
-            <li>Supports local discovery and community visibility</li>
-          </ul>
-        </section>
-
         {/* WHY I BUILT THIS */}
         <section className="guide-section" aria-labelledby="why-built">
           <h2 id="why-built" className="section-title">
             Why I Built This
           </h2>
           <p className="section-text">
-            I created Business Website Optimiser to support the Ottawa community
-            and highlight the incredible small businesses that make it unique.
-            This project is designed to help them get seen, build trust, and
-            grow.
+            I believe every small business deserves a strong online profile.
+            Business Website Optimiser was created to make essential web
+            services affordable and accessible, so local businesses can amplify
+            their reach and connect with more customers. My goal is to make
+            online marketing simple, effective, and within reach for everyone.
           </p>
         </section>
 

@@ -9,9 +9,14 @@ export default async function DashboardPage({
   params: { slug: string };
 }) {
   const { slug } = params;
-  const supabase = supabaseServer();
 
-  // Fetch business
+  // IMPORTANT: await the server client
+  const supabase = await supabaseServer();
+
+  /* -------------------------------------------------------------------------- */
+  /* FETCH BUSINESS                                                             */
+  /* -------------------------------------------------------------------------- */
+
   const { data: business, error: businessError } = await supabase
     .from("businesses")
     .select(
@@ -52,7 +57,10 @@ export default async function DashboardPage({
     );
   }
 
-  // Fetch service areas
+  /* -------------------------------------------------------------------------- */
+  /* FETCH SERVICE AREAS                                                        */
+  /* -------------------------------------------------------------------------- */
+
   const { data: areas } = await supabase
     .from("service_areas")
     .select("name_en")
@@ -60,7 +68,10 @@ export default async function DashboardPage({
 
   const serviceAreas = areas?.map((a) => a.name_en) ?? [];
 
-  // Fetch analytics events (last 30 days)
+  /* -------------------------------------------------------------------------- */
+  /* FETCH ANALYTICS (LAST 30 DAYS)                                             */
+  /* -------------------------------------------------------------------------- */
+
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -72,6 +83,10 @@ export default async function DashboardPage({
 
   const analyticsSummary = computeAnalytics(events ?? []);
 
+  /* -------------------------------------------------------------------------- */
+  /* RENDER CLIENT DASHBOARD                                                    */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <main role="main">
       <DashboardClient
@@ -82,6 +97,10 @@ export default async function DashboardPage({
     </main>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/* ANALYTICS SUMMARY                                                           */
+/* -------------------------------------------------------------------------- */
 
 type AnalyticsEvent = {
   event_type: string;
@@ -114,7 +133,7 @@ function computeAnalytics(events: AnalyticsEvent[]): AnalyticsSummary {
 
   return {
     views30d: views,
-    totalViews: views, // can expand to lifetime later
+    totalViews: views,
     ctaCall,
     ctaQuote,
     ctaDirections,

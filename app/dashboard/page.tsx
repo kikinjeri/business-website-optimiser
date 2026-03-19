@@ -1,108 +1,100 @@
-"use client";
-
-import { useState } from "react";
+// app/dashboard/page.tsx
+import { supabaseServer } from "@/lib/supabase/server";
+import "@/styles/styles.css";
 import Link from "next/link";
 
-type TabId = "overview" | "edit" | "embed" | "analytics" | "settings";
+export default async function DashboardOverviewPage() {
+  const supabase = await supabaseServer();
 
-export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<TabId>("overview");
+  // Fetch all businesses
+  const { data: businesses } = await supabase
+    .from("businesses")
+    .select("id, name, slug, status, created_at");
+
+  if (!businesses || businesses.length === 0) {
+    return (
+      <main className="dashboard-page" role="main">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <p>No businesses found.</p>
+      </main>
+    );
+  }
+
+  // Fetch analytics events for last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const { data: events } = await supabase
+    .from("analytics_events")
+    .select("business_id, event_type, created_at")
+    .gte("created_at", thirtyDaysAgo.toISOString());
+
+  const summaries = computeSummaries(businesses, events ?? []);
+
+  // Global KPIs
+  const totalBusinesses = businesses.length;
+  const totalViews = summaries.reduce((sum, s) => sum + s.views30d, 0);
+  const totalClicks = summaries.reduce((sum, s) => sum + s.clicks30d, 0);
+  const avgCtr =
+    totalViews > 0 ? Math.round((totalClicks / totalViews) * 100) : 0;
 
   return (
-    <main className="dashboard-shell">
-      {/* Sidebar (desktop) */}
-      <aside className="dashboard-sidebar">
-        <div className="sidebar-header">
-          <p className="sidebar-label">Business</p>
-          <h1 className="sidebar-title">Ottawa Pest Pros</h1>
-          <span className="status-pill status-pill--published">Published</span>
+    <main className="dashboard-page" role="main">
+      <h1 className="dashboard-title">Dashboard Overview</h1>
+
+      {/* KPI cards */}
+      <section className="panel kpi-grid">
+        <KPI label="Total businesses" value={totalBusinesses} />
+        <KPI label="Views (30 days)" value={totalViews} />
+        <KPI label="CTA clicks (30 days)" value={totalClicks} />
+        <KPI label="Average CTR" value={`${avgCtr}%`} />
+      </section>
+
+      {/* Styled business list */}
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Businesses</h2>
         </div>
 
-        <nav className="sidebar-nav" aria-label="Dashboard navigation">
-          <SidebarLink
-            label="Overview"
-            tabId="overview"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarLink
-            label="Edit Card"
-            tabId="edit"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarLink
-            label="Embed Code"
-            tabId="embed"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarLink
-            label="Analytics"
-            tabId="analytics"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarLink
-            label="Settings"
-            tabId="settings"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        </nav>
+        <div className="business-list">
+          {summaries.map((s) => (
+            <div key={s.id} className="business-row">
+              {/* Left: Name + Status */}
+              <div className="business-row-main">
+                <p className="business-name">{s.name}</p>
+                <span className={`status-badge status-${s.status ?? "draft"}`}>
+                  {s.status ?? "Draft"}
+                </span>
+              </div>
 
-        <div className="sidebar-footer">
-          <Link href="/card/ottawa-pest-pros" className="sidebar-footer-link">
-            View live card
-          </Link>
-          <button className="sidebar-footer-link" type="button">
-            Copy public URL
-          </button>
-        </div>
-      </aside>
+              {/* Middle: Stats */}
+              <div className="business-row-stats">
+                <div className="stat">
+                  <span className="stat-label">Views</span>
+                  <span className="stat-value">{s.views30d}</span>
+                </div>
 
-      {/* Main content */}
-      <section className="dashboard-main">
-        {/* Mobile tabs */}
-        <div className="dashboard-tabs" aria-label="Dashboard navigation">
-          <TabPill
-            label="Overview"
-            tabId="overview"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <TabPill
-            label="Edit"
-            tabId="edit"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <TabPill
-            label="Embed"
-            tabId="embed"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <TabPill
-            label="Analytics"
-            tabId="analytics"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <TabPill
-            label="Settings"
-            tabId="settings"
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        </div>
+                <div className="stat">
+                  <span className="stat-label">Clicks</span>
+                  <span className="stat-value">{s.clicks30d}</span>
+                </div>
 
-        <div className="dashboard-content">
-          {activeTab === "overview" && <OverviewPanel />}
-          {activeTab === "edit" && <EditCardPanel />}
-          {activeTab === "embed" && <EmbedPanel />}
-          {activeTab === "analytics" && <AnalyticsPanel />}
-          {activeTab === "settings" && <SettingsPanel />}
+                <div className="stat">
+                  <span className="stat-label">CTR</span>
+                  <span className={`stat-value ctr-${getCtrClass(s.ctr)}`}>
+                    {s.ctr}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Link */}
+              <div className="business-row-action">
+                <Link href={`/dashboard/${s.slug}`} className="row-link">
+                  View →
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
@@ -110,309 +102,52 @@ export default function DashboardPage() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               NAV COMPONENTS                               */
+/* ANALYTICS SUMMARY LOGIC */
 /* -------------------------------------------------------------------------- */
 
-function SidebarLink({
-  label,
-  tabId,
-  activeTab,
-  setActiveTab,
-}: {
-  label: string;
-  tabId: TabId;
-  activeTab: TabId;
-  setActiveTab: (t: TabId) => void;
-}) {
-  const isActive = activeTab === tabId;
-  return (
-    <button
-      type="button"
-      className={`sidebar-link ${isActive ? "sidebar-link--active" : ""}`}
-      onClick={() => setActiveTab(tabId)}
-    >
-      {label}
-    </button>
-  );
-}
+function computeSummaries(businesses, events) {
+  return businesses.map((b) => {
+    const ev = events.filter((e) => e.business_id === b.id);
 
-function TabPill({
-  label,
-  tabId,
-  activeTab,
-  setActiveTab,
-}: {
-  label: string;
-  tabId: TabId;
-  activeTab: TabId;
-  setActiveTab: (t: TabId) => void;
-}) {
-  const isActive = activeTab === tabId;
-  return (
-    <button
-      type="button"
-      className={`tab-pill ${isActive ? "tab-pill--active" : ""}`}
-      onClick={() => setActiveTab(tabId)}
-    >
-      {label}
-    </button>
-  );
+    const views = ev.filter((e) => e.event_type === "view").length;
+    const ctaCall = ev.filter((e) => e.event_type === "cta_call").length;
+    const ctaQuote = ev.filter((e) => e.event_type === "cta_quote").length;
+    const ctaDirections = ev.filter(
+      (e) => e.event_type === "cta_directions",
+    ).length;
+    const ctaWebsite = ev.filter((e) => e.event_type === "cta_website").length;
+
+    const clicks = ctaCall + ctaQuote + ctaDirections + ctaWebsite;
+    const ctr = views > 0 ? Math.round((clicks / views) * 100) : 0;
+
+    return {
+      id: b.id,
+      name: b.name,
+      slug: b.slug,
+      status: b.status,
+      views30d: views,
+      clicks30d: clicks,
+      ctr,
+    };
+  });
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               PANELS                                       */
+/* SMALL COMPONENTS */
 /* -------------------------------------------------------------------------- */
 
-function OverviewPanel() {
+function KPI({ label, value }) {
   return (
-    <div className="panel-grid">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Business card</h2>
-          <button type="button" className="panel-link">
-            Open full card
-          </button>
-        </div>
-        <DemoBusinessCard />
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Overview</h2>
-        </div>
-        <div className="stats-grid">
-          <StatBlock label="Views" value="1,248" />
-          <StatBlock label="CTA clicks" value="312" />
-          <StatBlock label="CTR" value="25%" />
-        </div>
-        <div className="panel-actions">
-          <button type="button" className="panel-btn">
-            Edit card
-          </button>
-          <button type="button" className="panel-btn">
-            Copy embed code
-          </button>
-          <button type="button" className="panel-btn panel-btn--ghost">
-            Open analytics
-          </button>
-        </div>
-        <p className="panel-meta">
-          Last updated: 2 days ago • Status: Published
-        </p>
-      </section>
+    <div className="kpi-block">
+      <p className="kpi-label">{label}</p>
+      <p className="kpi-value">{value}</p>
     </div>
   );
 }
 
-function EditCardPanel() {
-  return (
-    <div className="panel-grid panel-grid--edit">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Live preview</h2>
-        </div>
-        <DemoBusinessCard />
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Edit business card</h2>
-        </div>
-        <form className="edit-form">
-          <Field label="Business name" defaultValue="Ottawa Pest Pros" />
-          <Field
-            label="Tagline"
-            defaultValue="Fast, reliable pest control for homes & businesses."
-          />
-          <Field
-            label="Address"
-            defaultValue="123 Mapleview Drive, Ottawa, ON"
-          />
-          <Field label="Phone" defaultValue="(613) 555‑0192" />
-          <Field label="Website" defaultValue="ottawapestpros.example" />
-          <Field label="Service areas" defaultValue="Ottawa, Kanata, Nepean" />
-          <Field label="Hours" defaultValue="Mon–Fri, 8am–6pm" />
-          <Field label="Primary CTA label" defaultValue="Call Now" />
-          <Field label="Secondary CTA label" defaultValue="Get a Quote" />
-          <Field label="Tertiary CTA label" defaultValue="Directions" />
-          <button type="button" className="panel-btn">
-            Save changes
-          </button>
-        </form>
-      </section>
-    </div>
-  );
-}
-
-function EmbedPanel() {
-  const embedCode = `<iframe src="https://yourdomain.com/card/ottawa-pest-pros" style="border:0;width:100%;max-width:420px;height:360px;" loading="lazy"></iframe>`;
-
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Embed code</h2>
-      </div>
-      <p className="panel-description">
-        Use this snippet to embed the business card on any website or landing
-        page.
-      </p>
-      <div className="embed-actions">
-        <button type="button" className="panel-btn">
-          Copy embed code
-        </button>
-        <button type="button" className="panel-btn panel-btn--ghost">
-          Copy public URL
-        </button>
-      </div>
-      <pre className="embed-code" aria-label="Embed code snippet">
-        <code>{embedCode}</code>
-      </pre>
-      <div className="panel-subsection">
-        <h3>Preview</h3>
-        <DemoBusinessCard />
-      </div>
-    </section>
-  );
-}
-
-function AnalyticsPanel() {
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Analytics</h2>
-      </div>
-      <p className="panel-description">
-        Simple, privacy‑minded analytics for this business card.
-      </p>
-      <div className="stats-grid stats-grid--wide">
-        <StatBlock label="Views (30 days)" value="1,248" />
-        <StatBlock label="CTA clicks (30 days)" value="312" />
-        <StatBlock label="CTR" value="25%" />
-        <StatBlock label="Call clicks" value="120" />
-        <StatBlock label="Quote clicks" value="80" />
-        <StatBlock label="Directions" value="60" />
-        <StatBlock label="Website visits" value="52" />
-      </div>
-      {/* Placeholder for future chart */}
-      <div className="chart-placeholder">
-        <p>Traffic over time (chart coming soon).</p>
-      </div>
-    </section>
-  );
-}
-
-function SettingsPanel() {
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Settings</h2>
-      </div>
-      <form className="edit-form">
-        <Field label="Slug" defaultValue="ottawa-pest-pros" />
-        <Field label="Category" defaultValue="Pest Control" />
-        <Field label="Internal notes" as="textarea" defaultValue="" />
-        <div className="toggle-row">
-          <span>Published</span>
-          <button type="button" className="toggle-pill">
-            On
-          </button>
-        </div>
-        <button type="button" className="panel-btn">
-          Save settings
-        </button>
-      </form>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                               SMALL COMPONENTS                             */
-/* -------------------------------------------------------------------------- */
-
-function StatBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="stat-block">
-      <p className="stat-label">{label}</p>
-      <p className="stat-value">{value}</p>
-    </div>
-  );
-}
-
-function Field({
-  label,
-  defaultValue,
-  as = "input",
-}: {
-  label: string;
-  defaultValue?: string;
-  as?: "input" | "textarea";
-}) {
-  return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-      {as === "textarea" ? (
-        <textarea
-          className="field-control field-control--textarea"
-          defaultValue={defaultValue}
-        />
-      ) : (
-        <input
-          className="field-control"
-          defaultValue={defaultValue}
-          type="text"
-        />
-      )}
-    </label>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                               DEMO CARD                                    */
-/* -------------------------------------------------------------------------- */
-
-function DemoBusinessCard() {
-  return (
-    <article
-      className="demo-card"
-      aria-label="Demo business card for Ottawa Pest Pros"
-    >
-      <div className="demo-card-border">
-        <div className="demo-card-inner">
-          <header className="demo-card-header">
-            <h3 className="demo-card-title">Ottawa Pest Pros</h3>
-            <p className="demo-card-tagline">
-              Fast, reliable pest control for homes & businesses.
-            </p>
-          </header>
-
-          <dl className="demo-card-details">
-            <div className="detail-row">
-              <dt>Location</dt>
-              <dd>123 Mapleview Drive, Ottawa, ON</dd>
-            </div>
-            <div className="detail-row">
-              <dt>Phone</dt>
-              <dd>(613) 555‑0192</dd>
-            </div>
-            <div className="detail-row">
-              <dt>Website</dt>
-              <dd>ottawapestpros.example</dd>
-            </div>
-          </dl>
-
-          <div className="demo-card-ctas">
-            <button className="demo-cta gradient-btn" disabled>
-              Call Now
-            </button>
-            <button className="demo-cta gradient-btn" disabled>
-              Get a Quote
-            </button>
-            <button className="demo-cta gradient-btn" disabled>
-              Directions
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
+/* CTR color helper */
+function getCtrClass(ctr: number) {
+  if (ctr >= 20) return "high";
+  if (ctr >= 10) return "medium";
+  return "low";
 }

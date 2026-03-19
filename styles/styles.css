@@ -1141,6 +1141,106 @@
   color: #fff;
 }
 
+/*DASHBOARD*/
+
+.business-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #e5e7eb;
+}
+
+.business-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+
+.business-row:hover {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.business-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.business-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.status-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-published {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-draft {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.business-row-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ctr-high {
+  color: #065f46;
+}
+
+.ctr-medium {
+  color: #92400e;
+}
+
+.ctr-low {
+  color: #991b1b;
+}
+
+.business-row-action {
+  text-align: right;
+}
+
+.row-link {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.row-link:hover {
+  text-decoration: underline;
+}
+
 /* ==========================================================
    EMBED PAGE — RESPONSIVE
 ========================================================== */
@@ -1161,6 +1261,12 @@
   .embed-card-footer a {
     width: 100%;
   }
+}
+/* Contact page */
+
+
+.hidden-field {
+  display: none;
 }
 
 /* ==========================================================

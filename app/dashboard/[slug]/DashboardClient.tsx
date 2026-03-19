@@ -1,10 +1,9 @@
+// app/dashboard/[slug]/DashboardClient.tsx
 "use client";
 
-import { useState, useTransition } from "react";
+import "@/styles/styles.css";
 import Link from "next/link";
-import { updateBusiness } from "./actions/updateBusiness";
-import { updateServiceAreas } from "./actions/updateServiceAreas";
-import { updateSEO } from "./actions/updateSEO";
+import { useMemo } from "react";
 
 type Business = {
   id: string;
@@ -18,7 +17,7 @@ type Business = {
   phone: string | null;
   email: string | null;
   address: string | null;
-  hours_json: any;
+  hours_json: any | null;
   is_accessible: boolean | null;
   supports_screen_readers: boolean | null;
   supports_keyboard_navigation: boolean | null;
@@ -41,516 +40,161 @@ type AnalyticsSummary = {
   ctr: number;
 };
 
-type TabId = "overview" | "edit" | "embed" | "analytics" | "settings";
+type DashboardClientProps = {
+  business: Business;
+  serviceAreas: string[];
+  analytics: AnalyticsSummary;
+};
 
 export default function DashboardClient({
   business,
   serviceAreas,
   analytics,
-}: {
-  business: Business;
-  serviceAreas: string[];
-  analytics: AnalyticsSummary;
-}) {
-  const [activeTab, setActiveTab] = useState<TabId>("overview");
-  const [isPending, startTransition] = useTransition();
-
-  // Local state for live preview
-  const [name, setName] = useState(business.name);
-  const [tagline, setTagline] = useState(business.tagline_en ?? "");
-  const [address, setAddress] = useState(business.address ?? "");
-  const [phone, setPhone] = useState(business.phone ?? "");
-  const [website, setWebsite] = useState(business.website_url ?? "");
+}: DashboardClientProps) {
+  const topCta = useMemo(() => {
+    const entries: { label: string; value: number }[] = [
+      { label: "Call", value: analytics.ctaCall },
+      { label: "Quote", value: analytics.ctaQuote },
+      { label: "Directions", value: analytics.ctaDirections },
+      { label: "Website", value: analytics.ctaWebsite },
+    ];
+    const best = entries.reduce(
+      (max, curr) => (curr.value > max.value ? curr : max),
+      { label: "None", value: 0 },
+    );
+    return best.value > 0 ? best.label : "None yet";
+  }, [analytics]);
 
   return (
     <div className="dashboard-shell">
-      {/* Sidebar (desktop) */}
-      <aside className="dashboard-sidebar">
-        <div className="sidebar-header">
-          <p className="sidebar-label">Business</p>
-          <h1 className="sidebar-title">{business.name}</h1>
-          <span className="status-pill status-pill--published">
-            {business.status ?? "Draft"}
-          </span>
+      <header className="dashboard-header">
+        <div>
+          <h1 className="dashboard-title">{business.name}</h1>
+          <p className="dashboard-subtitle">
+            Private performance view for this business card.
+          </p>
         </div>
-
-        <nav className="sidebar-nav" aria-label="Dashboard navigation">
-          <SidebarLink label="Overview" tabId="overview" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <SidebarLink label="Edit Card" tabId="edit" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <SidebarLink label="Embed Code" tabId="embed" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <SidebarLink label="Analytics" tabId="analytics" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <SidebarLink label="Settings" tabId="settings" activeTab={activeTab} setActiveTab={setActiveTab} />
-        </nav>
-
-        <div className="sidebar-footer">
-          <Link href={`/card/${business.slug}`} className="sidebar-footer-link">
-            View live card
-          </Link>
-          <button
-            className="sidebar-footer-link"
-            type="button"
-            onClick={() =>
-              navigator.clipboard.writeText(`${window.location.origin}/card/${business.slug}`)
-            }
+        <div className="dashboard-header-actions">
+          {business.website_url && (
+            <a
+              href={business.website_url}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-secondary"
+            >
+              View website
+            </a>
+          )}
+          <Link
+            href={`/business/${business.slug}`}
+            className="btn btn-primary"
+            target="_blank"
           >
-            Copy public URL
-          </button>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <section className="dashboard-main">
-        {/* Mobile tabs */}
-        <div className="dashboard-tabs" aria-label="Dashboard navigation">
-          <TabPill label="Overview" tabId="overview" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabPill label="Edit" tabId="edit" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabPill label="Embed" tabId="embed" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabPill label="Analytics" tabId="analytics" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabPill label="Settings" tabId="settings" activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
-
-        <div className="dashboard-content">
-          {activeTab === "overview" && (
-            <OverviewPanel
-              business={business}
-              analytics={analytics}
-              name={name}
-              tagline={tagline}
-              address={address}
-              phone={phone}
-              website={website}
-              setActiveTab={setActiveTab}
-            />
-          )}
-
-          {activeTab === "edit" && (
-            <EditCardPanel
-              business={business}
-              serviceAreas={serviceAreas}
-              name={name}
-              setName={setName}
-              tagline={tagline}
-              setTagline={setTagline}
-              address={address}
-              setAddress={setAddress}
-              phone={phone}
-              setPhone={setPhone}
-              website={website}
-              setWebsite={setWebsite}
-              isPending={isPending}
-              startTransition={startTransition}
-            />
-          )}
-
-          {activeTab === "embed" && (
-            <EmbedPanel business={business} name={name} tagline={tagline} />
-          )}
-
-          {activeTab === "analytics" && (
-            <AnalyticsPanel analytics={analytics} />
-          )}
-
-          {activeTab === "settings" && (
-            <SettingsPanel
-              business={business}
-              serviceAreas={serviceAreas}
-              isPending={isPending}
-              startTransition={startTransition}
-            />
-          )}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* NAV COMPONENTS */
-/* -------------------------------------------------------------------------- */
-
-function SidebarLink({
-  label,
-  tabId,
-  activeTab,
-  setActiveTab,
-}: {
-  label: string;
-  tabId: TabId;
-  activeTab: TabId;
-  setActiveTab: (t: TabId) => void;
-}) {
-  const isActive = activeTab === tabId;
-  return (
-    <button
-      type="button"
-      className={`sidebar-link ${isActive ? "sidebar-link--active" : ""}`}
-      onClick={() => setActiveTab(tabId)}
-    >
-      {label}
-    </button>
-  );
-}
-
-function TabPill({
-  label,
-  tabId,
-  activeTab,
-  setActiveTab,
-}: {
-  label: string;
-  tabId: TabId;
-  activeTab: TabId;
-  setActiveTab: (t: TabId) => void;
-}) {
-  const isActive = activeTab === tabId;
-  return (
-    <button
-      type="button"
-      className={`tab-pill ${isActive ? "tab-pill--active" : ""}`}
-      onClick={() => setActiveTab(tabId)}
-    >
-      {label}
-    </button>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* PANELS */
-/* -------------------------------------------------------------------------- */
-
-function OverviewPanel({
-  business,
-  analytics,
-  name,
-  tagline,
-  address,
-  phone,
-  website,
-  setActiveTab,
-}: {
-  business: Business;
-  analytics: AnalyticsSummary;
-  name: string;
-  tagline: string;
-  address: string;
-  phone: string;
-  website: string;
-  setActiveTab: (t: TabId) => void;
-}) {
-  return (
-    <div className="panel-grid">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Business card</h2>
-          <Link href={`/card/${business.slug}`} className="panel-link">
-            Open full card
+            View public card
           </Link>
         </div>
-        <DemoBusinessCard
-          name={name}
-          tagline={tagline}
-          address={address}
-          phone={phone}
-          website={website}
-        />
-      </section>
+      </header>
 
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Overview</h2>
-        </div>
-        <div className="stats-grid">
-          <StatBlock label="Views (30 days)" value={analytics.views30d} />
-          <StatBlock
-            label="CTA clicks (30 days)"
-            value={
-              analytics.ctaCall +
-              analytics.ctaQuote +
-              analytics.ctaDirections +
-              analytics.ctaWebsite
-            }
-          />
-          <StatBlock label="CTR" value={`${analytics.ctr}%`} />
-        </div>
-        <div className="panel-actions">
-          <button type="button" className="panel-btn" onClick={() => setActiveTab("edit")}>
-            Edit card
-          </button>
-          <button type="button" className="panel-btn" onClick={() => setActiveTab("embed")}>
-            Copy embed code
-          </button>
-          <button
-            type="button"
-            className="panel-btn panel-btn--ghost"
-            onClick={() => setActiveTab("analytics")}
-          >
-            Open analytics
-          </button>
-        </div>
-        <p className="panel-meta">
-          Status: {business.status ?? "Draft"} • Slug: {business.slug}
-        </p>
-      </section>
+      <div className="dashboard-scroll-container">
+        {/* Row 1: Business card + business analytics */}
+        <section className="dashboard-row">
+          <div className="panel panel-card">
+            <h2 className="panel-title">Business card</h2>
+            <p className="panel-description">
+              This is how your card appears in the public directory.
+            </p>
+            <DemoBusinessCard business={business} serviceAreas={serviceAreas} />
+            <BusinessMeta business={business} serviceAreas={serviceAreas} />
+          </div>
+
+          <div className="panel panel-analytics">
+            <h2 className="panel-title">Card analytics (last 30 days)</h2>
+            <p className="panel-description">
+              High‑level performance of your public business card.
+            </p>
+
+            <div className="stats-grid stats-grid--wide">
+              <StatBlock label="Views" value={analytics.views30d} />
+              <StatBlock
+                label="CTA clicks"
+                value={
+                  analytics.ctaCall +
+                  analytics.ctaQuote +
+                  analytics.ctaDirections +
+                  analytics.ctaWebsite
+                }
+              />
+              <StatBlock label="CTR" value={`${analytics.ctr}%`} />
+              <StatBlock label="Top CTA" value={topCta} />
+            </div>
+
+            <div className="chart-placeholder">
+              <p className="chart-placeholder-title">Traffic over time</p>
+              <p className="chart-placeholder-subtitle">
+                A time‑series chart of views and clicks will appear here.
+              </p>
+            </div>
+
+            <InsightsBlock analytics={analytics} topCta={topCta} />
+          </div>
+        </section>
+
+        {/* Row 2: Embed code + embed analytics (for now, reuse same analytics) */}
+        <section className="dashboard-row">
+          <div className="panel panel-card">
+            <h2 className="panel-title">Embed code</h2>
+            <p className="panel-description">
+              Add this card to your own website using the embed snippet.
+            </p>
+            <EmbedCodeBlock slug={business.slug} />
+          </div>
+
+          <div className="panel panel-analytics">
+            <h2 className="panel-title">Embed analytics</h2>
+            <p className="panel-description">
+              Performance of this card when embedded on external sites.
+            </p>
+
+            <div className="stats-grid stats-grid--wide">
+              <StatBlock label="Embed views" value={analytics.views30d} />
+              <StatBlock
+                label="Embed CTA clicks"
+                value={
+                  analytics.ctaCall +
+                  analytics.ctaQuote +
+                  analytics.ctaDirections +
+                  analytics.ctaWebsite
+                }
+              />
+              <StatBlock label="Embed CTR" value={`${analytics.ctr}%`} />
+              <StatBlock label="Top CTA (embed)" value={topCta} />
+            </div>
+
+            <div className="chart-placeholder">
+              <p className="chart-placeholder-title">Embed traffic over time</p>
+              <p className="chart-placeholder-subtitle">
+                Once embed‑specific tracking is enabled, this chart will show
+                embed‑only traffic.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
 
-function EditCardPanel({
-  business,
-  serviceAreas,
-  name,
-  setName,
-  tagline,
-  setTagline,
-  address,
-  setAddress,
-  phone,
-  setPhone,
-  website,
-  setWebsite,
-  isPending,
-  startTransition,
-}: {
-  business: Business;
-  serviceAreas: string[];
-  name: string;
-  setName: (v: string) => void;
-  tagline: string;
-  setTagline: (v: string) => void;
-  address: string;
-  setAddress: (v: string) => void;
-  phone: string;
-  setPhone: (v: string) => void;
-  website: string;
-  setWebsite: (v: string) => void;
-  isPending: boolean;
-  startTransition: React.TransitionStartFunction;
-}) {
-  return (
-    <div className="panel-grid panel-grid--edit">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Live preview</h2>
-        </div>
-        <DemoBusinessCard
-          name={name}
-          tagline={tagline}
-          address={address}
-          phone={phone}
-          website={website}
-        />
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Edit business card</h2>
-        </div>
-
-        <form
-          action={updateBusiness}
-          className="edit-form"
-          onSubmit={() => startTransition(() => {})}
-        >
-          <input type="hidden" name="id" value={business.id} />
-          <input type="hidden" name="slug" value={business.slug} />
-
-          <Field label="Business name" name="name" value={name} onChange={setName} />
-          <Field label="Tagline" name="tagline_en" value={tagline} onChange={setTagline} />
-          <Field label="Address" name="address" value={address} onChange={setAddress} />
-          <Field label="Phone" name="phone" value={phone} onChange={setPhone} />
-          <Field label="Website" name="website_url" value={website} onChange={setWebsite} />
-
-          <Field
-            label="Service areas (comma‑separated)"
-            name="service_areas"
-            defaultValue={serviceAreas.join(", ")}
-          />
-
-          <button type="submit" className="panel-btn" disabled={isPending}>
-            {isPending ? "Saving..." : "Save changes"}
-          </button>
-        </form>
-
-        <form
-          action={updateServiceAreas}
-          className="edit-form edit-form--secondary"
-          onSubmit={() => startTransition(() => {})}
-        >
-          <input type="hidden" name="business_id" value={business.id} />
-          <input type="hidden" name="slug" value={business.slug} />
-
-          <Field
-            label="Service areas (override, comma‑separated)"
-            name="service_areas"
-            defaultValue={serviceAreas.join(", ")}
-            as="textarea"
-          />
-
-          <button type="submit" className="panel-btn panel-btn--ghost" disabled={isPending}>
-            {isPending ? "Updating areas..." : "Update service areas"}
-          </button>
-        </form>
-      </section>
-    </div>
-  );
-}
-
-function EmbedPanel({
-  business,
-  name,
-  tagline,
-}: {
-  business: Business;
-  name: string;
-  tagline: string;
-}) {
-  const embedCode = `<iframe src="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://yourdomain.com"}/card/${business.slug}" style="border:0;width:100%;max-width:420px;height:360px;" loading="lazy"></iframe>`;
-
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Embed code</h2>
-      </div>
-
-      <p className="panel-description">
-        Use this snippet to embed the business card on any website or landing page.
-      </p>
-
-      <div className="embed-actions">
-        <button
-          type="button"
-          className="panel-btn"
-          onClick={() => navigator.clipboard.writeText(embedCode)}
-        >
-          Copy embed code
-        </button>
-
-        <button
-          type="button"
-          className="panel-btn panel-btn--ghost"
-          onClick={() =>
-            navigator.clipboard.writeText(`${window.location.origin}/card/${business.slug}`)
-          }
-        >
-          Copy public URL
-        </button>
-      </div>
-
-      <pre className="embed-code">
-        <code>{embedCode}</code>
-      </pre>
-
-      <div className="panel-subsection">
-        <h3>Preview</h3>
-        <DemoBusinessCard
-          name={name}
-          tagline={tagline}
-          address={business.address ?? ""}
-          phone={business.phone ?? ""}
-          website={business.website_url ?? ""}
-        />
-      </div>
-    </section>
-  );
-}
-
-function AnalyticsPanel({ analytics }: { analytics: AnalyticsSummary }) {
-  const totalClicks =
-    analytics.ctaCall +
-    analytics.ctaQuote +
-    analytics.ctaDirections +
-    analytics.ctaWebsite;
-
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Analytics</h2>
-      </div>
-
-      <p className="panel-description">
-        Simple, privacy‑minded analytics for this business card.
-      </p>
-
-      <div className="stats-grid stats-grid--wide">
-        <StatBlock label="Views (30 days)" value={analytics.views30d} />
-        <StatBlock label="Total clicks (30 days)" value={totalClicks} />
-        <StatBlock label="CTR" value={`${analytics.ctr}%`} />
-        <StatBlock label="Call clicks" value={analytics.ctaCall} />
-        <StatBlock label="Quote clicks" value={analytics.ctaQuote} />
-        <StatBlock label="Directions" value={analytics.ctaDirections} />
-        <StatBlock label="Website visits" value={analytics.ctaWebsite} />
-      </div>
-
-      <div className="chart-placeholder">
-        <p>Traffic over time (chart coming soon).</p>
-      </div>
-    </section>
-  );
-}
-
-function SettingsPanel({
-  business,
-  serviceAreas,
-  isPending,
-  startTransition,
-}: {
-  business: Business;
-  serviceAreas: string[];
-  isPending: boolean;
-  startTransition: React.TransitionStartFunction;
-}) {
-  return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Settings</h2>
-      </div>
-
-      <form
-        action={updateSEO}
-        className="edit-form"
-        onSubmit={() => startTransition(() => {})}
-      >
-        <input type="hidden" name="id" value={business.id} />
-        <input type="hidden" name="slug" value={business.slug} />
-
-        <Field label="Slug" name="slug" defaultValue={business.slug} readOnly />
-        <Field label="Category" name="category" defaultValue={business.category ?? ""} />
-        <Field label="Neighborhood" name="neighborhood" defaultValue={business.neighborhood ?? ""} />
-
-        <Field label="SEO title" name="seo_title" defaultValue={business.seo_title ?? ""} />
-
-        <Field
-          label="SEO description"
-          name="seo_description"
-          as="textarea"
-          defaultValue={business.seo_description ?? ""}
-        />
-
-        <Field
-          label="SEO keywords (comma‑separated)"
-          name="seo_keywords"
-          defaultValue={business.seo_keywords ?? ""}
-        />
-
-        <Field
-          label="Service areas (comma‑separated)"
-          name="service_areas"
-          defaultValue={serviceAreas.join(", ")}
-        />
-
-        <button type="submit" className="panel-btn" disabled={isPending}>
-          {isPending ? "Saving..." : "Save settings"}
-        </button>
-      </form>
-    </section>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
-/* SMALL COMPONENTS */
+/* PRESENTATION COMPONENTS                                                     */
 /* -------------------------------------------------------------------------- */
 
-function StatBlock({ label, value }: { label: string; value: string | number }) {
+function StatBlock({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
   return (
     <div className="stat-block">
       <p className="stat-label">{label}</p>
@@ -559,109 +203,179 @@ function StatBlock({ label, value }: { label: string; value: string | number }) 
   );
 }
 
-function Field({
-  label,
-  name,
-  value,
-  onChange,
-  defaultValue,
-  as = "input",
-  readOnly = false,
+function DemoBusinessCard({
+  business,
+  serviceAreas,
 }: {
-  label: string;
-  name: string;
-  value?: string;
-  onChange?: (v: string) => void;
-  defaultValue?: string;
-  as?: "input" | "textarea";
-  readOnly?: boolean;
+  business: Business;
+  serviceAreas: string[];
 }) {
-  const commonProps = {
-    name,
-    readOnly,
-    defaultValue,
-  };
-
   return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-
-      {as === "textarea" ? (
-        <textarea
-          className="field-control field-control--textarea"
-          {...commonProps}
-          value={value}
-          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
-        />
-      ) : (
-        <input
-          className="field-control"
-          {...commonProps}
-          value={value}
-          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
-        />
-      )}
-    </label>
+    <article className="demo-card" aria-label="Business card preview">
+      <header className="demo-card-header">
+        <h3 className="demo-card-title">{business.name}</h3>
+        {business.tagline_en && (
+          <p className="demo-card-tagline">{business.tagline_en}</p>
+        )}
+      </header>
+      <div className="demo-card-body">
+        {business.address && (
+          <p className="demo-card-line">
+            <span className="demo-card-label">Address:</span>{" "}
+            <span>{business.address}</span>
+          </p>
+        )}
+        {business.phone && (
+          <p className="demo-card-line">
+            <span className="demo-card-label">Phone:</span>{" "}
+            <span>{business.phone}</span>
+          </p>
+        )}
+        {business.website_url && (
+          <p className="demo-card-line">
+            <span className="demo-card-label">Website:</span>{" "}
+            <span>{business.website_url}</span>
+          </p>
+        )}
+        {serviceAreas.length > 0 && (
+          <p className="demo-card-line">
+            <span className="demo-card-label">Service areas:</span>{" "}
+            <span>{serviceAreas.join(", ")}</span>
+          </p>
+        )}
+      </div>
+    </article>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* DEMO CARD */
-/* -------------------------------------------------------------------------- */
-
-function DemoBusinessCard({
-  name,
-  tagline,
-  address,
-  phone,
-  website,
+function BusinessMeta({
+  business,
+  serviceAreas,
 }: {
-  name: string;
-  tagline: string;
-  address: string;
-  phone: string;
-  website: string;
+  business: Business;
+  serviceAreas: string[];
 }) {
   return (
-    <article
-      className="demo-card"
-      aria-label={`Demo business card for ${name}`}
-    >
-      <div className="demo-card-border">
-        <div className="demo-card-inner">
-          <header className="demo-card-header">
-            <h3 className="demo-card-title">{name}</h3>
-            <p className="demo-card-tagline">{tagline}</p>
-          </header>
+    <div className="panel-meta">
+      <dl className="meta-grid">
+        <div>
+          <dt>Status</dt>
+          <dd>{business.status ?? "Draft"}</dd>
+        </div>
+        <div>
+          <dt>Category</dt>
+          <dd>{business.category ?? "Uncategorized"}</dd>
+        </div>
+        <div>
+          <dt>Neighborhood</dt>
+          <dd>{business.neighborhood ?? "Not set"}</dd>
+        </div>
+        <div>
+          <dt>Slug</dt>
+          <dd>{business.slug}</dd>
+        </div>
+        <div>
+          <dt>Accessibility</dt>
+          <dd>
+            {business.is_accessible ? "Accessible" : "Not marked accessible"}
+          </dd>
+        </div>
+        <div>
+          <dt>Service areas</dt>
+          <dd>{serviceAreas.length > 0 ? serviceAreas.join(", ") : "None"}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
 
-          <dl className="demo-card-details">
-            <div className="detail-row">
-              <dt>Location</dt>
-              <dd>{address}</dd>
-            </div>
-            <div className="detail-row">
-              <dt>Phone</dt>
-              <dd>{phone}</dd>
-            </div>
-            <div className="detail-row">
-              <dt>Website</dt>
-              <dd>{website}</dd>
-            </div>
-          </dl>
+function EmbedCodeBlock({ slug }: { slug: string }) {
+  const publicUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/business/${slug}`;
+  const iframeCode = `<iframe src="${publicUrl}" loading="lazy" style="border:0;width:100%;height:420px;"></iframe>`;
 
-          <div className="demo-card-ctas">
-            <button className="demo-cta gradient-btn" disabled>
-              Call Now
-            </button>
-            <button className="demo-cta gradient-btn" disabled>
-              Get a Quote
-            </button>
-            <button className="demo-cta gradient-btn" disabled>
-              Directions
-            </button>
-          </div>
+  return (
+    <div className="embed-block">
+      <div className="embed-field">
+        <label className="embed-label">Public URL</label>
+        <div className="embed-input-row">
+          <input
+            readOnly
+            value={publicUrl}
+            className="embed-input"
+            aria-label="Public URL"
+          />
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigator.clipboard.writeText(publicUrl)}
+          >
+            Copy
+          </button>
         </div>
       </div>
-    </article>
+
+      <div className="embed-field">
+        <label className="embed-label">Embed code</label>
+        <div className="embed-input-row">
+          <textarea
+            readOnly
+            value={iframeCode}
+            className="embed-textarea"
+            rows={3}
+            aria-label="Embed code"
+          />
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigator.clipboard.writeText(iframeCode)}
+          >
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InsightsBlock({
+  analytics,
+  topCta,
+}: {
+  analytics: AnalyticsSummary;
+  topCta: string;
+}) {
+  const totalClicks =
+    analytics.ctaCall +
+    analytics.ctaQuote +
+    analytics.ctaDirections +
+    analytics.ctaWebsite;
+
+  const insights: string[] = [];
+
+  if (analytics.views30d === 0) {
+    insights.push(
+      "No views in the last 30 days yet. Share your card to get traffic.",
+    );
+  } else {
+    insights.push(
+      `Your card received ${analytics.views30d} views and ${totalClicks} CTA clicks in the last 30 days.`,
+    );
+    insights.push(`Current click‑through rate is ${analytics.ctr}%.`);
+    if (topCta !== "None yet") {
+      insights.push(`Top‑performing CTA is ${topCta}.`);
+    }
+  }
+
+  return (
+    <section className="insights-block" aria-label="Analytics insights">
+      <h3 className="insights-title">Insights</h3>
+      <ul className="insights-list">
+        {insights.map((text, idx) => (
+          <li key={idx} className="insights-item">
+            {text}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
