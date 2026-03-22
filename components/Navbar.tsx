@@ -41,8 +41,7 @@ export default function Navbar() {
         <div className="navbar-links">
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>
-          <Link href="/business">Directory</Link>
-          <Link href="/dashboard">Dashboard</Link>
+
           <Link href="/contact">Contact</Link>
 
           <button
