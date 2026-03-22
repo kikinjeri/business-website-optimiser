@@ -3,10 +3,27 @@ import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { BskyAgent } from "npm:@atproto/api";
 
-serve(async () => {
+serve(async (req) => {
+  // Allow ?no-verify-jwt=1 to bypass auth
+  const url = new URL(req.url);
+  const skipAuth = url.searchParams.get("no-verify-jwt") === "1";
+
+  if (!skipAuth) {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ code: 401, message: "Missing authorization header" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  }
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    Deno.env.get("SERVICE_ROLE_KEY")!
   );
 
   // 1. Find the next pending scheduled post
@@ -24,7 +41,9 @@ serve(async () => {
   }
 
   // 2. Authenticate with Bluesky
-  const agent = new BskyAgent({ service: Deno.env.get("BLUESKY_SERVICE_URL")! });
+  const agent = new BskyAgent({
+    service: Deno.env.get("BLUESKY_SERVICE_URL")!,
+  });
 
   await agent.login({
     identifier: Deno.env.get("BLUESKY_USERNAME")!,
