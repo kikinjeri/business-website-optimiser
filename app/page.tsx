@@ -46,69 +46,82 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* SECTION 1 — What the card is */}
       <section id="card-explainer" className="section centered">
         <h2 className="section-heading accent">Built for the modern web.</h2>
 
         <p className="section-subtitle">
-          A single, accessible card you can embed anywhere — designed to boost
-          visibility and clicks.
+          A single, accessible card you can embed anywhere — designed to
+          strengthen your online presence and drive more clicks.
         </p>
 
         <div className="value-grid">
           <div className="value-block">
             <h3>SEO‑ready</h3>
             <p>
-              Optimised markup helps your site rank higher in search results.
+              Clean, structured markup helps search engines understand and
+              surface your content.
             </p>
           </div>
 
           <div className="value-block">
             <h3>Accessible</h3>
-            <p>WCAG‑minded design ensures your card works for everyone.</p>
-          </div>
-
-          <div className="value-block">
-            <h3>Consistent everywhere</h3>
             <p>
-              One source of truth keeps your brand aligned across platforms.
+              WCAG‑aligned design ensures everyone can engage with your
+              information.
             </p>
           </div>
 
           <div className="value-block">
-            <h3>Mobile‑friendly</h3>
-            <p>Responsive layouts deliver a smooth experience on any device.</p>
+            <h3>Brand‑consistent</h3>
+            <p>
+              A single source of truth keeps your visuals and messaging aligned
+              everywhere you appear.
+            </p>
+          </div>
+
+          <div className="value-block">
+            <h3>Mobile‑first</h3>
+            <p>
+              Responsive layouts deliver a smooth, reliable experience on any
+              device.
+            </p>
           </div>
         </div>
 
         <h3 className="section-heading accent">
-          Built to help customers find you.
+          Designed to help customers find you.
         </h3>
 
         <div className="value-grid">
           <div className="value-block">
             <h3>Search Visibility</h3>
             <p>
-              Clean HTML and structured data help Google understand your
-              business.
+              Structured data and semantic HTML make it easier for Google to
+              recognise your business.
             </p>
           </div>
 
           <div className="value-block">
-            <h3>Inclusive Design</h3>
-            <p>WCAG‑minded structure ensures your card works for everyone.</p>
-          </div>
-
-          <div className="value-block">
-            <h3>Consistency</h3>
+            <h3>Inclusive by Default</h3>
             <p>
-              One source of truth across platforms keeps your brand aligned.
+              Thoughtful design choices ensure your card works for every
+              visitor.
             </p>
           </div>
 
           <div className="value-block">
-            <h3>Conversion Power</h3>
-            <p>Fast, responsive pages encourage customers to click and act.</p>
+            <h3>Unified Presence</h3>
+            <p>
+              Consistent information across platforms builds trust and clarity.
+            </p>
+          </div>
+
+          <div className="value-block">
+            <h3>Built for Action</h3>
+            <p>
+              Fast, focused layouts encourage visitors to click, explore, and
+              convert.
+            </p>
           </div>
         </div>
       </section>
