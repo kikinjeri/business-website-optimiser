@@ -15,6 +15,10 @@ export default function HomePage() {
         <div className="hero-container">
           {/* LEFT SIDE — text */}
           <div className="hero-text">
+
+            {/* NEW — App name */}
+            <div className="hero-app-name">Business Web Optimiser</div>
+
             <p className="hero-eyebrow">
               Increase traffic to your business website
             </p>
@@ -29,11 +33,12 @@ export default function HomePage() {
               consistent, and built for modern SEO.
             </p>
 
-            <div className="hero-actions">
-              <Link href="/dashboard" className="hero-btn-primary">
-                Go to Dashboard
-              </Link>
-              <Link href="#card-explainer" className="hero-btn-secondary">
+            {/* UPDATED — Only one centered CTA */}
+            <div className="hero-actions single">
+              <Link
+                href="#card-explainer"
+                className="hero-btn-secondary hero-btn-single"
+              >
                 Boost Traffic
               </Link>
             </div>
