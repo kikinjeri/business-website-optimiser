@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   images: {
@@ -20,6 +21,11 @@ const nextConfig = {
 
   // Required for Vercel’s serverless output
   output: 'standalone',
+
+  // Disable Turbopack (fixes dev server hanging on Windows + pnpm)
+  turbo: {
+    enabled: false,
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
