@@ -26,7 +26,7 @@ export default function HomePage() {
 
             {/* Main headline — H2 */}
             <h2 className="hero-title">
-              Structured and semantic HTML.
+              Structured and semantic HTML. Accessible Design.
               <span className="accent"> Search Engine Optimised. </span>
             </h2>
 
