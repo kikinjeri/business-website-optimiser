@@ -83,151 +83,155 @@ export default function BusinessCard({
         : null;
 
   return (
-    <section className="business-card">
-      {/* Title */}
-      <h1 className="business-card__title">{name}</h1>
+    <section className="business-card-wrapper">
+      <div className="business-card">
+        {/* Title */}
+        <h1 className="business-card__title">{name}</h1>
 
-      {/* Tagline */}
-      {tagline && (
-        <p className="business-card__tagline">
-          <strong>{tagline}</strong>
-        </p>
-      )}
-
-      {/* Tags */}
-      {cleanedTags.length > 0 && (
-        <p className="business-card__tags">{cleanedTags.join(", ")}</p>
-      )}
-
-      {/* Location + Contact */}
-      <div className="business-card__section">
-        {address && <p className="business-card__location">{address}</p>}
-
-        {phone && (
-          <p className="business-card__contact">
-            <a href={`tel:${phone}`} className="business-card__link">
-              {phone}
-            </a>
+        {/* Tagline */}
+        {tagline && (
+          <p className="business-card__tagline">
+            <strong>{tagline}</strong>
           </p>
         )}
 
-        {email && (
-          <p className="business-card__contact">
-            <a href={`mailto:${email}`} className="business-card__link">
-              {email}
-            </a>
-          </p>
+        {/* Tags */}
+        {cleanedTags.length > 0 && (
+          <p className="business-card__tags">{cleanedTags.join(", ")}</p>
         )}
 
-        {normalizedWebsite && (
-          <p className="business-card__contact">
+        {/* Location + Contact */}
+        <div className="business-card__section">
+          {address && <p className="business-card__location">{address}</p>}
+
+          {phone && (
+            <p className="business-card__contact">
+              <a href={`tel:${phone}`} className="business-card__link">
+                {phone}
+              </a>
+            </p>
+          )}
+
+          {email && (
+            <p className="business-card__contact">
+              <a href={`mailto:${email}`} className="business-card__link">
+                {email}
+              </a>
+            </p>
+          )}
+
+          {normalizedWebsite && (
+            <p className="business-card__contact">
+              <a
+                href={normalizedWebsite}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="business-card__link"
+              >
+                {normalizedWebsite}
+              </a>
+            </p>
+          )}
+        </div>
+
+        {/* Hours (collapsible) */}
+        {sortedHours && (
+          <div className="business-card__section">
+            <h3>Hours</h3>
+
+            {!showHours && (
+              <button
+                className="business-card-areas-toggle"
+                onClick={() => setShowHours(true)}
+              >
+                View hours
+              </button>
+            )}
+
+            {showHours && (
+              <>
+                <div className="business-card-hours">
+                  {sortedHours.map(([day, value]) => (
+                    <div key={day} className="business-card-hours-item">
+                      <span>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
+                      <span>{value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  className="business-card-areas-toggle"
+                  onClick={() => setShowHours(false)}
+                >
+                  Hide hours
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Service Areas (clean text-only, collapsible) */}
+        {areasToDisplay.length > 0 && (
+          <div className="business-card__section">
+            <h3>Service Areas</h3>
+
+            <div className="business-card-areas-inline">
+              {areasToDisplay.map((area) => (
+                <span key={area} className="business-card-area-text">
+                  {area}
+                </span>
+              ))}
+            </div>
+
+            {showToggleAreas && (
+              <button
+                className="business-card-areas-toggle"
+                onClick={() => setShowAllAreas(!showAllAreas)}
+              >
+                {showAllAreas
+                  ? "Hide full list"
+                  : "View full service area list"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* CTA Footer — now styled by CSS */}
+        <div className="business-card-footer">
+          {phone && (
+            <a
+              href={`tel:${phone}`}
+              className="business-card__link"
+              style={{ fontWeight: 700 }}
+            >
+              <span aria-hidden="true">📞</span> Call Now
+            </a>
+          )}
+
+          {normalizedWebsite && (
             <a
               href={normalizedWebsite}
               target="_blank"
               rel="noopener noreferrer"
               className="business-card__link"
+              style={{ fontWeight: 700 }}
             >
-              {normalizedWebsite}
+              <span aria-hidden="true">↗️</span> Get a Quote
             </a>
-          </p>
-        )}
-      </div>
-
-      {/* Hours (collapsible) */}
-      {sortedHours && (
-        <div className="business-card__section">
-          <h3>Hours</h3>
-
-          {!showHours && (
-            <button
-              className="business-card-areas-toggle"
-              onClick={() => setShowHours(true)}
-            >
-              View hours
-            </button>
           )}
 
-          {showHours && (
-            <>
-              <div className="business-card-hours">
-                {sortedHours.map(([day, value]) => (
-                  <div key={day} className="business-card-hours-item">
-                    <span>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                className="business-card-areas-toggle"
-                onClick={() => setShowHours(false)}
-              >
-                Hide hours
-              </button>
-            </>
+          {directionsUrl && (
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="business-card__link"
+              style={{ fontWeight: 700 }}
+            >
+              <span aria-hidden="true">📍</span> Get Directions
+            </a>
           )}
         </div>
-      )}
-
-      {/* Service Areas (clean text-only, collapsible) */}
-      {areasToDisplay.length > 0 && (
-        <div className="business-card__section">
-          <h3>Service Areas</h3>
-
-          <div className="business-card-areas-inline">
-            {areasToDisplay.map((area) => (
-              <span key={area} className="business-card-area-text">
-                {area}
-              </span>
-            ))}
-          </div>
-
-          {showToggleAreas && (
-            <button
-              className="business-card-areas-toggle"
-              onClick={() => setShowAllAreas(!showAllAreas)}
-            >
-              {showAllAreas ? "Hide full list" : "View full service area list"}
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* CTA Footer — bold accent links */}
-      <div className="business-card-footer">
-        {phone && (
-          <a
-            href={`tel:${phone}`}
-            className="business-card__link"
-            style={{ fontWeight: 700 }}
-          >
-            <span aria-hidden="true">📞</span> Call Now
-          </a>
-        )}
-
-        {normalizedWebsite && (
-          <a
-            href={normalizedWebsite}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="business-card__link"
-            style={{ fontWeight: 700 }}
-          >
-            <span aria-hidden="true">↗️</span> Get a Quote
-          </a>
-        )}
-
-        {directionsUrl && (
-          <a
-            href={directionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="business-card__link"
-            style={{ fontWeight: 700 }}
-          >
-            <span aria-hidden="true">📍</span> Get Directions
-          </a>
-        )}
       </div>
     </section>
   );

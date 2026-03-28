@@ -316,20 +316,28 @@ a:hover {
 ========================================================== */
 
 /* ==========================================================
-   BUSINESS CARD — UPDATED FOR NEW GLOBAL DESIGN SYSTEM
+   BUSINESS CARD — PREMIUM VERSION (MATCHES DEMO CARD)
 ========================================================== */
 
+/* Outer gradient border wrapper */
+.business-card-wrapper {
+  padding: 2px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-gradient);
+  box-shadow: var(--shadow-lg);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Inner card */
 .business-card {
   background: var(--bg-card);
   color: var(--text);
   padding: 28px;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
-  max-width: 720px;
-  margin: 0 auto;
   border: 1px solid var(--border-subtle);
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
@@ -479,26 +487,29 @@ a:hover {
   margin-top: 12px;
 }
 
-.business-card-footer__cta {
+/* CTA buttons upgraded to gradient */
+.business-card-footer__cta,
+.business-card-footer a.business-card__link {
   flex: 1;
   min-width: 160px;
   text-align: center;
   padding: 12px 16px;
   border-radius: var(--radius-md);
-  background: var(--accent);
-  color: var(--bg-card);
+  background: var(--accent-gradient);
+  color: white !important;
   text-decoration: none;
   font-size: var(--font-md);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 6px;
-  font-weight: 600;
-  transition: background 0.2s ease, transform 0.2s ease;
+  font-weight: 700;
+  box-shadow: var(--accent-glow);
+  transition: transform 0.2s ease;
 }
 
-.business-card-footer__cta:hover {
-  background: var(--accent-strong);
+.business-card-footer__cta:hover,
+.business-card-footer a.business-card__link:hover {
   transform: translateY(-1px);
 }
 
@@ -508,12 +519,6 @@ a:hover {
   }
 }
 
-
-@media (max-width: 600px) {
-  .business-card-footer {
-    flex-direction: column;
-  }
-}
 /* ==========================================================
    DEMO BUSINESS CARD — HOMEPAGE VERSION
    Premium gradient border + soft inner card
