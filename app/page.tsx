@@ -15,26 +15,29 @@ export default function HomePage() {
         <div className="hero-container">
           {/* LEFT SIDE — text */}
           <div className="hero-text">
+            {/* App name — main H1 */}
+            <h1 className="hero-app-name">Business Web Optimiser</h1>
 
-            {/* NEW — App name */}
-            <div className="hero-app-name">Business Web Optimiser</div>
+            {/* Eyebrow */}
 
             <p className="hero-eyebrow">
               Increase traffic to your business website
             </p>
 
-            <h1 className="hero-title">
-              Clean code. Fast pages. Accessible by design.
-              <span className="accent"> Built to rank.</span>
-            </h1>
+            {/* Main headline — H2 */}
+            <h2 className="hero-title">
+              Structured and semantic HTML.
+              <span className="accent"> Search Engine Optimised. </span>
+            </h2>
 
+            {/* Subtitle */}
             <p className="hero-subtitle">
               Your business card becomes a high‑performance mini website — fast,
               consistent, and built for modern SEO.
             </p>
 
-            {/* UPDATED — Only one centered CTA */}
-            <div className="hero-actions single">
+            {/* CTA — left aligned */}
+            <div className="hero-actions">
               <Link
                 href="#card-explainer"
                 className="hero-btn-secondary hero-btn-single"
@@ -46,7 +49,10 @@ export default function HomePage() {
 
           {/* RIGHT SIDE — premium business card */}
           <div className="hero-card-wrapper">
-            <DemoBusinessCard />
+            <p className="hero-card-label">Sample Business Card</p>
+            <div className="hero-card-scale">
+              <DemoBusinessCard />
+            </div>
           </div>
         </div>
       </header>
@@ -183,7 +189,7 @@ function DemoBusinessCard() {
 
             <div className="detail-row">
               <dt>Website</dt>
-              <dd>www.ottawaelectricpros.example</dd>
+              <dd>www.ottawapros.example</dd>
             </div>
 
             <div className="detail-row">

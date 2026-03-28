@@ -31,6 +31,8 @@
     circle at 20% 20%,
     rgba(99,102,241,0.35),
     rgba(17,24,39,0.9) 60%
+    width: 100%;
+    display: block;
   );
 }
 
@@ -38,11 +40,19 @@
    HERO — FULL BLEED, PREMIUM, SPLIT LAYOUT
 ========================================================== */
 
+/* ==========================================================
+   HERO SECTION — CLEAN + COHESIVE (CARD UNTOUCHED)
+========================================================== */
+
 .hero-full {
   width: 100%;
   padding: var(--space-xl) var(--space-md) var(--space-lg);
   background: var(--hero-gradient-bg);
   color: white;
+  display: block;
+  background-size: cover;
+  background-position: center;
+  padding-bottom: 4rem; /* smoother transition into next section */
 }
 
 .hero-container {
@@ -50,22 +60,40 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: var(--space-xl);
-  align-items: center;
+
+  gap: 3.5rem;
+  align-items: center; /* aligns card + text baseline */
+
 }
 
+/* App name — largest element */
+.hero-app-name {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: var(--space-sm);
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: 0.3px;
+}
+
+/* Eyebrow */
 .hero-eyebrow {
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
+
+  font-size: 1.35rem;
   font-weight: 600;
   color: #e0e7ff;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 1rem;
+
   letter-spacing: 0.3px;
   line-height: 1.3;
 }
 
+
 .hero-title {
-  font-size: var(--font-xl);
-  font-weight: 800;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 700;
   line-height: 1.15;
   margin-bottom: var(--space-md);
 }
@@ -76,6 +104,7 @@
   color: transparent;
 }
 
+/* Subtitle */
 .hero-subtitle {
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   color: #d1d5db;
@@ -84,15 +113,18 @@
   line-height: 1.55;
 }
 
+/* CTA — left aligned */
 .hero-actions {
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
+/* Base button styles */
 .hero-btn-primary,
 .hero-btn-secondary {
-  padding: 0.85rem 1.4rem;
+  padding: 0.55rem 1.2rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: clamp(0.95rem, 1.2vw, 1rem);
@@ -100,25 +132,15 @@
   transition: 0.2s ease;
 }
 
-.hero-btn-primary {
-  background: var(--gradient-accent);
-  color: white;
-  box-shadow: var(--shadow-soft);
-}
-
-.hero-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card);
-}
-
+/* Secondary CTA (Boost Traffic) */
 .hero-btn-secondary {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .hero-btn-secondary:hover {
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 /* App name above hero eyebrow */
 .hero-app-name {
@@ -140,7 +162,34 @@
   padding: 0.65rem 1.1rem;
 }
 
-/* Mobile hero */
+/* Ensures reduced height applies */
+.hero-btn-single {
+  padding: 0.55rem 1.2rem;
+}
+
+/* ==========================================================
+   BUSINESS CARD — CAPTION ONLY (CARD STYLES UNCHANGED)
+========================================================== */
+
+.hero-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem; /* subtle lowering for alignment */
+}
+
+.hero-card-label {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+  text-align: center;
+}
+
+/* ==========================================================
+   MOBILE HERO
+========================================================== */
+
 @media (max-width: 900px) {
   .hero-container {
     grid-template-columns: 1fr;
@@ -162,97 +211,14 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--space-lg);
   }
+
+  .hero-card-label {
+    margin-bottom: 0.75rem;
+  }
 }
 
-/* ==========================================================
-   DEMO BUSINESS CARD — DARK + GRADIENT BORDER
-========================================================== */
 
-.demo-card {
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  border-radius: var(--radius-lg);
-  background: #111827;
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  transform: translateY(0);
-  transition: transform 0.25s ease;
-}
 
-.demo-card:hover {
-  transform: translateY(-6px);
-}
-
-.demo-card-border {
-  padding: 2px;
-  background: var(--gradient-border);
-  border-radius: var(--radius-lg);
-}
-
-.demo-card-inner {
-  background: #111827;
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-}
-
-/* Header */
-.demo-card-header {
-  margin-bottom: var(--space-md);
-}
-
-.demo-card-title {
-  font-size: clamp(1.2rem, 2vw, 1.4rem);
-  font-weight: 700;
-  color: white;
-  margin-bottom: 0.35rem;
-}
-
-.demo-card-tagline {
-  color: #9ca3af;
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
-}
-
-/* Details */
-.demo-card-details {
-  margin-bottom: var(--space-md);
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--space-xs);
-}
-
-.detail-row dt {
-  color: #9ca3af;
-  font-size: clamp(0.8rem, 1vw, 0.9rem);
-}
-
-.detail-row dd {
-  color: white;
-  font-size: clamp(0.9rem, 1.2vw, 1rem);
-  font-weight: 500;
-}
-
-/* CTAs */
-.demo-card-ctas {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.gradient-btn {
-  background: var(--gradient-accent);
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
-  font-weight: 600;
-  border: none;
-  opacity: 0.9;
-  cursor: not-allowed;
-}
 
 /* ==========================================================
    SECTION — CENTERED, CLEAN, MINIMAL
@@ -1197,6 +1163,17 @@
 .hidden-field {
   display: none;
 }
+
+.business-card a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.business-card a:hover {
+  text-decoration: underline;
+}
+
 
 /* ==========================================================
    END OF STYLES.CSS
