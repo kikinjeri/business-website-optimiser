@@ -453,7 +453,7 @@ a:hover {
   color: var(--text-soft);
   margin: 0;
 }
-
+}
 .demo-card-status {
   font-size: var(--font-md);
   font-weight: 600;
