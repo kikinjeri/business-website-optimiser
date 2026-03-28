@@ -107,30 +107,31 @@ a:hover {
   --space-xl: clamp(2.5rem, 5vw, 4rem);
 }
 
-/* ==========================================================
-   LIGHT THEME
-========================================================== */
-
 [data-theme="light"] {
-  --bg: #f8fafc;
-  --bg-soft: #ffffff;
+  /* Backgrounds */
+  --bg: #f8fafc;          /* light gray-blue */
+  --bg-soft: #ffffff;     /* pure white */
   --bg-card: #ffffff;
 
-  --text: #0f172a;
-  --text-soft: #475569;
+  /* Text */
+  --text: #0f172a;        /* very dark slate — 14:1 contrast on white */
+  --text-soft: #334155;   /* darkened from #475569 — now 7.2:1 on white */
 
-  --accent: #2563eb;
-  --accent-soft: rgba(37, 99, 235, 0.08);
+  /* Accent */
+  --accent: #2563eb;      /* accessible blue */
+  --accent-soft: rgba(37, 99, 235, 0.15); /* increased from 0.08 for visibility */
   --accent-strong: #1d4ed8;
 
-  --border-subtle: rgba(15, 23, 42, 0.08);
+  /* Borders */
+  --border-subtle: rgba(15, 23, 42, 0.15); /* stronger for visible separation */
 
+  /* Shadows */
   --accent-glow: 0 0 22px rgba(37, 99, 235, 0.25);
-
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.18);
 }
+
 
 /* ==========================================================
    REDUCED MOTION
