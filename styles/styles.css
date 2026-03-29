@@ -1,44 +1,54 @@
 /* ==========================================================
-   HOMEPAGE — TOKENS (LOCAL)
-   Uses global gradient system from globals.css
+   HERO GRADIENT + GLOBAL TOKENS (CORRECTED + FULL WIDTH)
 ========================================================== */
 
 :root {
-  --hero-glow: radial-gradient(
-    circle at top left,
-    rgba(37, 99, 235, 0.22),
-    rgba(79, 70, 229, 0.12),
-    transparent 70%
-  );
-}
+  /* Softened premium hero gradient (DARK THEME) */
+  --hero-gradient-bg: radial-gradient(
+      circle at 30% 20%,
+      rgba(37, 99, 235, 0.22),
+      rgba(15, 23, 42, 0.9) 60%
+    ),
+    linear-gradient(
+      to bottom right,
+      rgba(79, 70, 229, 0.18),
+      rgba(15, 23, 42, 0.95)
+    );
 
-/* ==========================================================
-   GLOBAL LAYOUT TOKENS (LOCAL OVERRIDES)
-========================================================== */
-
-:root {
+  /* Layout + radius tokens */
   --radius-lg: 18px;
   --radius-md: 12px;
   --radius-sm: 8px;
 
-  --shadow-card: 0 8px 24px rgba(0,0,0,0.25);
-  --shadow-soft: 0 4px 14px rgba(0,0,0,0.18);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.18);
 
   --gradient-accent: linear-gradient(135deg, #4f46e5, #3b82f6);
   --gradient-border: linear-gradient(135deg, #6366f1, #3b82f6);
-
-  --hero-gradient-bg: radial-gradient(
-    circle at 20% 20%,
-    rgba(99,102,241,0.35),
-    rgba(17,24,39,0.9) 60%
-    width: 100%;
-    display: block;
-  );
 }
 
+/* Light theme version */
+[data-theme="light"] {
+  --hero-gradient-bg: radial-gradient(
+      circle at 20% 20%,
+      rgba(37, 99, 235, 0.12),
+      rgba(255, 255, 255, 1) 70%
+    );
+}
+
+
 /* ==========================================================
-   HERO — FULL BLEED, PREMIUM, SPLIT LAYOUT
+   LIGHT THEME HERO GRADIENT (SOFTENED)
 ========================================================== */
+
+[data-theme="light"] {
+  --hero-gradient-bg: radial-gradient(
+      circle at 20% 20%,
+      rgba(37, 99, 235, 0.12),
+      rgba(255, 255, 255, 1) 70%
+    );
+}
+
 
 /* ==========================================================
    HERO SECTION — CLEAN + COHESIVE (CARD UNTOUCHED)
@@ -46,14 +56,14 @@
 
 .hero-full {
   width: 100%;
-  padding: var(--space-xl) var(--space-md) var(--space-lg);
+  padding: var(--space-xl) var(--space-md) 4rem;
   background: var(--hero-gradient-bg);
   color: white;
   display: block;
   background-size: cover;
   background-position: center;
-  padding-bottom: 4rem; /* smoother transition into next section */
 }
+
 
 .hero-container {
   max-width: var(--max-page);
@@ -66,17 +76,17 @@
 
 }
 
-/* App name — largest element */
 .hero-app-name {
-  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(3rem, 6vw, 6rem); /* doubled */
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
   margin-bottom: var(--space-sm);
   background: var(--gradient-accent);
   -webkit-background-clip: text;
   color: transparent;
   letter-spacing: 0.3px;
 }
+
 
 /* Eyebrow */
 .hero-eyebrow {

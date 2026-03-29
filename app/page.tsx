@@ -42,14 +42,14 @@ export default function HomePage() {
                 href="#card-explainer"
                 className="hero-btn-secondary hero-btn-single"
               >
-                Boost Traffic
+                View Details
               </Link>
             </div>
           </div>
 
           {/* RIGHT SIDE — premium business card */}
           <div className="hero-card-wrapper">
-            <p className="hero-card-label">Sample Business Card</p>
+            <p className="hero-card-label">Demo Business Card</p>
             <div className="hero-card-scale">
               <DemoBusinessCard />
             </div>
