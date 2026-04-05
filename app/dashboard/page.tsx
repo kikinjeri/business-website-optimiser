@@ -13,13 +13,7 @@ export default async function DashboardOverviewPage({ searchParams }) {
 
   // Smart search
   const filtered = businesses?.filter((b) => {
-    const haystack = [
-      b.name,
-      b.address,
-      b.phone,
-      b.category,
-      b.slug,
-    ]
+    const haystack = [b.name, b.address, b.phone, b.category, b.slug]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
@@ -29,7 +23,7 @@ export default async function DashboardOverviewPage({ searchParams }) {
 
   const sorted = filtered?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
 
-  // Analytics
+  // Analytics (last 30 days)
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -42,8 +36,12 @@ export default async function DashboardOverviewPage({ searchParams }) {
 
   return (
     <div className="dashboard-fullwidth">
-      {/* TOP NAV */}
-      <header className="dashboard-topnav">
+      {/* GLOBAL NAVBAR */}
+      <header
+        className="dashboard-topnav"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <Link href="/dashboard" className="topnav-link topnav-link--active">
           Dashboard
         </Link>
@@ -56,19 +54,24 @@ export default async function DashboardOverviewPage({ searchParams }) {
         <h1 className="dashboard-title">Dashboard Overview</h1>
 
         {/* SEARCH BAR */}
-        <form className="dashboard-searchbar" method="GET">
+        <form className="dashboard-searchbar" method="GET" role="search">
           <input
             type="text"
             name="q"
+            aria-label="Search businesses"
             placeholder="Search by name, address, phone, or category..."
             className="search-input"
             defaultValue={query}
           />
-          <button className="search-btn">Search</button>
+          <button className="button-small">Search</button>
         </form>
 
         {/* KPI PANEL */}
-        <section className="panel">
+        <section className="panel" aria-labelledby="kpi-heading">
+          <h2 id="kpi-heading" className="visually-hidden">
+            Key performance indicators
+          </h2>
+
           <div className="stats-grid stats-grid--wide">
             <KPI label="Total businesses" value={summaries.length} />
             <KPI
@@ -94,45 +97,64 @@ export default async function DashboardOverviewPage({ searchParams }) {
           </div>
         </section>
 
-        {/* BUSINESS TABLE */}
-        <section className="panel">
-          <div className="table-header">
-            <div className="col-business">Business</div>
-            <div className="col-card">Card</div>
-            <div className="col-embed">Embed</div>
+        {/* BUSINESS TABLE — NO INNER SCROLL DIV */}
+        <section
+          className="panel"
+          role="table"
+          aria-label="Business analytics table"
+        >
+          <div className="table-header" role="row">
+            <div className="col-business" role="columnheader">
+              Business
+            </div>
+            <div className="col-card" role="columnheader">
+              Card
+            </div>
+            <div className="col-embed" role="columnheader">
+              Embed
+            </div>
           </div>
 
-          <div className="table-body">
-            {summaries.map((s) => (
-              <div key={s.id} className="table-row">
-                {/* BUSINESS COLUMN */}
-                <div className="col-business">
-                  <Link href={`/business/${s.slug}`} className="business-name-link">
-                    {s.name}
-                  </Link>
-                  <span className={`status-pill status-${s.status ?? "draft"}`}>
-                    {s.status ?? "Draft"}
-                  </span>
-                </div>
-
-                {/* CARD ANALYTICS */}
-                <div className="col-card">
-                  <span className="pill">Card</span>
-                  <span className="metric">
-                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
-                  </span>
-                </div>
-
-                {/* EMBED ANALYTICS */}
-                <div className="col-embed">
-                  <span className="pill">Embed</span>
-                  <span className="metric">
-                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
-                  </span>
-                </div>
+          {summaries.map((s) => (
+            <div key={s.id} className="table-row" role="row">
+              {/* BUSINESS COLUMN */}
+              <div className="col-business" role="cell">
+                <Link
+                  href={`/business/${s.slug}`}
+                  className="business-name-link"
+                >
+                  {s.name}
+                </Link>
+                <span className={`status-pill status-${s.status ?? "draft"}`}>
+                  {s.status ?? "Draft"}
+                </span>
               </div>
-            ))}
-          </div>
+
+              {/* CARD ANALYTICS */}
+              <div className="col-card" role="cell">
+                <span className="pill">Card</span>
+                <span className="metric">
+                  {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
+                </span>
+              </div>
+
+              {/* EMBED ANALYTICS */}
+              <div className="col-embed" role="cell">
+                <span className="pill">Embed</span>
+                <span className="metric">
+                  {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
+                </span>
+
+                <Link
+                  href={`/business/${s.slug}/embed`}
+                  className="embed-link"
+                  aria-label={`Get embed code for ${s.name}`}
+                >
+                  Get code
+                </Link>
+              </div>
+            </div>
+          ))}
         </section>
       </main>
     </div>
