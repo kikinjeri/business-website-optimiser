@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import { supabaseServer } from "@/lib/supabase/server";
 import "@/styles/styles.css";
 import Link from "next/link";
@@ -6,24 +5,24 @@ import Link from "next/link";
 export default async function DashboardOverviewPage() {
   const supabase = await supabaseServer();
 
-  // Fetch all businesses
   const { data: businesses } = await supabase
     .from("businesses")
-    .select("id, name, slug, status, created_at");
+    .select("id, name, slug, status, phone, address, category, created_at");
 
-  if (!businesses || businesses.length === 0) {
-    return (
-      <main className="dashboard-page" role="main">
-        <h1 className="dashboard-title">Dashboard</h1>
-        <p>No businesses found.</p>
-      </main>
-    );
-  }
+  const searchParams = new URLSearchParams();
+  const searchQuery = searchParams.get("q")?.toLowerCase() || "";
 
-  // Sort alphabetically
-  businesses.sort((a, b) => a.name.localeCompare(b.name));
+  const filtered = businesses?.filter((b) => {
+    const haystack = [b.name, b.address, b.phone, b.category, b.slug]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
 
-  // Fetch analytics events for last 30 days
+    return haystack.includes(searchQuery);
+  });
+
+  const sorted = filtered?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -32,70 +31,101 @@ export default async function DashboardOverviewPage() {
     .select("business_id, event_type, created_at")
     .gte("created_at", thirtyDaysAgo.toISOString());
 
-  const summaries = computeSummaries(businesses, events ?? []);
+  const summaries = computeSummaries(sorted, events ?? []);
 
-  // Global KPIs
-  const totalBusinesses = businesses.length;
+  const totalBusinesses = sorted.length;
   const totalViews = summaries.reduce((sum, s) => sum + s.views30d, 0);
   const totalClicks = summaries.reduce((sum, s) => sum + s.clicks30d, 0);
   const avgCtr =
     totalViews > 0 ? Math.round((totalClicks / totalViews) * 100) : 0;
 
   return (
-    <main className="dashboard-page" role="main">
-      <h1 className="dashboard-title">Dashboard Overview</h1>
+    <div className="dashboard-fullwidth">
+      {/* TOP NAV */}
+      <header className="dashboard-topnav">
+        <Link href="/dashboard" className="topnav-link topnav-link--active">
+          Dashboard
+        </Link>
+        <Link href="/business" className="topnav-link">
+          Directory
+        </Link>
+      </header>
 
-      {/* KPI cards */}
-      <section className="panel kpi-grid">
-        <KPI label="Total businesses" value={totalBusinesses} />
-        <KPI label="Views (30 days)" value={totalViews} />
-        <KPI label="CTA clicks (30 days)" value={totalClicks} />
-        <KPI label="Average CTR" value={`${avgCtr}%`} />
-      </section>
+      {/* MAIN CONTENT */}
+      <main className="dashboard-mainwide">
+        <h1 className="dashboard-title">Dashboard Overview</h1>
 
-      {/* Business list */}
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Businesses</h2>
-        </div>
+        {/* SEARCH BAR */}
+        <form className="dashboard-searchbar">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search by name, address, phone, or category..."
+            className="search-input"
+            defaultValue={searchQuery}
+          />
+          <button className="search-btn">Search</button>
+        </form>
 
-        <div className="business-list">
-          {summaries.map((s) => (
-            <div key={s.id} className="business-row">
-              {/* Left: Business name */}
-              <div className="business-row-main">
-                <Link
-                  href={`/business/${s.slug}`}
-                  className="business-name-link"
-                >
-                  {s.name}
-                </Link>
-                <span className={`status-badge status-${s.status ?? "draft"}`}>
-                  {s.status ?? "Draft"}
-                </span>
-              </div>
-
-              {/* Middle: Side-by-side analytics */}
-              <div className="business-row-stats">
-                <div className="stat-block">
-                  <span className="stat-title">Card</span>
-                  <span className="stat-line">
-                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
-                  </span>
-                </div>
-
-                <div className="stat-block">
-                  <span className="stat-title">Embed</span>
-                  <span className="stat-line">
-                    {s.views30d} views • {s.clicks30d} clicks • {s.ctr}% CTR
-                  </span>
-                </div>
-              </div>
+        <div className="dashboard-content">
+          {/* KPI PANEL */}
+          <section className="panel">
+            <div className="stats-grid stats-grid--wide">
+              <KPI label="Total businesses" value={totalBusinesses} />
+              <KPI label="Views (30 days)" value={totalViews} />
+              <KPI label="CTA clicks (30 days)" value={totalClicks} />
+              <KPI label="Average CTR" value={`${avgCtr}%`} />
             </div>
-          ))}
+          </section>
+
+          {/* BUSINESS LIST */}
+          <section className="panel">
+            <div className="panel-header">
+              <h2>Businesses</h2>
+            </div>
+
+            <div className="business-list">
+              {summaries.map((s) => (
+                <div key={s.id} className="business-row">
+                  {/* LEFT: NAME + STATUS */}
+                  <div className="business-row-main">
+                    <Link
+                      href={`/business/${s.slug}`}
+                      className="business-name-link"
+                    >
+                      {s.name}
+                    </Link>
+                    <span
+                      className={`status-pill status-${s.status ?? "draft"}`}
+                    >
+                      {s.status ?? "Draft"}
+                    </span>
+                  </div>
+
+                  {/* RIGHT: ANALYTICS */}
+                  <div className="business-row-stats">
+                    <div className="stat-block">
+                      <span className="stat-label">Views</span>
+                      <span className="stat-value">{s.views30d}</span>
+                    </div>
+
+                    <div className="stat-block">
+                      <span className="stat-label">Clicks</span>
+                      <span className="stat-value">{s.clicks30d}</span>
+                    </div>
+
+                    <div className="stat-block">
+                      <span className="stat-label">CTR</span>
+                      <span className="stat-value">{s.ctr}%</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
 
@@ -131,14 +161,14 @@ function computeSummaries(businesses, events) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* SMALL COMPONENTS */
+/* KPI COMPONENT */
 /* -------------------------------------------------------------------------- */
 
 function KPI({ label, value }) {
   return (
-    <div className="kpi-block">
-      <p className="kpi-label">{label}</p>
-      <p className="kpi-value">{value}</p>
+    <div className="stat-block">
+      <p className="stat-label">{label}</p>
+      <p className="stat-value">{value}</p>
     </div>
   );
 }

@@ -1,64 +1,73 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Navbar() {
-  const [theme, setTheme] = useState("dark");
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
-  // Load theme from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored) {
-      setTheme(stored);
-      document.documentElement.setAttribute("data-theme", stored);
-    }
-  }, []);
-
-  function toggleTheme() {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  }
-
-  function toggleMenu() {
-    setMenuOpen((prev) => !prev);
-  }
+  const isActive = (path: string) =>
+    pathname === path ? "color: var(--text);" : "";
 
   return (
-    <nav className="navbar" aria-label="Main navigation">
+    <nav className="navbar">
       <div className="navbar-inner">
+        {/* Logo */}
         <Link href="/" className="navbar-logo">
-          M. George
+          Business Web Optimiser
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Links */}
         <div className="navbar-links">
-          <Link href="/">Home</Link>
-          <Link href="/about">About</Link>
-
-          <Link href="/contact">Contact</Link>
-
-          <button
-            className="theme-toggle"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
+          <Link
+            href="/"
+            style={{ ...(pathname === "/" && { color: "var(--text)" }) }}
           >
-            {theme === "dark" ? "🌙" : "☀️"}
-          </button>
+            Home
+          </Link>
+
+          <Link
+            href="/about"
+            style={{ ...(pathname === "/about" && { color: "var(--text)" }) }}
+          >
+            About
+          </Link>
+
+          <Link
+            href="/business"
+            style={{
+              ...(pathname === "/business" && { color: "var(--text)" }),
+            }}
+          >
+            Directory
+          </Link>
+
+          <Link
+            href="/dashboard"
+            style={{
+              ...(pathname === "/dashboard" && { color: "var(--text)" }),
+            }}
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            href="/contact"
+            style={{
+              ...(pathname === "/contact" && { color: "var(--text)" }),
+            }}
+          >
+            Contact
+          </Link>
         </div>
 
         {/* Mobile Hamburger */}
         <button
           className="navbar-hamburger"
+          onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-          aria-expanded={menuOpen}
-          onClick={toggleMenu}
         >
           <span className="hamburger-line" />
           <span className="hamburger-line" />
@@ -67,30 +76,23 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`navbar-mobile ${menuOpen ? "open" : ""}`}>
-        <Link href="/" onClick={() => setMenuOpen(false)}>
+      <div className={`navbar-mobile ${open ? "open" : ""}`}>
+        <Link href="/" onClick={() => setOpen(false)}>
           Home
         </Link>
-        <Link href="/about" onClick={() => setMenuOpen(false)}>
+        <Link href="/about" onClick={() => setOpen(false)}>
           About
         </Link>
-        <Link href="/business" onClick={() => setMenuOpen(false)}>
+
+        <Link href="/directory" onClick={() => setOpen(false)}>
           Directory
         </Link>
-        <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
+        <Link href="/dashboard" onClick={() => setOpen(false)}>
           Dashboard
         </Link>
-        <Link href="/contact" onClick={() => setMenuOpen(false)}>
+        <Link href="/contact" onClick={() => setOpen(false)}>
           Contact
         </Link>
-
-        <button
-          className="theme-toggle mobile-theme-toggle"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-        >
-          {theme === "dark" ? "🌙" : "☀️"}
-        </button>
       </div>
     </nav>
   );
